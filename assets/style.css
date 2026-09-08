@@ -196,43 +196,28 @@ p { margin: 0 0 1em; max-width: 62ch; }
 
 .hero-art {
   position: relative;
-  aspect-ratio: 1 / 1;
-  max-width: 320px;
+  aspect-ratio: 3 / 2;
+  max-width: 460px;
   margin-left: auto;
 }
 
-.hero-art svg { width: 100%; height: 100%; }
+.hero-art .leaf-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  mix-blend-mode: screen;
+  opacity: 0;
+  animation: leaf-fade-in 1.2s ease-out forwards;
+  animation-delay: 0.15s;
+}
 
-.hero-art .leaf-vein {
-  stroke-dasharray: 2050;
-  stroke-dashoffset: 2050;
-  animation: draw 1.9s ease-out forwards;
-  animation-delay: 0.2s;
+@keyframes leaf-fade-in {
+  from { opacity: 0; transform: scale(0.97); }
+  to { opacity: 1; transform: scale(1); }
 }
-.hero-art .leaf-web {
-  opacity: 0;
-  animation: fadein 1s ease-out forwards;
-  animation-delay: 1.3s;
-}
-.hero-art .leaf-dots {
-  opacity: 0;
-  animation: fadein 0.8s ease-out forwards;
-  animation-delay: 1.6s;
-}
-.hero-art .ripple {
-  transform-origin: center;
-  opacity: 0;
-  animation: ripple 1.4s ease-out forwards;
-  animation-delay: 0.6s;
-}
-@keyframes draw { to { stroke-dashoffset: 0; } }
-@keyframes fadein { to { opacity: 1; } }
-@keyframes ripple { from { opacity: 0.55; transform: scale(0.85); } to { opacity: 0; transform: scale(1.15); } }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero-art .leaf-vein { animation: none; stroke-dashoffset: 0; }
-  .hero-art .leaf-web, .hero-art .leaf-dots { animation: none; opacity: 1; }
-  .hero-art .ripple { animation: none; opacity: 0.25; }
+  .hero-art .leaf-image { animation: none; opacity: 1; }
 }
 
 /* ---------- Sections génériques ---------- */
