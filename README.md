@@ -51,35 +51,50 @@ Utilise [FormSubmit.co](https://formsubmit.co) — gratuit, aucun serveur ni bas
 Si tu préfères un formulaire relié à ta propre base de données plus tard (pour les devis, par exemple),
 ce sera la prochaine étape — voir section 6.
 
-## 5. Déploiement (Docker / Portainer / Nginx Proxy Manager)
+## 5. GitHub (repo OXYDER)
 
-Même pattern que tes autres projets :
+Le projet est déjà initialisé en local avec un premier commit. Pour le pousser sur GitHub, comme tes autres projets :
 
-**Option A — build l'image toi-même**
+1. Crée un nouveau repo vide sur GitHub (ex. `OXYDER/benoitlaprise-site`) — **ne coche pas** « Initialize with README » pour éviter un conflit avec le commit déjà fait.
+2. Depuis ce dossier, sur ta machine :
+   ```bash
+   git remote add origin https://github.com/OXYDER/benoitlaprise-site.git
+   git branch -M main
+   git push -u origin main
+   ```
+3. Ensuite, chaque fois que tu modifies le site (localement ou via Claude), un simple :
+   ```bash
+   git add -A
+   git commit -m "description du changement"
+   git push
+   ```
+   met à jour GitHub.
+
+## 6. Déploiement sur le NAS (Docker / Portainer / Nginx Proxy Manager)
+
+**Première installation sur le NAS** — clone le repo directement là où tu gardes tes autres projets :
 ```bash
-docker build -t benoitlaprise-site .
-docker run -d --name benoitlaprise -p 8090:80 benoitlaprise-site
+git clone https://github.com/OXYDER/benoitlaprise-site.git
+cd benoitlaprise-site
+docker compose up -d --build
 ```
-Puis dans Nginx Proxy Manager, ajoute un Proxy Host `benoitlaprise.com` → `http://<IP_NAS>:8090`.
+Puis dans Nginx Proxy Manager, ajoute un Proxy Host `benoitlaprise.com` → `http://<IP_NAS>:8090`, comme d'habitude.
 
-**Option B — via Portainer (Stacks)**
-```yaml
-version: "3"
-services:
-  benoitlaprise:
-    build: .
-    container_name: benoitlaprise
-    restart: unless-stopped
-    ports:
-      - "8090:80"
+**Mises à jour suivantes** — utilise `deploy.sh`, inclus dans le repo :
+```bash
+./deploy.sh
 ```
-Colle ce contenu dans un nouveau Stack Portainer pointant vers ce dossier (ou vers le repo GitHub une fois poussé sur OXYDER), déploie, puis ajoute le Proxy Host dans NPM comme d'habitude.
+Ce script fait `git pull`, reconstruit l'image et redémarre le conteneur. Tu peux :
+- le lancer manuellement en SSH sur le NAS après chaque `git push`, ou
+- l'ajouter au **Planificateur de tâches** de Synology (tâche déclenchée, script défini par l'utilisateur → chemin vers `deploy.sh`) pour l'exécuter automatiquement à intervalle régulier (ex. toutes les nuits).
 
-**Option C — montage direct dans un nginx existant**
-Si tu as déjà un conteneur nginx générique, tu peux simplement monter `index.html` et `assets/`
+Si tu préfères gérer le conteneur depuis l'interface Portainer plutôt qu'en ligne de commande, tu peux aussi créer un Stack Portainer qui pointe vers ce repo GitHub — Portainer offre une option de re-pull/redeploy automatique intégrée, ce qui remplacerait `deploy.sh`.
+
+**Option sans Docker — montage direct dans un nginx existant**
+Si tu as déjà un conteneur nginx générique, tu peux monter `index.html` et `assets/`
 comme volume dans son dossier `html/`, sans passer par le Dockerfile.
 
-## 6. Prochaines étapes (roadmap)
+## 7. Prochaines étapes (roadmap)
 
 - Générateur de devis relié à la boutique h2oinnovation.net (paniers, produits, envoi automatique)
 - Intégration SMS entrant (Twilio) si tu veux répondre aux textos directement depuis un tableau de bord plutôt que ton téléphone
@@ -88,9 +103,10 @@ comme volume dans son dossier `html/`, sans passer par le Dockerfile.
 ## Structure du projet
 
 ```
-index.html          → la page
-assets/style.css     → tout le visuel (palette, typographie, mise en page)
-assets/script.js      → logique (zone, liens de contact, chat, formulaire)
-assets/config.js      → TES informations — le seul fichier à modifier au quotidien
-Dockerfile / nginx.conf → déploiement
+index.html              → la page
+assets/style.css        → tout le visuel (palette, typographie, mise en page)
+assets/script.js        → logique (zone, liens de contact, chat, formulaire)
+assets/config.js        → TES informations — le seul fichier à modifier au quotidien
+Dockerfile / nginx.conf / docker-compose.yml → déploiement
+deploy.sh                → script de mise à jour (git pull + rebuild + restart)
 ```
