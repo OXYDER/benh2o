@@ -450,6 +450,10 @@ footer a:hover { text-decoration: underline; }
   .field-row { grid-template-columns: 1fr; }
   .channel-row { grid-template-columns: 40px 1fr; }
   .channel-action { grid-column: 1 / -1; justify-self: start; margin-top: 4px; }
-  .header-logo { display: none; }
-  .site-header .container { grid-template-columns: 1fr auto; }
+  .header-logo img { height: 22px; }
+  .site-header .container { column-gap: 8px; }
+  .brand { font-size: 1rem; }
+  .brand span { display: none; }
+  .header-call span { display: none; }
+  .header-call { padding: 11px 14px; }
 }
