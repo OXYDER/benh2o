@@ -75,10 +75,11 @@ Le projet est déjà initialisé en local avec un premier commit. Pour le pousse
 **Première installation sur le NAS** — clone le repo directement là où tu gardes tes autres projets :
 ```bash
 git clone https://github.com/OXYDER/benh2o.git
-cd benoitlaprise-site
+cd benh2o
 docker compose up -d --build
 ```
-Puis dans Nginx Proxy Manager, ajoute un Proxy Host `benoitlaprise.com` → `http://<IP_NAS>:8090`, comme d'habitude.
+Puis dans Nginx Proxy Manager, ajoute un Proxy Host `benoit.resotik.ca` → `http://<IP_NAS>:8090`, comme d'habitude.
+(Le jour où tu loues `benoitlaprise.com`, il suffira d'ajouter un deuxième Proxy Host vers la même adresse, et de mettre à jour `server_name` dans `nginx.conf`.)
 
 **Mises à jour suivantes** — utilise `deploy.sh`, inclus dans le repo :
 ```bash
