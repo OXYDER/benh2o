@@ -35,15 +35,60 @@
     </div>
     <div class="hero-art" aria-hidden="true">
       <svg viewBox="0 0 400 400" fill="none">
-        <circle class="ripple" cx="200" cy="200" r="70" stroke="#8FB4C1" stroke-width="1.5"/>
-        <circle class="ripple" cx="200" cy="200" r="110" stroke="#8FB4C1" stroke-width="1.5" style="animation-delay:0.9s"/>
-        <path class="leaf-vein" d="M200 60 C120 120 90 210 130 300 C150 340 175 355 200 360" stroke="#E3AD6C" stroke-width="2" fill="none"/>
-        <path class="leaf-vein" d="M200 60 C280 120 310 210 270 300 C250 340 225 355 200 360" stroke="#E3AD6C" stroke-width="2" fill="none" style="animation-delay:0.35s"/>
-        <path class="leaf-vein" d="M200 60 L200 360" stroke="#C67A2E" stroke-width="2.5" fill="none" style="animation-delay:0.1s"/>
-        <path class="leaf-vein" d="M200 130 C170 150 150 165 135 180" stroke="#C67A2E" stroke-width="1.5" fill="none" style="animation-delay:0.5s"/>
-        <path class="leaf-vein" d="M200 130 C230 150 250 165 265 180" stroke="#C67A2E" stroke-width="1.5" fill="none" style="animation-delay:0.5s"/>
-        <path class="leaf-vein" d="M200 210 C165 225 145 235 125 245" stroke="#C67A2E" stroke-width="1.5" fill="none" style="animation-delay:0.65s"/>
-        <path class="leaf-vein" d="M200 210 C235 225 255 235 275 245" stroke="#C67A2E" stroke-width="1.5" fill="none" style="animation-delay:0.65s"/>
+        <defs>
+          <filter id="leafGlow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="4" result="blur"/>
+            <feMerge>
+              <feMergeNode in="blur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+        </defs>
+
+        <circle class="ripple" cx="199" cy="214" r="90" stroke="#8CA0B3" stroke-width="1" />
+        <circle class="ripple" cx="199" cy="214" r="140" stroke="#8CA0B3" stroke-width="1" style="animation-delay:0.9s" />
+
+        <g class="leaf-web" stroke="#1E9BFF" stroke-width="0.75" opacity="0.55">
+          <line x1="199" y1="214" x2="200" y2="40" />
+          <line x1="199" y1="214" x2="255" y2="60" />
+          <line x1="199" y1="214" x2="296" y2="118" />
+          <line x1="199" y1="214" x2="318" y2="176" />
+          <line x1="199" y1="214" x2="292" y2="232" />
+          <line x1="199" y1="214" x2="108" y2="232" />
+          <line x1="199" y1="214" x2="82" y2="176" />
+          <line x1="199" y1="214" x2="104" y2="118" />
+          <line x1="199" y1="214" x2="145" y2="60" />
+          <line x1="200" y1="40" x2="255" y2="60" />
+          <line x1="255" y1="60" x2="296" y2="118" />
+          <line x1="296" y1="118" x2="318" y2="176" />
+          <line x1="318" y1="176" x2="292" y2="232" />
+          <line x1="200" y1="40" x2="145" y2="60" />
+          <line x1="145" y1="60" x2="104" y2="118" />
+          <line x1="104" y1="118" x2="82" y2="176" />
+          <line x1="82" y1="176" x2="108" y2="232" />
+          <line x1="292" y1="232" x2="108" y2="232" />
+        </g>
+
+        <path class="leaf-vein" filter="url(#leafGlow)"
+          d="M 200,40 L 216,78 L 255,60 L 246,104 L 296,118 L 272,150 L 318,176 L 276,190 L 292,232 L 244,218 L 256,258 L 214,300 L 206,372 L 194,372 L 186,300 L 144,258 L 156,218 L 108,232 L 124,190 L 82,176 L 128,150 L 104,118 L 154,104 L 145,60 L 184,78 Z"
+          stroke="#29A9FF" stroke-width="2.2" fill="none" stroke-linejoin="round" />
+
+        <g class="leaf-dots" fill="#C9D3DC">
+          <circle cx="200" cy="40" r="2.6" /><circle cx="216" cy="78" r="2.6" />
+          <circle cx="255" cy="60" r="2.6" /><circle cx="246" cy="104" r="2.6" />
+          <circle cx="296" cy="118" r="2.6" /><circle cx="272" cy="150" r="2.6" />
+          <circle cx="318" cy="176" r="2.6" /><circle cx="276" cy="190" r="2.6" />
+          <circle cx="292" cy="232" r="2.6" /><circle cx="244" cy="218" r="2.6" />
+          <circle cx="256" cy="258" r="2.6" /><circle cx="214" cy="300" r="2.6" />
+          <circle cx="206" cy="372" r="2.6" /><circle cx="194" cy="372" r="2.6" />
+          <circle cx="186" cy="300" r="2.6" /><circle cx="144" cy="258" r="2.6" />
+          <circle cx="156" cy="218" r="2.6" /><circle cx="108" cy="232" r="2.6" />
+          <circle cx="124" cy="190" r="2.6" /><circle cx="82" cy="176" r="2.6" />
+          <circle cx="128" cy="150" r="2.6" /><circle cx="104" cy="118" r="2.6" />
+          <circle cx="154" cy="104" r="2.6" /><circle cx="145" cy="60" r="2.6" />
+          <circle cx="184" cy="78" r="2.6" />
+          <circle cx="199" cy="214" r="3.4" fill="#7DD3FF" />
+        </g>
       </svg>
     </div>
   </div>

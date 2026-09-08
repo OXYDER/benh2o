@@ -5,18 +5,18 @@
    ========================================================= */
 
 :root {
-  --spruce-950: #16241C;
-  --spruce-900: #1E3226;
-  --spruce-800: #274233;
-  --birch-100: #F6F1E4;
-  --birch-050: #FBF8F1;
-  --amber-600: #C67A2E;
-  --amber-700: #9C5A1C;
-  --amber-300: #E3AD6C;
-  --water-500: #4C7A8C;
-  --water-300: #8FB4C1;
-  --ink-900: #201B14;
-  --ink-600: #4A4130;
+  --spruce-950: #050B18;
+  --spruce-900: #0A1830;
+  --spruce-800: #102544;
+  --birch-100: #E9F1F8;
+  --birch-050: #F4F8FB;
+  --amber-600: #1E9BFF;
+  --amber-700: #0B72C7;
+  --amber-300: #7DD3FF;
+  --water-500: #8CA0B3;
+  --water-300: #C9D3DC;
+  --ink-900: #0B1220;
+  --ink-600: #45566B;
 
   --serif: "Fraunces", Georgia, serif;
   --sans: "Work Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -202,10 +202,20 @@ p { margin: 0 0 1em; max-width: 62ch; }
 .hero-art svg { width: 100%; height: 100%; }
 
 .hero-art .leaf-vein {
-  stroke-dasharray: 600;
-  stroke-dashoffset: 600;
+  stroke-dasharray: 1200;
+  stroke-dashoffset: 1200;
   animation: draw 1.8s ease-out forwards;
   animation-delay: 0.2s;
+}
+.hero-art .leaf-web {
+  opacity: 0;
+  animation: fadein 1s ease-out forwards;
+  animation-delay: 1.3s;
+}
+.hero-art .leaf-dots {
+  opacity: 0;
+  animation: fadein 0.8s ease-out forwards;
+  animation-delay: 1.6s;
 }
 .hero-art .ripple {
   transform-origin: center;
@@ -214,10 +224,12 @@ p { margin: 0 0 1em; max-width: 62ch; }
   animation-delay: 0.6s;
 }
 @keyframes draw { to { stroke-dashoffset: 0; } }
+@keyframes fadein { to { opacity: 1; } }
 @keyframes ripple { from { opacity: 0.55; transform: scale(0.85); } to { opacity: 0; transform: scale(1.15); } }
 
 @media (prefers-reduced-motion: reduce) {
   .hero-art .leaf-vein { animation: none; stroke-dashoffset: 0; }
+  .hero-art .leaf-web, .hero-art .leaf-dots { animation: none; opacity: 1; }
   .hero-art .ripple { animation: none; opacity: 0.25; }
 }
 
