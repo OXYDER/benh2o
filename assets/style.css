@@ -196,7 +196,7 @@ p { margin: 0 0 1em; max-width: 62ch; }
 
 .hero-art {
   position: relative;
-  aspect-ratio: 300 / 340;
+  aspect-ratio: 1 / 1;
   max-width: 320px;
   margin-left: auto;
 }
@@ -204,8 +204,8 @@ p { margin: 0 0 1em; max-width: 62ch; }
 .hero-art svg { width: 100%; height: 100%; }
 
 .hero-art .leaf-vein {
-  stroke-dasharray: 1350;
-  stroke-dashoffset: 1350;
+  stroke-dasharray: 2050;
+  stroke-dashoffset: 2050;
   animation: draw 1.9s ease-out forwards;
   animation-delay: 0.2s;
 }
