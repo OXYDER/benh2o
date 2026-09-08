@@ -6,19 +6,23 @@ Docker → Portainer → Nginx Proxy Manager.
 
 ## 1. Avant de déployer — à configurer
 
-Tout se passe dans **`assets/config.js`**. Ouvre ce fichier et remplace :
+Tes coordonnées (téléphones, courriel, Messenger, chat) vivent dans **`assets/contact.json`**
+et se modifient directement depuis la page **`/admin.html`** du site, sans toucher au code —
+section « Mes informations de contact » en haut de la page. Voir section 2 pour le
+fonctionnement complet de l'administration.
+
+Si tu préfères éditer le fichier à la main, il est simple et commenté :
 
 | Champ | Description |
 |---|---|
-| `telephoneAffiche` / `telephoneLien` | Ton numéro, affiché et en format `+1...` pour les liens tel:/sms: |
-| `courriel` | Ton courriel H2O Innovation |
-| `messengerUsername` | Le nom d'utilisateur de ta page Facebook (pour le lien m.me/...) |
-| `tawkTo` | Voir section 3 ci-dessous pour le clavardage en direct |
+| `telephoneMobileAffiche` / `telephoneMobileLien` | Ton numéro mobile (appels), affiché et en format `+1...` |
+| `telephoneSmsAffiche` / `telephoneSmsLien` | Ton numéro de texto — laisse vide pour réutiliser le mobile |
+| `telephoneH2OAffiche` / `telephoneH2OLien` | La ligne générale H2O Innovation (service à la clientèle) |
+| `courriel` | Ton courriel affiché sur le site |
+| `messengerUsername` | Le nom d'utilisateur de ta page Facebook (ou un lien complet) |
+| `chatLive` | Voir section 3 ci-dessous pour le clavardage en direct |
 | `formsubmitEmail` | Courriel qui reçoit les demandes du formulaire (voir section 4) |
-| `zones` | **Important** : remplace la liste d'exemple par tes vraies villes/MRC couvertes |
-| `contactGeneralUrl` | Lien vers h2oinnovation.net/contact, proposé aux gens hors de ta zone |
-
-Aucune connaissance en programmation n'est requise pour cette étape — seulement remplacer le texte entre guillemets.
+| `boutiqueUrl` / `contactGeneralUrl` | Liens vers h2oinnovation.net, proposés aux gens hors de ta zone |
 
 ## 2. Vérificateur de zone — régions, MRC, municipalités
 
@@ -28,19 +32,19 @@ fonctionne aussi si la personne tape juste une partie du nom, une MRC, ou même 
 (ex. « Victo » trouve « Victoriaville »; « Bécancour » seul trouve la MRC).
 
 Si quelqu'un est hors zone, la page l'informe et propose le lien `contactGeneralUrl`
-(dans `config.js`) plutôt que de le laisser te contacter directement.
+(dans `contact.json`) plutôt que de le laisser te contacter directement.
 
-### Modifier la liste toi-même — page `/admin.html`
+### Modifier tes infos et tes zones toi-même — page `/admin.html`
 
-Une page d'administration te permet d'ajouter, renommer ou retirer des régions/MRC/
-municipalités sans toucher au code :
+Une page d'administration te permet de tout gérer sans toucher au code : tes coordonnées
+(section du haut) et tes régions/MRC/municipalités (section du bas) :
 
 1. Va sur `https://benoit.resotik.ca/admin.html` (ou ton domaine)
-2. Modifie les régions, MRC et municipalités — tout se sauvegarde automatiquement
-   comme brouillon dans ton navigateur pendant que tu travailles
-3. Clique **Télécharger zones.json**
-4. Remplace `assets/zones.json` dans le projet par le fichier téléchargé
-5. `git add -A && git commit -m "mise à jour des zones" && git push`
+2. Modifie ce que tu veux — tout se sauvegarde automatiquement comme brouillon dans
+   ton navigateur pendant que tu travailles
+3. Clique **Télécharger contact.json** et/ou **Télécharger zones.json** selon ce que tu as changé
+4. Remplace le(s) fichier(s) correspondant(s) dans `assets/` par ceux téléchargés
+5. `git add -A && git commit -m "mise à jour des infos" && git push`
 6. Sur le NAS : `./deploy.sh`
 
 ⚠️ **Cette page n'a aucun mot de passe.** Le brouillon reste local au navigateur de la
@@ -55,10 +59,12 @@ Le plus simple et gratuit : [Tawk.to](https://www.tawk.to)
 
 1. Crée un compte gratuit sur tawk.to
 2. Dans **Administration > Channels**, récupère ton **Property ID** et ton **Widget ID**
-3. Dans `config.js`, mets `tawkTo.actif = true` et colle les deux identifiants
+3. Dans `/admin.html`, coche **Activer le widget Tawk.to** et colle les deux identifiants
+   (ou édite `chatLive.actif`, `chatLive.propertyId`, `chatLive.widgetId` directement dans `contact.json`)
 
 Tant que ce n'est pas configuré, le bouton « Clavarder » redirige automatiquement vers le texto,
-donc rien n'est brisé en attendant.
+donc rien n'est brisé en attendant. Tu peux aussi utiliser un autre service de clavardage en
+laissant Tawk.to désactivé et en collant son lien direct dans le champ **Lien direct** de l'admin.
 
 ## 4. Formulaire de contact
 
@@ -125,13 +131,13 @@ comme volume dans son dossier `html/`, sans passer par le Dockerfile.
 
 ```
 index.html              → la page publique
-admin.html               → administration des zones (régions/MRC/municipalités)
+admin.html               → administration (coordonnées + régions/MRC/municipalités)
 assets/style.css        → tout le visuel (palette, typographie, mise en page)
 assets/admin.css        → visuel de la page d'administration
 assets/script.js        → logique (zone, liens de contact, chat, formulaire)
-assets/admin.js          → logique de l'éditeur de zones
-assets/config.js        → TES informations — le seul fichier à modifier au quotidien
-assets/zones.json        → régions/MRC/municipalités couvertes (éditable via /admin.html)
+assets/admin.js          → logique des éditeurs de contact.json et zones.json
+assets/contact.json      → TES coordonnées — éditable via /admin.html
+assets/zones.json        → régions/MRC/municipalités couvertes — éditable via /admin.html
 Dockerfile / nginx.conf / docker-compose.yml → déploiement
 deploy.sh                → script de mise à jour (git pull + rebuild + restart)
 ```

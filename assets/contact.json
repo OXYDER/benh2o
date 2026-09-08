@@ -1,0 +1,28 @@
+{
+  "nom": "Benoît Laprise",
+  "titre": "Représentant des ventes — H2O Innovation",
+
+  "telephoneMobileAffiche": "819 000-0000",
+  "telephoneMobileLien": "+18190000000",
+
+  "telephoneSmsAffiche": "819 000-0000",
+  "telephoneSmsLien": "+18190000000",
+
+  "telephoneH2OAffiche": "1 866 990-3891",
+  "telephoneH2OLien": "+18669903891",
+
+  "courriel": "benoit.laprise@h2oinnovation.com",
+
+  "messengerUsername": "TonNomDePageFacebook",
+
+  "chatLive": {
+    "actif": false,
+    "propertyId": "000000000000000000000000",
+    "widgetId": "1abcdefgh",
+    "lienDirect": ""
+  },
+
+  "formsubmitEmail": "benoit.laprise@h2oinnovation.com",
+  "boutiqueUrl": "https://h2oinnovation.net",
+  "contactGeneralUrl": "https://h2oinnovation.net/contact"
+}

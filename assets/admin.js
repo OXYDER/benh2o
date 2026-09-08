@@ -238,4 +238,116 @@
   filterInput.addEventListener("input", render);
 
   loadDraftOrFetch();
+
+  /* =========================================================
+     MES INFORMATIONS DE CONTACT (contact.json)
+     ========================================================= */
+  (function contactEditor() {
+    const CONTACT_DRAFT_KEY = "bl_contact_draft_v1";
+    const form = document.getElementById("contact-form-admin");
+    if (!form) return;
+
+    let contactData = {};
+
+    function getPath(obj, path) {
+      return path.split(".").reduce((o, k) => (o ? o[k] : undefined), obj);
+    }
+    function setPath(obj, path, value) {
+      const keys = path.split(".");
+      let cur = obj;
+      for (let i = 0; i < keys.length - 1; i++) {
+        if (typeof cur[keys[i]] !== "object" || cur[keys[i]] === null) cur[keys[i]] = {};
+        cur = cur[keys[i]];
+      }
+      cur[keys[keys.length - 1]] = value;
+    }
+
+    function populateForm() {
+      form.querySelectorAll("[data-key]").forEach((el) => {
+        const val = getPath(contactData, el.dataset.key);
+        if (el.type === "checkbox") {
+          el.checked = !!val;
+        } else {
+          el.value = val === undefined || val === null ? "" : val;
+        }
+      });
+    }
+
+    function saveContactDraft() {
+      localStorage.setItem(CONTACT_DRAFT_KEY, JSON.stringify(contactData));
+    }
+
+    function bindForm() {
+      form.querySelectorAll("[data-key]").forEach((el) => {
+        const evt = el.type === "checkbox" ? "change" : "input";
+        el.addEventListener(evt, () => {
+          const value = el.type === "checkbox" ? el.checked : el.value;
+          setPath(contactData, el.dataset.key, value);
+          saveContactDraft();
+        });
+      });
+    }
+
+    function fetchFreshContact() {
+      fetch("assets/contact.json")
+        .then((res) => res.json())
+        .then((json) => {
+          contactData = json;
+          populateForm();
+        })
+        .catch(() => {
+          form.innerHTML = '<p style="color:#B3403A">Impossible de charger assets/contact.json.</p>';
+        });
+    }
+
+    function loadContactDraftOrFetch() {
+      const draft = localStorage.getItem(CONTACT_DRAFT_KEY);
+      if (draft) {
+        try {
+          contactData = JSON.parse(draft);
+          populateForm();
+          return;
+        } catch (e) {
+          /* brouillon corrompu, on retombe sur contact.json */
+        }
+      }
+      fetchFreshContact();
+    }
+
+    document.getElementById("contact-reload").addEventListener("click", () => {
+      if (confirm("Recharger contact.json effacera ton brouillon local non téléchargé. Continuer ?")) {
+        localStorage.removeItem(CONTACT_DRAFT_KEY);
+        fetchFreshContact();
+      }
+    });
+
+    document.getElementById("contact-download").addEventListener("click", () => {
+      const blob = new Blob([JSON.stringify(contactData, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "contact.json";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    });
+
+    document.getElementById("contact-copy").addEventListener("click", async () => {
+      const text = JSON.stringify(contactData, null, 2);
+      try {
+        await navigator.clipboard.writeText(text);
+        const btn = document.getElementById("contact-copy");
+        const original = btn.textContent;
+        btn.textContent = "Copié !";
+        setTimeout(() => (btn.textContent = original), 1500);
+      } catch (e) {
+        alert("Impossible de copier automatiquement — ouvre la console (F12) pour voir le JSON.");
+        console.log(text);
+      }
+    });
+
+    bindForm();
+    loadContactDraftOrFetch();
+  })();
 })();

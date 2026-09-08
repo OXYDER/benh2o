@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Administration — Zones de couverture — Benoît Laprise</title>
+<title>Administration — Benoît Laprise</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,500&family=Playfair+Display:wght@600;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -14,7 +14,7 @@
 
 <header class="admin-header">
   <div class="container admin-header-inner">
-    <a href="index.html" class="brand">Benoît Laprise<span>Administration des zones</span></a>
+    <a href="index.html" class="brand">Benoît Laprise<span>Administration du site</span></a>
     <a href="index.html" class="btn btn-ghost">← Retour au site</a>
   </div>
 </header>
@@ -22,8 +22,124 @@
 <main class="container admin-main">
 
   <section class="admin-intro">
-    <h1>Régions, MRC et municipalités couvertes</h1>
-    <p>Ajoute, renomme ou retire des secteurs. Tes changements sont sauvegardés automatiquement dans ce navigateur (brouillon) — pour les rendre visibles sur le site public, télécharge le fichier <code>zones.json</code> ci-dessous et remplace-le dans le projet (voir les instructions en bas de page).</p>
+    <h1>Administration du site</h1>
+    <p>Modifie tes coordonnées et ton secteur couvert. Tout se sauvegarde automatiquement dans ce navigateur (brouillon) — pour rendre un changement visible sur le site public, télécharge le fichier concerné et remplace-le dans le projet (instructions en bas de page).</p>
+  </section>
+
+  <section class="admin-section">
+    <h2 class="admin-section-title">Mes informations de contact</h2>
+    <p class="admin-section-desc">Numéros, courriel, Messenger et clavardage — modifie ici, puis télécharge <code>contact.json</code> et remplace-le dans le projet.</p>
+
+    <form class="admin-contact-form" id="contact-form-admin">
+      <div class="admin-field-row">
+        <div class="admin-field">
+          <label for="c-nom">Nom</label>
+          <input type="text" id="c-nom" data-key="nom">
+        </div>
+        <div class="admin-field">
+          <label for="c-titre">Titre</label>
+          <input type="text" id="c-titre" data-key="titre">
+        </div>
+      </div>
+
+      <h3 class="admin-field-group-title">Téléphone mobile (appels)</h3>
+      <div class="admin-field-row">
+        <div class="admin-field">
+          <label for="c-mobile-affiche">Affiché à l'écran</label>
+          <input type="text" id="c-mobile-affiche" data-key="telephoneMobileAffiche" placeholder="819 000-0000">
+        </div>
+        <div class="admin-field">
+          <label for="c-mobile-lien">Format international (lien)</label>
+          <input type="text" id="c-mobile-lien" data-key="telephoneMobileLien" placeholder="+18190000000">
+        </div>
+      </div>
+
+      <h3 class="admin-field-group-title">Numéro de texto (SMS)</h3>
+      <div class="admin-field-row">
+        <div class="admin-field">
+          <label for="c-sms-affiche">Affiché à l'écran</label>
+          <input type="text" id="c-sms-affiche" data-key="telephoneSmsAffiche" placeholder="819 000-0000">
+        </div>
+        <div class="admin-field">
+          <label for="c-sms-lien">Format international (lien)</label>
+          <input type="text" id="c-sms-lien" data-key="telephoneSmsLien" placeholder="+18190000000">
+        </div>
+      </div>
+      <p class="admin-field-hint">Laisse vide pour réutiliser le numéro mobile ci-dessus.</p>
+
+      <h3 class="admin-field-group-title">Ligne générale H2O Innovation</h3>
+      <div class="admin-field-row">
+        <div class="admin-field">
+          <label for="c-h2o-affiche">Affiché à l'écran</label>
+          <input type="text" id="c-h2o-affiche" data-key="telephoneH2OAffiche" placeholder="1 866 990-3891">
+        </div>
+        <div class="admin-field">
+          <label for="c-h2o-lien">Format international (lien)</label>
+          <input type="text" id="c-h2o-lien" data-key="telephoneH2OLien" placeholder="+18669903891">
+        </div>
+      </div>
+
+      <h3 class="admin-field-group-title">Courriel et web</h3>
+      <div class="admin-field-row">
+        <div class="admin-field">
+          <label for="c-courriel">Courriel affiché</label>
+          <input type="email" id="c-courriel" data-key="courriel">
+        </div>
+        <div class="admin-field">
+          <label for="c-formsubmit">Courriel qui reçoit le formulaire</label>
+          <input type="email" id="c-formsubmit" data-key="formsubmitEmail">
+        </div>
+      </div>
+      <div class="admin-field-row">
+        <div class="admin-field">
+          <label for="c-boutique">Lien boutique H2O Innovation</label>
+          <input type="text" id="c-boutique" data-key="boutiqueUrl">
+        </div>
+        <div class="admin-field">
+          <label for="c-contact-general">Lien de repli (hors zone)</label>
+          <input type="text" id="c-contact-general" data-key="contactGeneralUrl">
+        </div>
+      </div>
+
+      <h3 class="admin-field-group-title">Messenger</h3>
+      <div class="admin-field">
+        <label for="c-messenger">Nom d'utilisateur de la page Facebook (ou lien complet)</label>
+        <input type="text" id="c-messenger" data-key="messengerUsername" placeholder="TonNomDePageFacebook">
+      </div>
+
+      <h3 class="admin-field-group-title">Clavardage en direct</h3>
+      <label class="admin-checkbox">
+        <input type="checkbox" id="c-chat-actif" data-key="chatLive.actif">
+        Activer le widget Tawk.to
+      </label>
+      <div class="admin-field-row">
+        <div class="admin-field">
+          <label for="c-chat-property">Tawk.to — Property ID</label>
+          <input type="text" id="c-chat-property" data-key="chatLive.propertyId">
+        </div>
+        <div class="admin-field">
+          <label for="c-chat-widget">Tawk.to — Widget ID</label>
+          <input type="text" id="c-chat-widget" data-key="chatLive.widgetId">
+        </div>
+      </div>
+      <div class="admin-field">
+        <label for="c-chat-lien">Ou lien direct vers un autre service de clavardage (si Tawk.to désactivé)</label>
+        <input type="text" id="c-chat-lien" data-key="chatLive.lienDirect" placeholder="https://...">
+      </div>
+    </form>
+
+    <div class="admin-toolbar-actions admin-contact-actions">
+      <button class="btn btn-ghost" id="contact-reload" type="button">Recharger depuis contact.json</button>
+      <button class="btn btn-outline-dark" id="contact-copy" type="button">Copier le JSON</button>
+      <button class="btn btn-primary" id="contact-download" type="button">Télécharger contact.json</button>
+    </div>
+  </section>
+
+  <hr class="admin-divider">
+
+  <section class="admin-intro">
+    <h2>Régions, MRC et municipalités couvertes</h2>
+    <p>Ajoute, renomme ou retire des secteurs, puis télécharge <code>zones.json</code> et remplace-le dans le projet.</p>
     <div class="admin-stats" id="admin-stats"></div>
   </section>
 
@@ -44,11 +160,11 @@
     <h2>Comment publier tes changements</h2>
     <ol>
       <li>Fais tes modifications ci-dessus (elles sont sauvegardées automatiquement dans ce navigateur pendant que tu travailles).</li>
-      <li>Clique <strong>Télécharger zones.json</strong> — le fichier se télécharge sur ton ordinateur.</li>
-      <li>Remplace <code>assets/zones.json</code> dans le projet par ce fichier téléchargé.</li>
+      <li>Clique <strong>Télécharger zones.json</strong> et/ou <strong>Télécharger contact.json</strong> selon ce que tu as changé.</li>
+      <li>Remplace <code>assets/zones.json</code> et/ou <code>assets/contact.json</code> dans le projet par les fichiers téléchargés.</li>
       <li>Commit et push sur GitHub, puis sur le NAS : <code>./deploy.sh</code>.</li>
     </ol>
-    <p class="admin-note">⚠️ Cette page n'est protégée par aucun mot de passe — n'importe qui connaissant l'adresse <code>/admin.html</code> peut la modifier (les changements restent locaux à leur navigateur tant qu'ils ne téléchargent pas le fichier). Pour une vraie protection, ajoute une liste d'accès (utilisateur/mot de passe) sur ce chemin dans Nginx Proxy Manager.</p>
+    <p class="admin-note">⚠️ Cette page n'est protégée par aucun mot de passe — n'importe qui connaissant l'adresse <code>/admin.html</code> peut la modifier (les changements restent locaux à leur navigateur tant qu'ils ne téléchargent pas les fichiers). Pour une vraie protection, ajoute une liste d'accès (utilisateur/mot de passe) sur ce chemin dans Nginx Proxy Manager.</p>
   </section>
 
 </main>
