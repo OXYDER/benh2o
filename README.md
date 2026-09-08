@@ -55,10 +55,10 @@ ce sera la prochaine étape — voir section 6.
 
 Le projet est déjà initialisé en local avec un premier commit. Pour le pousser sur GitHub, comme tes autres projets :
 
-1. Crée un nouveau repo vide sur GitHub (ex. `OXYDER/benoitlaprise-site`) — **ne coche pas** « Initialize with README » pour éviter un conflit avec le commit déjà fait.
+1. Crée un nouveau repo vide sur GitHub (`OXYDER/benh2o`) — **ne coche pas** « Initialize with README » pour éviter un conflit avec le commit déjà fait.
 2. Depuis ce dossier, sur ta machine :
    ```bash
-   git remote add origin https://github.com/OXYDER/benoitlaprise-site.git
+   git remote add origin https://github.com/OXYDER/benh2o.git
    git branch -M main
    git push -u origin main
    ```
@@ -74,7 +74,7 @@ Le projet est déjà initialisé en local avec un premier commit. Pour le pousse
 
 **Première installation sur le NAS** — clone le repo directement là où tu gardes tes autres projets :
 ```bash
-git clone https://github.com/OXYDER/benoitlaprise-site.git
+git clone https://github.com/OXYDER/benh2o.git
 cd benoitlaprise-site
 docker compose up -d --build
 ```
