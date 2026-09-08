@@ -73,13 +73,27 @@ p { margin: 0 0 1em; max-width: 62ch; }
 }
 
 .site-header .container {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  justify-content: space-between;
+  column-gap: 16px;
   padding-top: 14px;
   padding-bottom: 14px;
-  gap: 16px;
 }
+
+.header-logo {
+  justify-self: center;
+  display: inline-flex;
+  align-items: center;
+}
+.header-logo img {
+  height: 30px;
+  width: auto;
+  display: block;
+  opacity: 0.94;
+  transition: opacity 0.15s ease;
+}
+.header-logo:hover img { opacity: 1; }
 
 .brand {
   font-family: "Playfair Display", var(--serif), Georgia, serif;
@@ -102,6 +116,7 @@ p { margin: 0 0 1em; max-width: 62ch; }
 }
 
 .header-call {
+  justify-self: end;
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -435,4 +450,6 @@ footer a:hover { text-decoration: underline; }
   .field-row { grid-template-columns: 1fr; }
   .channel-row { grid-template-columns: 40px 1fr; }
   .channel-action { grid-column: 1 / -1; justify-self: start; margin-top: 4px; }
+  .header-logo { display: none; }
+  .site-header .container { grid-template-columns: 1fr auto; }
 }
