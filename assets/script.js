@@ -45,7 +45,7 @@
     if (yearEl) yearEl.textContent = new Date().getFullYear();
   }
 
-  /* ---------- Vérificateur de zone ---------- */
+  /* ---------- Vérificateur de zone (Région > MRC > Municipalité) ---------- */
   function setupZoneChecker() {
     const input = document.getElementById("zone-input");
     const button = document.getElementById("zone-submit");
@@ -53,38 +53,102 @@
     const suggestions = document.getElementById("zone-suggestions");
     const listToggle = document.getElementById("zone-list-toggle");
     const listBody = document.getElementById("zone-list-body");
-    const zones = Array.isArray(CFG.zones) ? CFG.zones : [];
 
-    if (suggestions) {
-      suggestions.innerHTML = zones
-        .map((z) => `<option value="${z}"></option>`)
+    if (!input || !result) return;
+
+    let flat = []; // { municipality, mrc, region }
+
+    function buildFlatIndex(data) {
+      const out = [];
+      (data.regions || []).forEach((region) => {
+        (region.mrcs || []).forEach((mrc) => {
+          (mrc.municipalities || []).forEach((muni) => {
+            out.push({ municipality: muni, mrc: mrc.name, region: region.name });
+          });
+        });
+      });
+      return out;
+    }
+
+    function renderSuggestions() {
+      if (!suggestions) return;
+      suggestions.innerHTML = flat
+        .map((z) => `<option value="${z.municipality}"></option>`)
         .join("");
     }
 
-    if (listBody) {
-      listBody.textContent = zones.slice().sort((a, b) => a.localeCompare(b, "fr")).join(" · ");
+    function renderGroupedList(data) {
+      if (!listBody) return;
+      const regions = (data.regions || [])
+        .slice()
+        .sort((a, b) => a.name.localeCompare(b.name, "fr"));
+      listBody.innerHTML = regions
+        .map((region) => {
+          const mrcs = region.mrcs
+            .slice()
+            .sort((a, b) => a.name.localeCompare(b.name, "fr"))
+            .map((mrc) => {
+              const munis = mrc.municipalities.slice().sort((a, b) => a.localeCompare(b, "fr")).join(" · ");
+              return `<div class="zone-mrc"><strong>MRC ${mrc.name}</strong> — ${munis}</div>`;
+            })
+            .join("");
+          return `<div class="zone-region"><h4>${region.name}</h4>${mrcs}</div>`;
+        })
+        .join("");
     }
+
     if (listToggle && listBody) {
       listToggle.addEventListener("click", () => {
         listBody.classList.toggle("show");
         listToggle.textContent = listBody.classList.contains("show")
           ? "Masquer la liste"
-          : "Voir les municipalités et MRC couvertes";
+          : "Voir les régions, MRC et municipalités couvertes";
       });
+    }
+
+    fetch("assets/zones.json")
+      .then((res) => res.json())
+      .then((data) => {
+        flat = buildFlatIndex(data);
+        renderSuggestions();
+        renderGroupedList(data);
+      })
+      .catch(() => {
+        if (listBody) listBody.textContent = "Liste de zones indisponible pour le moment.";
+      });
+
+    function findMatch(query) {
+      // priorité : municipalité exacte, puis municipalité partielle, puis MRC, puis région
+      let hit = flat.find((z) => normalize(z.municipality) === query);
+      if (hit) return { level: "municipality", ...hit };
+
+      hit = flat.find((z) => normalize(z.municipality).includes(query) || query.includes(normalize(z.municipality)));
+      if (hit) return { level: "municipality", ...hit };
+
+      hit = flat.find((z) => normalize(z.mrc).includes(query) || query.includes(normalize(z.mrc)));
+      if (hit) return { level: "mrc", ...hit };
+
+      hit = flat.find((z) => normalize(z.region).includes(query) || query.includes(normalize(z.region)));
+      if (hit) return { level: "region", ...hit };
+
+      return null;
     }
 
     function check() {
       const query = normalize(input.value);
       if (!query) return;
 
-      const match = zones.find((z) => {
-        const nz = normalize(z);
-        return nz === query || nz.includes(query) || query.includes(nz);
-      });
-
+      const match = findMatch(query);
       result.classList.remove("yes", "no");
+
       if (match) {
-        result.innerHTML = `Bonne nouvelle : <strong>${match}</strong> fait partie de mon secteur. <a href="#contact">Envoie-moi ta demande</a> ou <a href="tel:${CFG.telephoneLien || ""}">appelle directement</a>.`;
+        const label =
+          match.level === "municipality"
+            ? match.municipality
+            : match.level === "mrc"
+            ? `la MRC ${match.mrc}`
+            : `la région ${match.region}`;
+        result.innerHTML = `Bonne nouvelle : <strong>${label}</strong> fait partie de mon secteur. <a href="#contact">Envoie-moi ta demande</a> ou <a href="tel:${CFG.telephoneLien || ""}">appelle directement</a>.`;
         result.classList.add("yes");
       } else {
         result.innerHTML = `Cette adresse semble en dehors de mon secteur. Le site <a href="${CFG.contactGeneralUrl || CFG.boutiqueUrl || "#"}" target="_blank" rel="noopener">h2oinnovation.net</a> peut te diriger vers le bon représentant.`;
@@ -94,11 +158,9 @@
     }
 
     if (button) button.addEventListener("click", check);
-    if (input) {
-      input.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") check();
-      });
-    }
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") check();
+    });
   }
 
   /* ---------- Clavardage en direct (Tawk.to) ---------- */

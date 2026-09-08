@@ -36,26 +36,10 @@ window.BL_CONFIG = {
   boutiqueUrl: "https://h2oinnovation.net",
 
   /**
-   * Zone géographique couverte.
-   * Ajoute ou retire des villes / MRC selon ton territoire réel.
-   * ⚠️ La liste ci-dessous est un EXEMPLE à remplacer par ton vrai secteur.
+   * La zone géographique couverte (régions / MRC / municipalités) ne se
+   * modifie plus ici — elle vit dans assets/zones.json et se gère
+   * directement depuis la page /admin.html du site (aucun code requis).
    */
-  zones: [
-    "Victoriaville",
-    "Plessisville",
-    "Warwick",
-    "Princeville",
-    "Thetford Mines",
-    "MRC de l'Érable",
-    "MRC des Appalaches",
-    "MRC d'Arthabaska",
-    "Beauceville",
-    "Saint-Georges",
-    "MRC de Beauce-Sartigan",
-    "Sherbrooke",
-    "MRC du Granit",
-    "Lac-Mégantic"
-  ],
 
   // Si une adresse ne correspond à aucune zone, on propose ce lien de repli
   contactGeneralUrl: "https://h2oinnovation.net/contact"

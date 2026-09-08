@@ -1,0 +1,62 @@
+{
+  "regions": [
+    {
+      "name": "Centre-du-Québec",
+      "code": "17",
+      "mrcs": [
+        {
+          "name": "Bécancour",
+          "municipalities": ["Bécancour", "Fortierville", "Lemieux", "Manseau", "Parisville", "Sainte-Françoise"]
+        },
+        {
+          "name": "Nicolet-Yamaska",
+          "municipalities": ["Baie-du-Febvre", "Nicolet", "Pierreville", "Saint-Léonard-d'Aston", "Sainte-Eulalie", "Saint-Sylvère"]
+        },
+        {
+          "name": "Arthabaska",
+          "municipalities": ["Chesterville", "Daveluyville", "Ham-Nord", "Kingsey Falls", "Saint-Albert", "Saint-Christophe-d'Arthabaska", "Saint-Rosaire", "Saint-Samuel", "Saint-Valère", "Tingwick", "Victoriaville", "Warwick", "Princeville"]
+        },
+        {
+          "name": "L'Érable",
+          "municipalities": ["Inverness", "Laurierville", "Lyster", "Plessisville", "Saint-Ferdinand", "Villeroy"]
+        },
+        {
+          "name": "Drummond",
+          "municipalities": ["Drummondville", "Saint-Cyrille-de-Wendover", "Saint-Germain-de-Grantham", "Saint-Lucien", "Notre-Dame-du-Bon-Conseil"]
+        }
+      ]
+    },
+    {
+      "name": "Chaudière-Appalaches",
+      "code": "12",
+      "mrcs": [
+        {
+          "name": "Lotbinière",
+          "municipalities": ["Leclercville", "Val-Alain"]
+        },
+        {
+          "name": "Les Appalaches",
+          "municipalities": ["Irlande", "Kinnear's Mills", "Saint-Fortunat", "Saint-Julien"]
+        }
+      ]
+    },
+    {
+      "name": "Estrie",
+      "code": "05",
+      "mrcs": [
+        {
+          "name": "Les Sources",
+          "municipalities": ["Danville", "Ham-Sud", "Saint-Adrien", "Saint-Camille", "Wotton", "Saint-Georges-de-Windsor", "Val-des-Sources"]
+        },
+        {
+          "name": "Le Haut-Saint-François",
+          "municipalities": ["Dudswell", "Weedon"]
+        },
+        {
+          "name": "Le Val-Saint-François",
+          "municipalities": ["Richmond", "Cleveland", "Saint-Claude", "Stoke", "Val-Joli"]
+        }
+      ]
+    }
+  ]
+}

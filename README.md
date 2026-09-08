@@ -20,14 +20,34 @@ Tout se passe dans **`assets/config.js`**. Ouvre ce fichier et remplace :
 
 Aucune connaissance en programmation n'est requise pour cette étape — seulement remplacer le texte entre guillemets.
 
-## 2. Vérificateur de zone
+## 2. Vérificateur de zone — régions, MRC, municipalités
 
-Le champ `zones` dans `config.js` est la liste complète des villes/MRC où tu peux vendre.
-La comparaison ignore les accents et les majuscules, et fonctionne aussi si la personne
-tape juste une partie du nom (ex. « Victo » trouve « Victoriaville »).
+La zone couverte vit maintenant dans **`assets/zones.json`**, organisée en hiérarchie :
+région → MRC → municipalités. La comparaison ignore les accents et les majuscules, et
+fonctionne aussi si la personne tape juste une partie du nom, une MRC, ou même une région
+(ex. « Victo » trouve « Victoriaville »; « Bécancour » seul trouve la MRC).
 
 Si quelqu'un est hors zone, la page l'informe et propose le lien `contactGeneralUrl`
-plutôt que de le laisser te contacter directement.
+(dans `config.js`) plutôt que de le laisser te contacter directement.
+
+### Modifier la liste toi-même — page `/admin.html`
+
+Une page d'administration te permet d'ajouter, renommer ou retirer des régions/MRC/
+municipalités sans toucher au code :
+
+1. Va sur `https://benoit.resotik.ca/admin.html` (ou ton domaine)
+2. Modifie les régions, MRC et municipalités — tout se sauvegarde automatiquement
+   comme brouillon dans ton navigateur pendant que tu travailles
+3. Clique **Télécharger zones.json**
+4. Remplace `assets/zones.json` dans le projet par le fichier téléchargé
+5. `git add -A && git commit -m "mise à jour des zones" && git push`
+6. Sur le NAS : `./deploy.sh`
+
+⚠️ **Cette page n'a aucun mot de passe.** Le brouillon reste local au navigateur de la
+personne tant qu'elle ne télécharge pas le fichier, mais n'importe qui connaissant l'adresse
+peut l'ouvrir. Pour une vraie protection, ajoute une **liste d'accès** (nom d'utilisateur/
+mot de passe) sur le chemin `/admin.html` directement dans Nginx Proxy Manager
+(onglet *Access Lists* du Proxy Host) — c'est protégé au niveau du serveur, pas du navigateur.
 
 ## 3. Clavardage en direct (chat live)
 
@@ -104,10 +124,14 @@ comme volume dans son dossier `html/`, sans passer par le Dockerfile.
 ## Structure du projet
 
 ```
-index.html              → la page
+index.html              → la page publique
+admin.html               → administration des zones (régions/MRC/municipalités)
 assets/style.css        → tout le visuel (palette, typographie, mise en page)
+assets/admin.css        → visuel de la page d'administration
 assets/script.js        → logique (zone, liens de contact, chat, formulaire)
+assets/admin.js          → logique de l'éditeur de zones
 assets/config.js        → TES informations — le seul fichier à modifier au quotidien
+assets/zones.json        → régions/MRC/municipalités couvertes (éditable via /admin.html)
 Dockerfile / nginx.conf / docker-compose.yml → déploiement
 deploy.sh                → script de mise à jour (git pull + rebuild + restart)
 ```

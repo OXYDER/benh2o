@@ -316,8 +316,20 @@ section { padding: 76px 0; }
   color: var(--ink-600);
   font-size: 0.94rem;
   display: none;
+  max-height: 340px;
+  overflow-y: auto;
+  padding-right: 8px;
 }
 .zone-list-body.show { display: block; }
+.zone-region { margin-bottom: 16px; }
+.zone-region h4 {
+  font-family: var(--sans);
+  font-size: 0.98rem;
+  color: var(--ink-900);
+  margin: 0 0 6px;
+}
+.zone-mrc { margin-bottom: 4px; line-height: 1.5; }
+.zone-mrc strong { color: var(--ink-900); font-weight: 600; }
 
 /* ---------- Canaux de contact (liste, pas des cartes identiques) ---------- */
 
