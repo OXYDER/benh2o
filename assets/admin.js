@@ -101,7 +101,14 @@
      Utilitaires communs
      ========================================================= */
   function normalize(str) {
-    return (str || "").toString().normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+    return (str || "")
+      .toString()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[\u2010-\u2015\u2212]/g, "-")
+      .replace(/\s+/g, " ")
+      .toLowerCase()
+      .trim();
   }
   function escapeAttr(str) {
     return (str || "").toString().replace(/&/g, "&amp;").replace(/"/g, "&quot;");

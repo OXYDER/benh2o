@@ -6,7 +6,14 @@
   const RED_FILL = "#E24444";
 
   function normalize(str) {
-    return (str || "").toString().normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+    return (str || "")
+      .toString()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[\u2010-\u2015\u2212]/g, "-") // tirets « spéciaux » (en dash, em dash, etc.) -> tiret standard
+      .replace(/\s+/g, " ") // espaces multiples/insécables -> un seul espace normal
+      .toLowerCase()
+      .trim();
   }
 
   async function init() {
@@ -56,6 +63,21 @@
       const info = covered.get(normalize(l.feature.properties.municipality));
       l.bindPopup(`<strong>${info.name}</strong><br>MRC ${info.mrc}<br>${info.region}`);
       if (l.getBounds) bounds.push(l.getBounds());
+    });
+
+    // Diagnostic : signale toute municipalité sélectionnée dans /admin qui n'a
+    // pas trouvé de frontière correspondante (nom mal orthographié, tiret
+    // spécial invisible, municipalité fusionnée/disparue, etc.)
+    const matchedKeys = new Set(
+      boundaries.features.map((f) => normalize(f.properties.municipality))
+    );
+    covered.forEach((info, key) => {
+      if (!matchedKeys.has(key)) {
+        console.warn(
+          `Carte : aucune frontière trouvée pour "${info.name}" (MRC ${info.mrc}). ` +
+          `Vérifie l'orthographe exacte dans /admin, ou cette municipalité n'existe peut-être plus (fusion municipale).`
+        );
+      }
     });
 
     if (bounds.length) {
