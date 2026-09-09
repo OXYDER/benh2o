@@ -370,14 +370,22 @@
 
       const addRow = document.createElement("div");
       addRow.className = "add-muni-row";
-      addRow.innerHTML = `<input type="text" placeholder="+ Ajouter une municipalité et appuyer sur Entrée">`;
+      addRow.innerHTML = `
+        <input type="text" placeholder="Nom de la municipalité…">
+        <button type="button" class="add-muni-btn" title="Ajouter">+ Ajouter</button>
+      `;
       const addInput = addRow.querySelector("input");
-      addInput.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" && addInput.value.trim()) {
+      const addBtn = addRow.querySelector(".add-muni-btn");
+      function confirmAdd() {
+        if (addInput.value.trim()) {
           mrc.municipalities.push(addInput.value.trim());
           render();
         }
+      }
+      addInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") confirmAdd();
       });
+      addBtn.addEventListener("click", confirmAdd);
       block.appendChild(addRow);
 
       return block;

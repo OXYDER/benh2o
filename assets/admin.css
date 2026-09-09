@@ -302,6 +302,20 @@
   font-family: var(--sans);
   font-size: 0.88rem;
 }
+.add-muni-btn {
+  background: var(--amber-600);
+  color: var(--spruce-950);
+  border: none;
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-family: var(--sans);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.add-muni-btn:hover { background: var(--amber-300); }
 .add-mrc-btn {
   background: none;
   border: 1.5px dashed rgba(32,27,20,0.3);
