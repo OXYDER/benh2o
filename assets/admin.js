@@ -241,10 +241,10 @@
     const tree = document.getElementById("admin-tree");
     const filterInput = document.getElementById("admin-filter");
     const statsEl = document.getElementById("admin-stats");
-    const saveBtn = document.getElementById("zones-save");
     const statusEl = document.getElementById("zones-save-status");
 
     let data = { regions: [] };
+    let saveTimer = null;
 
     async function load() {
       try {
@@ -258,8 +258,9 @@
     }
 
     async function save() {
-      saveBtn.disabled = true;
-      saveBtn.textContent = "Enregistrement…";
+      statusEl.textContent = "Enregistrement…";
+      statusEl.classList.remove("error");
+      statusEl.classList.add("show");
       try {
         const res = await fetch("/api/zones", {
           method: "PUT",
@@ -275,10 +276,22 @@
         }
       } catch (e) {
         flashStatus(statusEl, "Impossible de contacter le serveur.", true);
-      } finally {
-        saveBtn.disabled = false;
-        saveBtn.textContent = "Enregistrer";
       }
+    }
+
+    // Ajout/suppression : enregistre tout de suite.
+    function saveNow() {
+      markDirty("zones");
+      clearTimeout(saveTimer);
+      save();
+    }
+
+    // Frappe dans un champ texte : attend une courte pause avant d'enregistrer,
+    // pour ne pas sauvegarder à chaque lettre tapée.
+    function saveSoon() {
+      markDirty("zones");
+      clearTimeout(saveTimer);
+      saveTimer = setTimeout(save, 700);
     }
 
     function updateStats() {
@@ -330,8 +343,8 @@
         addMrcBtn.textContent = "+ Ajouter une MRC";
         addMrcBtn.addEventListener("click", () => {
           region.mrcs.push({ name: "Nouvelle MRC", municipalities: [] });
-          markDirty("zones");
           render();
+          saveNow();
         });
         card.appendChild(addMrcBtn);
 
@@ -341,13 +354,13 @@
       tree.querySelectorAll(".region-name").forEach((el) => {
         el.addEventListener("input", (e) => {
           data.regions[e.target.dataset.ri].name = e.target.value;
-          markDirty("zones");
+          saveSoon();
         });
       });
       tree.querySelectorAll(".region-code").forEach((el) => {
         el.addEventListener("input", (e) => {
           data.regions[e.target.dataset.ri].code = e.target.value;
-          markDirty("zones");
+          saveSoon();
         });
       });
       tree.querySelectorAll(".add-region-remove").forEach((el) => {
@@ -355,8 +368,8 @@
           const ri = Number(e.target.dataset.ri);
           if (confirm(`Supprimer la région "${data.regions[ri].name}" et tout son contenu ?`)) {
             data.regions.splice(ri, 1);
-            markDirty("zones");
             render();
+            saveNow();
           }
         });
       });
@@ -377,13 +390,13 @@
       `;
       head.querySelector(".mrc-name").addEventListener("input", (e) => {
         mrc.name = e.target.value;
-        markDirty("zones");
+        saveSoon();
       });
       head.querySelector(".mrc-remove").addEventListener("click", () => {
         if (confirm(`Supprimer la MRC "${mrc.name}" et ses municipalités ?`)) {
           region.mrcs.splice(mi, 1);
-          markDirty("zones");
           render();
+          saveNow();
         }
       });
       block.appendChild(head);
@@ -400,12 +413,12 @@
         chip.innerHTML = `<input value="${escapeAttr(mrc.municipalities[idx])}"><button class="icon-btn muni-remove" title="Retirer">✕</button>`;
         chip.querySelector("input").addEventListener("input", (e) => {
           mrc.municipalities[idx] = e.target.value;
-          markDirty("zones");
+          saveSoon();
         });
         chip.querySelector(".muni-remove").addEventListener("click", () => {
           mrc.municipalities.splice(idx, 1);
-          markDirty("zones");
           render();
+          saveNow();
         });
         list.appendChild(chip);
       });
@@ -422,8 +435,8 @@
       function confirmAdd() {
         if (addInput.value.trim()) {
           mrc.municipalities.push(addInput.value.trim());
-          markDirty("zones");
           render();
+          saveNow();
         }
       }
       addInput.addEventListener("keydown", (e) => {
@@ -437,12 +450,11 @@
 
     document.getElementById("admin-add-region").addEventListener("click", () => {
       data.regions.push({ name: "Nouvelle région", code: "", mrcs: [] });
-      markDirty("zones");
       render();
+      saveNow();
     });
 
     filterInput.addEventListener("input", render);
-    saveBtn.addEventListener("click", save);
     registerDirtyIndicator("zones", statusEl);
 
     load();

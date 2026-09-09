@@ -153,6 +153,7 @@
 }
 .admin-save-status.show { opacity: 1; }
 .admin-save-status.error { color: #B3403A; }
+.admin-save-row-auto { justify-content: flex-start; }
 
 /* ---------- Filtre des zones ---------- */
 
