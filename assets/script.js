@@ -292,7 +292,10 @@
     function close() {
       gate.hidden = true;
       document.body.classList.remove("gate-open");
-      localStorage.setItem(VISITED_KEY, "1");
+      const remember = document.getElementById("gate-remember");
+      if (remember && remember.checked) {
+        localStorage.setItem(VISITED_KEY, "1");
+      }
     }
 
     loadZoneData().then(() => renderSuggestionsInto(suggestions));

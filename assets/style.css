@@ -643,6 +643,17 @@ body.gate-open { overflow: hidden; }
 }
 .entry-gate-close:hover { background: rgba(32,27,20,0.08); color: var(--ink-900); }
 
+.entry-gate-remember {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  font-size: 0.85rem;
+  color: var(--ink-600);
+  cursor: pointer;
+}
+.entry-gate-remember input { width: 16px; height: 16px; cursor: pointer; }
+
 .entry-gate-actions {
   margin-top: 18px;
   display: flex;
