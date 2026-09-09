@@ -51,6 +51,7 @@
     <div class="admin-tabs" role="tablist">
       <button class="admin-tab active" data-tab="contact" role="tab" aria-selected="true">Mes informations</button>
       <button class="admin-tab" data-tab="zones" role="tab" aria-selected="false">Zones de couverture</button>
+      <button class="admin-tab" data-tab="content" role="tab" aria-selected="false">Contenu de la page</button>
     </div>
 
     <!-- ===== Onglet : Mes informations de contact ===== -->
@@ -176,6 +177,241 @@
 
       <div class="admin-save-row admin-save-row-auto">
         <span class="admin-save-status" id="zones-save-status"></span>
+      </div>
+    </div>
+
+    <!-- ===== Onglet : Contenu de la page ===== -->
+    <div class="admin-panel" data-panel="content" hidden>
+      <p class="admin-section-desc">Modifie les textes de chaque section de la page principale, et l'apparence générale du site.</p>
+
+      <h3 class="admin-field-group-title">Apparence du site</h3>
+      <p class="admin-field-hint">Choisis une combinaison de couleurs et de polices — s'applique à tout le site après enregistrement.</p>
+      <div class="theme-picker" id="theme-picker"></div>
+
+      <h3 class="admin-field-group-title">Section « En-tête » (Hero)</h3>
+      <div class="admin-field">
+        <label for="cc-hero-eyebrow">Accroche</label>
+        <input type="text" id="cc-hero-eyebrow" data-key="hero.eyebrow">
+      </div>
+      <div class="admin-field">
+        <label for="cc-hero-headline">Titre principal (utilise &lt;em&gt;...&lt;/em&gt; pour mettre un mot en évidence)</label>
+        <input type="text" id="cc-hero-headline" data-key="hero.headlineHtml">
+      </div>
+      <div class="admin-field">
+        <label for="cc-hero-lead">Texte d'introduction</label>
+        <textarea id="cc-hero-lead" data-key="hero.lead" rows="3"></textarea>
+      </div>
+      <div class="admin-field-row">
+        <div class="admin-field">
+          <label for="cc-hero-ctacall">Bouton « Appeler »</label>
+          <input type="text" id="cc-hero-ctacall" data-key="hero.ctaCall">
+        </div>
+        <div class="admin-field">
+          <label for="cc-hero-ctasms">Bouton « Texter »</label>
+          <input type="text" id="cc-hero-ctasms" data-key="hero.ctaSms">
+        </div>
+      </div>
+      <div class="admin-field">
+        <label for="cc-hero-ctazone">Bouton « Vérifier ma région »</label>
+        <input type="text" id="cc-hero-ctazone" data-key="hero.ctaZone">
+      </div>
+
+      <h3 class="admin-field-group-title">Section « Vérificateur de zone »</h3>
+      <div class="admin-field-row">
+        <div class="admin-field">
+          <label for="cc-zone-tag">Étiquette</label>
+          <input type="text" id="cc-zone-tag" data-key="zone.tag">
+        </div>
+        <div class="admin-field">
+          <label for="cc-zone-title">Titre</label>
+          <input type="text" id="cc-zone-title" data-key="zone.title">
+        </div>
+      </div>
+      <div class="admin-field">
+        <label for="cc-zone-desc">Description</label>
+        <textarea id="cc-zone-desc" data-key="zone.description" rows="2"></textarea>
+      </div>
+
+      <h3 class="admin-field-group-title">Section « Carte »</h3>
+      <div class="admin-field-row">
+        <div class="admin-field">
+          <label for="cc-map-tag">Étiquette</label>
+          <input type="text" id="cc-map-tag" data-key="map.tag">
+        </div>
+        <div class="admin-field">
+          <label for="cc-map-title">Titre</label>
+          <input type="text" id="cc-map-title" data-key="map.title">
+        </div>
+      </div>
+      <div class="admin-field">
+        <label for="cc-map-desc">Description</label>
+        <textarea id="cc-map-desc" data-key="map.description" rows="2"></textarea>
+      </div>
+      <div class="admin-field">
+        <label for="cc-map-note">Note sous la carte</label>
+        <textarea id="cc-map-note" data-key="map.note" rows="2"></textarea>
+      </div>
+
+      <h3 class="admin-field-group-title">Section « Nous joindre »</h3>
+      <div class="admin-field-row">
+        <div class="admin-field">
+          <label for="cc-ch-tag">Étiquette</label>
+          <input type="text" id="cc-ch-tag" data-key="channels.tag">
+        </div>
+        <div class="admin-field">
+          <label for="cc-ch-title">Titre</label>
+          <input type="text" id="cc-ch-title" data-key="channels.title">
+        </div>
+      </div>
+      <div class="admin-field">
+        <label for="cc-ch-desc">Description</label>
+        <textarea id="cc-ch-desc" data-key="channels.description" rows="2"></textarea>
+      </div>
+
+      <div class="admin-field-row">
+        <div class="admin-field">
+          <label for="cc-ch-phone-title">Titre — Téléphone</label>
+          <input type="text" id="cc-ch-phone-title" data-key="channels.phone.title">
+        </div>
+        <div class="admin-field">
+          <label for="cc-ch-phone-desc">Description — Téléphone</label>
+          <input type="text" id="cc-ch-phone-desc" data-key="channels.phone.desc">
+        </div>
+      </div>
+      <div class="admin-field-row">
+        <div class="admin-field">
+          <label for="cc-ch-sms-title">Titre — Texto</label>
+          <input type="text" id="cc-ch-sms-title" data-key="channels.sms.title">
+        </div>
+        <div class="admin-field">
+          <label for="cc-ch-sms-desc">Description — Texto</label>
+          <input type="text" id="cc-ch-sms-desc" data-key="channels.sms.desc">
+        </div>
+      </div>
+      <div class="admin-field-row">
+        <div class="admin-field">
+          <label for="cc-ch-email-title">Titre — Courriel</label>
+          <input type="text" id="cc-ch-email-title" data-key="channels.email.title">
+        </div>
+        <div class="admin-field">
+          <label for="cc-ch-email-desc">Description — Courriel</label>
+          <input type="text" id="cc-ch-email-desc" data-key="channels.email.desc">
+        </div>
+      </div>
+      <div class="admin-field-row">
+        <div class="admin-field">
+          <label for="cc-ch-messenger-title">Titre — Messenger</label>
+          <input type="text" id="cc-ch-messenger-title" data-key="channels.messenger.title">
+        </div>
+        <div class="admin-field">
+          <label for="cc-ch-messenger-desc">Description — Messenger</label>
+          <input type="text" id="cc-ch-messenger-desc" data-key="channels.messenger.desc">
+        </div>
+      </div>
+      <div class="admin-field-row">
+        <div class="admin-field">
+          <label for="cc-ch-chat-title">Titre — Clavardage</label>
+          <input type="text" id="cc-ch-chat-title" data-key="channels.chat.title">
+        </div>
+        <div class="admin-field">
+          <label for="cc-ch-chat-desc">Description — Clavardage</label>
+          <input type="text" id="cc-ch-chat-desc" data-key="channels.chat.desc">
+        </div>
+      </div>
+      <div class="admin-field">
+        <label for="cc-ch-h2o-title">Titre — Ligne générale H2O Innovation</label>
+        <input type="text" id="cc-ch-h2o-title" data-key="channels.h2o.title">
+      </div>
+
+      <h3 class="admin-field-group-title">Section « À propos »</h3>
+      <div class="admin-field-row">
+        <div class="admin-field">
+          <label for="cc-about-tag">Étiquette</label>
+          <input type="text" id="cc-about-tag" data-key="about.tag">
+        </div>
+        <div class="admin-field">
+          <label for="cc-about-title">Titre</label>
+          <input type="text" id="cc-about-title" data-key="about.title">
+        </div>
+      </div>
+      <div class="admin-field">
+        <label for="cc-about-p1">Premier paragraphe</label>
+        <textarea id="cc-about-p1" data-key="about.p1" rows="3"></textarea>
+      </div>
+      <div class="admin-field">
+        <label for="cc-about-p2">Deuxième paragraphe (HTML simple accepté, ex. liens &lt;a href="..."&gt;)</label>
+        <textarea id="cc-about-p2" data-key="about.p2Html" rows="3"></textarea>
+      </div>
+      <div class="admin-field-row">
+        <div class="admin-field">
+          <label for="cc-about-s1v">Statistique 1 — valeur</label>
+          <input type="text" id="cc-about-s1v" data-key="about.stat1Value">
+        </div>
+        <div class="admin-field">
+          <label for="cc-about-s1l">Statistique 1 — libellé</label>
+          <input type="text" id="cc-about-s1l" data-key="about.stat1Label">
+        </div>
+      </div>
+      <div class="admin-field-row">
+        <div class="admin-field">
+          <label for="cc-about-s2v">Statistique 2 — valeur</label>
+          <input type="text" id="cc-about-s2v" data-key="about.stat2Value">
+        </div>
+        <div class="admin-field">
+          <label for="cc-about-s2l">Statistique 2 — libellé</label>
+          <input type="text" id="cc-about-s2l" data-key="about.stat2Label">
+        </div>
+      </div>
+      <div class="admin-field-row">
+        <div class="admin-field">
+          <label for="cc-about-s3v">Statistique 3 — valeur</label>
+          <input type="text" id="cc-about-s3v" data-key="about.stat3Value">
+        </div>
+        <div class="admin-field">
+          <label for="cc-about-s3l">Statistique 3 — libellé</label>
+          <input type="text" id="cc-about-s3l" data-key="about.stat3Label">
+        </div>
+      </div>
+
+      <h3 class="admin-field-group-title">Section « Formulaire »</h3>
+      <div class="admin-field-row">
+        <div class="admin-field">
+          <label for="cc-form-tag">Étiquette</label>
+          <input type="text" id="cc-form-tag" data-key="form.tag">
+        </div>
+        <div class="admin-field">
+          <label for="cc-form-title">Titre</label>
+          <input type="text" id="cc-form-title" data-key="form.title">
+        </div>
+      </div>
+      <div class="admin-field">
+        <label for="cc-form-desc">Description</label>
+        <textarea id="cc-form-desc" data-key="form.description" rows="2"></textarea>
+      </div>
+      <div class="admin-field">
+        <label for="cc-form-note">Note sous le formulaire</label>
+        <input type="text" id="cc-form-note" data-key="form.note">
+      </div>
+
+      <h3 class="admin-field-group-title">Pied de page</h3>
+      <div class="admin-field-row">
+        <div class="admin-field">
+          <label for="cc-footer-l1">Ligne 1 (sous ton nom)</label>
+          <input type="text" id="cc-footer-l1" data-key="footer.line1">
+        </div>
+        <div class="admin-field">
+          <label for="cc-footer-l2">Ligne 2</label>
+          <input type="text" id="cc-footer-l2" data-key="footer.line2">
+        </div>
+      </div>
+      <div class="admin-field">
+        <label for="cc-footer-copy">Texte après « © 2026 »</label>
+        <input type="text" id="cc-footer-copy" data-key="footer.copyrightSuffix">
+      </div>
+
+      <div class="admin-save-row">
+        <span class="admin-save-status" id="content-save-status"></span>
+        <button class="btn btn-primary" id="content-save" type="button">Enregistrer</button>
       </div>
     </div>
 

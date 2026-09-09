@@ -271,8 +271,50 @@
     });
   }
 
+  /* ---------- Contenu éditable des sections + thème ---------- */
+  function getPath(obj, path) {
+    return path.split(".").reduce((o, k) => (o ? o[k] : undefined), obj);
+  }
+
+  function applyContent(data) {
+    document.querySelectorAll("[data-c]").forEach((el) => {
+      const val = getPath(data, el.dataset.c);
+      if (val === undefined || val === null) return;
+      if (el.hasAttribute("data-c-html")) {
+        el.innerHTML = val;
+      } else {
+        el.textContent = val;
+      }
+    });
+  }
+
+  function applyTheme(themeId, themes) {
+    const theme = (themes || []).find((t) => t.id === themeId) || (themes || [])[0];
+    if (!theme) return;
+    const root = document.documentElement.style;
+    Object.entries(theme.vars || {}).forEach(([name, value]) => root.setProperty(name, value));
+    if (theme.serif) root.setProperty("--serif", theme.serif);
+    if (theme.sans) root.setProperty("--sans", theme.sans);
+  }
+
+  function setupContent() {
+    fetch("/api/content")
+      .then((res) => res.json())
+      .then((data) => {
+        applyContent(data);
+        return fetch("assets/data/themes.json")
+          .then((res) => res.json())
+          .then((themeData) => applyTheme(data.activeTheme, themeData.themes))
+          .catch(() => {});
+      })
+      .catch(() => {
+        console.error("Impossible de charger /api/content");
+      });
+  }
+
   document.addEventListener("DOMContentLoaded", () => {
     setupZoneChecker();
+    setupContent();
 
     fetch("/api/contact")
       .then((res) => res.json())

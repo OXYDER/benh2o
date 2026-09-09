@@ -55,15 +55,18 @@ sur `https://benoitlaprise.com/admin` et connecte-toi.
 
 ## 2. Administration — `/admin`
 
-Protégée par courriel + mot de passe (voir 1.3). Une fois connecté, deux onglets :
+Protégée par courriel + mot de passe (voir 1.3). Une fois connecté, trois onglets :
 
 - **Mes informations** : téléphones (mobile, SMS, ligne générale H2O Innovation),
   courriel, Messenger, clavardage en direct
 - **Zones de couverture** : régions, MRC, municipalités — ajoute, renomme, retire
+- **Contenu de la page** : les textes de chaque section de la page principale, et un
+  choix de thème (couleurs + polices) — voir section 2b ci-dessous
 
-Chaque onglet a son propre bouton **Enregistrer** — les changements sont écrits dans
-Postgres et visibles sur le site public immédiatement (le site public lit `/api/contact`
-et `/api/zones` à chaque chargement de page).
+Chaque onglet a son propre bouton **Enregistrer** (l'onglet Zones s'enregistre
+automatiquement à l'ajout/suppression) — les changements sont écrits dans Postgres et
+visibles sur le site public immédiatement (le site public lit `/api/contact`,
+`/api/zones` et `/api/content` à chaque chargement de page).
 
 ### Vérificateur de zone (page publique)
 
@@ -201,6 +204,24 @@ demander. Seul un ajout dans une **toute nouvelle MRC** (en dehors de tes 10 act
 nécessiterait que je génère sa frontière et l'ajoute au fichier — dis-le-moi si ça
 arrive.
 
+## 2c. Contenu de la page et apparence (thèmes)
+
+L'onglet **Contenu de la page** de `/admin` regroupe les textes de chaque section de
+la page principale (en-tête, vérificateur de zone, carte, canaux de contact, à propos,
+formulaire, pied de page) — modifie-les directement, `Enregistrer`, et la page publique
+se met à jour au prochain chargement (elle lit `/api/content`).
+
+**Choix de thème :** en haut de cet onglet, 4 combinaisons de couleurs et de polices
+prédéfinies (`assets/data/themes.json`) — clique une carte pour la sélectionner, puis
+`Enregistrer`. Ce ne sont pas des couleurs choisies librement : chaque thème a été conçu
+pour rester lisible et cohérent dans toutes les sections du site.
+
+**Ce qui n'est PAS éditable depuis l'admin, par choix :** la disposition des sections,
+leurs dimensions, et leur position sur la page. Un éditeur visuel complet (façon
+Wix/Webflow) avec aperçu en temps réel et contraintes responsive est un projet
+nettement plus lourd qu'un formulaire de texte — pour ce genre de changement, plus
+sûr et plus rapide de me le demander directement, comme pour le reste du site.
+
 ## Structure du projet
 
 ```
@@ -212,14 +233,15 @@ docker-compose.yml              → les 7 conteneurs (site, API, base de donnée
 .env.example                    → modèle des secrets à copier en .env (jamais commité)
 deploy.sh                       → script de mise à jour (git pull + rebuild + restart)
 
-assets/style.css                → tout le visuel du site public
+assets/style.css                → tout le visuel du site public (variables de couleur/police éditées par les thèmes)
 assets/admin.css                → visuel de l'administration
-assets/script.js                → logique du site public (zone, contact, chat, formulaire)
+assets/script.js                → logique du site public (zone, contact, chat, formulaire, contenu/thème)
 assets/coverage-map.js           → carte interactive Leaflet du secteur couvert
-assets/data/municipality-boundaries.geojson → vraies frontières des 56 municipalités couvertes (Statistique Canada)
-assets/admin.js                 → logique de connexion + des deux onglets d'administration
+assets/data/municipality-boundaries.geojson → vraies frontières des 152 municipalités des 10 MRC (Statistique Canada)
+assets/data/themes.json          → catalogue des 4 thèmes prédéfinis (couleurs + polices)
+assets/admin.js                 → logique de connexion + des trois onglets d'administration
 
-api/server.js                   → serveur Node/Express : auth + API contact/zones
+api/server.js                   → serveur Node/Express : auth + API contact/zones/content
 api/db.js                       → connexion à Postgres
 api/init.sql                    → schéma de la base + données initiales
 api/scripts/create-admin.js     → crée/modifie le compte administrateur (mot de passe)

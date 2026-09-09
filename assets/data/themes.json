@@ -1,0 +1,88 @@
+{
+  "themes": [
+    {
+      "id": "navy-electrique",
+      "name": "Navy & Bleu électrique",
+      "description": "Le thème actuel — inspiré de l'image de marque H2O Innovation.",
+      "vars": {
+        "--spruce-950": "#050B18",
+        "--spruce-900": "#0A1830",
+        "--spruce-800": "#102544",
+        "--birch-100": "#E9F1F8",
+        "--birch-050": "#F4F8FB",
+        "--amber-600": "#1E9BFF",
+        "--amber-700": "#0B72C7",
+        "--amber-300": "#7DD3FF",
+        "--water-500": "#8CA0B3",
+        "--water-300": "#C9D3DC",
+        "--ink-900": "#0B1220",
+        "--ink-600": "#45566B"
+      },
+      "serif": "'Playfair Display', Georgia, serif",
+      "sans": "'Work Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+    },
+    {
+      "id": "erable-classique",
+      "name": "Érable classique",
+      "description": "Ambre d'érable et vert épinette — le thème original, chaleureux et rustique.",
+      "vars": {
+        "--spruce-950": "#16241C",
+        "--spruce-900": "#1E3226",
+        "--spruce-800": "#274233",
+        "--birch-100": "#F6F1E4",
+        "--birch-050": "#FBF8F1",
+        "--amber-600": "#C67A2E",
+        "--amber-700": "#9C5A1C",
+        "--amber-300": "#E3AD6C",
+        "--water-500": "#4C7A8C",
+        "--water-300": "#8FB4C1",
+        "--ink-900": "#201B14",
+        "--ink-600": "#4A4130"
+      },
+      "serif": "'Fraunces', Georgia, serif",
+      "sans": "'Work Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+    },
+    {
+      "id": "ardoise-epuree",
+      "name": "Ardoise épurée",
+      "description": "Bleu-gris minimal et professionnel, pour une image sobre et moderne.",
+      "vars": {
+        "--spruce-950": "#1C2530",
+        "--spruce-900": "#26313D",
+        "--spruce-800": "#334153",
+        "--birch-100": "#EEF1F4",
+        "--birch-050": "#F7F9FA",
+        "--amber-600": "#3D6E8C",
+        "--amber-700": "#2C5269",
+        "--amber-300": "#8FB8CE",
+        "--water-500": "#7C8B99",
+        "--water-300": "#C4CDD4",
+        "--ink-900": "#1A222B",
+        "--ink-600": "#54606C"
+      },
+      "serif": "'Libre Caslon Text', Georgia, serif",
+      "sans": "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+    },
+    {
+      "id": "charbon-cuivre",
+      "name": "Charbon & Cuivre",
+      "description": "Charbon foncé et accent cuivré — chaleureux mais résolument moderne.",
+      "vars": {
+        "--spruce-950": "#1B1815",
+        "--spruce-900": "#262220",
+        "--spruce-800": "#332D29",
+        "--birch-100": "#F2EBE3",
+        "--birch-050": "#F9F5F0",
+        "--amber-600": "#B5622E",
+        "--amber-700": "#8C481E",
+        "--amber-300": "#D89A6A",
+        "--water-500": "#8C7A6B",
+        "--water-300": "#D1C3B4",
+        "--ink-900": "#211B15",
+        "--ink-600": "#5C5148"
+      },
+      "serif": "'Libre Caslon Text', Georgia, serif",
+      "sans": "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+    }
+  ]
+}

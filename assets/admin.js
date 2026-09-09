@@ -67,7 +67,7 @@
   });
 
   document.getElementById("logout-btn").addEventListener("click", async () => {
-    if (dirty.contact || dirty.zones) {
+    if (dirty.contact || dirty.zones || dirty.content) {
       if (!confirm("Tu as des changements non enregistrés. Te déconnecter quand même ?")) return;
     }
     await fetch("/api/logout", { method: "POST" });
@@ -124,8 +124,8 @@
   }
 
   /* ---------- Avertit avant de quitter s'il y a des changements non enregistrés ---------- */
-  const dirty = { contact: false, zones: false };
-  const dirtyEls = { contact: null, zones: null };
+  const dirty = { contact: false, zones: false, content: false };
+  const dirtyEls = { contact: null, zones: null, content: null };
   function registerDirtyIndicator(key, el) {
     dirtyEls[key] = el;
   }
@@ -142,7 +142,7 @@
     dirty[key] = false;
   }
   window.addEventListener("beforeunload", (e) => {
-    if (dirty.contact || dirty.zones) {
+    if (dirty.contact || dirty.zones || dirty.content) {
       e.preventDefault();
       e.returnValue = "";
     }
@@ -155,6 +155,7 @@
     setupTabs();
     setupContactEditor();
     setupZonesEditor();
+    setupContentEditor();
   }
 
   /* =========================================================
@@ -464,6 +465,122 @@
     filterInput.addEventListener("input", render);
     registerDirtyIndicator("zones", statusEl);
 
+    load();
+  }
+
+  /* =========================================================
+     ONGLET : CONTENU DE LA PAGE (textes + thème)
+     ========================================================= */
+  function setupContentEditor() {
+    const panel = document.querySelector('[data-panel="content"]');
+    if (!panel) return;
+    const saveBtn = document.getElementById("content-save");
+    const statusEl = document.getElementById("content-save-status");
+    const themePicker = document.getElementById("theme-picker");
+
+    let contentData = {};
+    let themes = [];
+
+    function getPath(obj, path) {
+      return path.split(".").reduce((o, k) => (o ? o[k] : undefined), obj);
+    }
+    function setPath(obj, path, value) {
+      const keys = path.split(".");
+      let cur = obj;
+      for (let i = 0; i < keys.length - 1; i++) {
+        if (typeof cur[keys[i]] !== "object" || cur[keys[i]] === null) cur[keys[i]] = {};
+        cur = cur[keys[i]];
+      }
+      cur[keys[keys.length - 1]] = value;
+    }
+
+    function populateForm() {
+      panel.querySelectorAll("[data-key]").forEach((el) => {
+        const val = getPath(contentData, el.dataset.key);
+        el.value = val === undefined || val === null ? "" : val;
+      });
+    }
+
+    function bindForm() {
+      panel.querySelectorAll("[data-key]").forEach((el) => {
+        el.addEventListener("input", () => {
+          setPath(contentData, el.dataset.key, el.value);
+          markDirty("content");
+        });
+      });
+    }
+
+    function renderThemePicker() {
+      if (!themePicker) return;
+      themePicker.innerHTML = themes
+        .map((t) => {
+          const swatches = ["--spruce-950", "--birch-100", "--amber-600", "--water-500"]
+            .map((v) => `<span class="theme-swatch" style="background:${t.vars[v]}"></span>`)
+            .join("");
+          const active = t.id === contentData.activeTheme ? " active" : "";
+          return `
+            <button type="button" class="theme-card${active}" data-theme-id="${t.id}">
+              <span class="theme-swatches">${swatches}</span>
+              <span class="theme-name">${t.name}</span>
+              <span class="theme-desc">${t.description || ""}</span>
+            </button>
+          `;
+        })
+        .join("");
+
+      themePicker.querySelectorAll(".theme-card").forEach((card) => {
+        card.addEventListener("click", () => {
+          contentData.activeTheme = card.dataset.themeId;
+          markDirty("content");
+          themePicker.querySelectorAll(".theme-card").forEach((c) => c.classList.remove("active"));
+          card.classList.add("active");
+        });
+      });
+    }
+
+    async function load() {
+      try {
+        const [contentRes, themesRes] = await Promise.all([
+          fetch("/api/content"),
+          fetch("assets/data/themes.json"),
+        ]);
+        contentData = await contentRes.json();
+        const themeData = await themesRes.json();
+        themes = themeData.themes || [];
+        populateForm();
+        renderThemePicker();
+      } catch (e) {
+        flashStatus(statusEl, "Impossible de charger les données.", true);
+      }
+    }
+
+    async function save() {
+      saveBtn.disabled = true;
+      saveBtn.textContent = "Enregistrement…";
+      try {
+        const res = await fetch("/api/content", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(contentData),
+        });
+        if (res.ok) {
+          flashStatus(statusEl, "Enregistré ✓", false);
+          clearDirty("content");
+        } else {
+          const data = await res.json().catch(() => ({}));
+          flashStatus(statusEl, data.error || "Échec de l'enregistrement.", true);
+        }
+      } catch (e) {
+        flashStatus(statusEl, "Impossible de contacter le serveur.", true);
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = "Enregistrer";
+      }
+    }
+
+    bindForm();
+    saveBtn.addEventListener("click", save);
+    registerDirtyIndicator("content", statusEl);
     load();
   }
 })();

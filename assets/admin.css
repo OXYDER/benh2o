@@ -108,7 +108,7 @@
   font-weight: 600;
   color: var(--ink-600);
 }
-.admin-field input {
+.admin-field input, .admin-field textarea {
   padding: 10px 12px;
   border-radius: var(--radius);
   border: 1.5px solid rgba(32,27,20,0.2);
@@ -117,6 +117,7 @@
   background: var(--birch-100);
   color: var(--ink-900);
 }
+.admin-field textarea { resize: vertical; line-height: 1.5; }
 .admin-field-hint {
   font-size: 0.82rem;
   color: var(--ink-600);
@@ -334,6 +335,38 @@
   margin: 24px 0 8px;
   width: 100%;
 }
+
+/* ---------- Sélecteur de thème ---------- */
+
+.theme-picker {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.theme-card {
+  text-align: left;
+  background: var(--birch-100);
+  border: 2px solid rgba(32,27,20,0.12);
+  border-radius: var(--radius);
+  padding: 14px;
+  cursor: pointer;
+  font-family: var(--sans);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.theme-card:hover { border-color: rgba(32,27,20,0.3); }
+.theme-card.active { border-color: var(--amber-700); background: var(--birch-050); }
+.theme-swatches { display: flex; gap: 4px; }
+.theme-swatch {
+  width: 22px; height: 22px;
+  border-radius: 5px;
+  border: 1px solid rgba(0,0,0,0.15);
+  display: inline-block;
+}
+.theme-name { font-weight: 700; font-size: 0.94rem; color: var(--ink-900); }
+.theme-desc { font-size: 0.8rem; color: var(--ink-600); line-height: 1.4; }
 
 @media (max-width: 640px) {
   .admin-field-row { grid-template-columns: 1fr; }
