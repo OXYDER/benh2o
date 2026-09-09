@@ -179,21 +179,39 @@
     const chat = CFG.chatLive || {};
 
     if (chat.actif && chat.propertyId && chat.widgetId) {
+      let tawkReady = false;
+
+      function fallbackToSms() {
+        if (tawkReady) return;
+        if (chatStatus) chatStatus.textContent = "Le clavardage n'a pas pu se charger (probablement bloqué par une extension) — écris-moi par texto à la place.";
+        if (chatButton) chatButton.textContent = "Texter";
+      }
+
       const s1 = document.createElement("script");
       s1.async = true;
       s1.src = `https://embed.tawk.to/${chat.propertyId}/${chat.widgetId}`;
       s1.setAttribute("crossorigin", "*");
+      s1.onerror = fallbackToSms;
       document.body.appendChild(s1);
 
       const openTawk = () => {
-        if (window.Tawk_API && window.Tawk_API.toggle) window.Tawk_API.toggle();
+        if (window.Tawk_API && window.Tawk_API.toggle && tawkReady) {
+          window.Tawk_API.toggle();
+        } else {
+          window.location.href = "sms:" + (CFG.telephoneSmsLien || CFG.telephoneMobileLien || "");
+        }
       };
       if (chatButton) chatButton.addEventListener("click", openTawk);
       window.Tawk_API = window.Tawk_API || {};
       window.Tawk_API.onLoad = function () {
+        tawkReady = true;
         if (chatFallback) chatFallback.classList.add("show");
       };
       if (chatFallback) chatFallback.addEventListener("click", openTawk);
+
+      // Si le widget n'a pas confirmé son chargement après quelques secondes
+      // (bloqué par un extension anti-pub/traqueurs, réseau lent, etc.), on bascule.
+      setTimeout(fallbackToSms, 4000);
     } else if (chat.lienDirect) {
       // Un autre service de chat est utilisé : on ouvre simplement son lien.
       if (chatStatus) chatStatus.textContent = "Pose ta question en direct via notre service de clavardage.";
@@ -248,7 +266,7 @@
         setupForm();
       })
       .catch(() => {
-        console.error("Impossible de charger assets/contact.json");
+        console.error("Impossible de charger /api/contact");
       });
   });
 })();
