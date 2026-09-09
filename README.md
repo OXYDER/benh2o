@@ -106,7 +106,7 @@ initiale — pas besoin de la relancer aux mises à jour suivantes.
 
 Chatwoot a besoin de sa **propre adresse** (pas un sous-chemin du site principal) —
 ex. `chat.benoitlaprise.com`. Dans Nginx Proxy Manager, ajoute un nouveau Proxy Host
-`chat.benoitlaprise.com` → `http://<IP_NAS>:8096`, avec certificat SSL. Cette adresse
+`chat.benoitlaprise.com` → `http://<IP_NAS>:8098`, avec certificat SSL. Cette adresse
 doit correspondre exactement à `CHATWOOT_FRONTEND_URL` dans `.env`.
 
 ### 3.3 Créer ton compte et ton widget
