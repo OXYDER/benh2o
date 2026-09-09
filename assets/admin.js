@@ -1,252 +1,131 @@
 (function () {
-  const DRAFT_KEY = "bl_zones_draft_v1";
-  const tree = document.getElementById("admin-tree");
-  const filterInput = document.getElementById("admin-filter");
-  const statsEl = document.getElementById("admin-stats");
+  /* =========================================================
+     AUTHENTIFICATION
+     ========================================================= */
+  const loginGate = document.getElementById("login-gate");
+  const adminApp = document.getElementById("admin-app");
+  const loginForm = document.getElementById("login-form");
+  const loginError = document.getElementById("login-error");
+  const loginSubmit = document.getElementById("login-submit");
+  const userEmailEl = document.getElementById("admin-user-email");
 
-  let data = { regions: [] };
+  function showApp(email) {
+    loginGate.hidden = true;
+    adminApp.hidden = false;
+    userEmailEl.textContent = email || "";
+    initApp();
+  }
 
-  /* ---------- Chargement ---------- */
-  function loadDraftOrFetch() {
-    const draft = localStorage.getItem(DRAFT_KEY);
-    if (draft) {
-      try {
-        data = JSON.parse(draft);
-        render();
-        return;
-      } catch (e) {
-        /* brouillon corrompu, on retombe sur zones.json */
+  function showLogin() {
+    loginGate.hidden = false;
+    adminApp.hidden = true;
+  }
+
+  async function checkSession() {
+    try {
+      const res = await fetch("/api/session");
+      const data = await res.json();
+      if (data.authenticated) {
+        showApp(data.email);
+      } else {
+        showLogin();
       }
+    } catch (e) {
+      showLogin();
     }
-    fetchFresh();
   }
 
-  function fetchFresh() {
-    fetch("assets/zones.json")
-      .then((res) => res.json())
-      .then((json) => {
-        data = json;
-        render();
-      })
-      .catch(() => {
-        tree.innerHTML = '<p style="color:#B3403A">Impossible de charger assets/zones.json — vérifie que cette page est bien servie par le site (pas ouverte en fichier local).</p>';
+  loginForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    loginError.style.display = "none";
+    loginSubmit.disabled = true;
+    loginSubmit.textContent = "Connexion…";
+
+    const email = document.getElementById("login-email").value;
+    const password = document.getElementById("login-password").value;
+
+    try {
+      const res = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
       });
-  }
+      const data = await res.json();
+      if (res.ok && data.ok) {
+        showApp(data.email);
+      } else {
+        loginError.textContent = data.error || "Identifiants invalides.";
+        loginError.style.display = "block";
+      }
+    } catch (e) {
+      loginError.textContent = "Impossible de contacter le serveur.";
+      loginError.style.display = "block";
+    } finally {
+      loginSubmit.disabled = false;
+      loginSubmit.textContent = "Se connecter";
+    }
+  });
 
-  function saveDraft() {
-    localStorage.setItem(DRAFT_KEY, JSON.stringify(data));
-    updateStats();
-  }
+  document.getElementById("logout-btn").addEventListener("click", async () => {
+    await fetch("/api/logout", { method: "POST" });
+    showLogin();
+  });
 
-  /* ---------- Stats ---------- */
-  function updateStats() {
-    const nbRegions = data.regions.length;
-    const nbMrc = data.regions.reduce((acc, r) => acc + r.mrcs.length, 0);
-    const nbMuni = data.regions.reduce((acc, r) => acc + r.mrcs.reduce((a, m) => a + m.municipalities.length, 0), 0);
-    statsEl.innerHTML = `
-      <div><strong>${nbRegions}</strong>région${nbRegions > 1 ? "s" : ""}</div>
-      <div><strong>${nbMrc}</strong>MRC</div>
-      <div><strong>${nbMuni}</strong>municipalité${nbMuni > 1 ? "s" : ""}</div>
-    `;
-  }
+  checkSession();
 
-  /* ---------- Rendu ---------- */
-  function render() {
-    const filter = normalize(filterInput.value);
-    tree.innerHTML = "";
-
-    data.regions.forEach((region, ri) => {
-      const regionMatches = !filter || normalize(region.name).includes(filter);
-      const visibleMrcs = region.mrcs
-        .map((mrc, mi) => ({ mrc, mi }))
-        .filter(({ mrc }) => {
-          if (!filter) return true;
-          if (normalize(mrc.name).includes(filter)) return true;
-          return mrc.municipalities.some((m) => normalize(m).includes(filter));
+  /* =========================================================
+     ONGLETS
+     ========================================================= */
+  function setupTabs() {
+    const tabs = document.querySelectorAll(".admin-tab");
+    const panels = document.querySelectorAll(".admin-panel");
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        tabs.forEach((t) => {
+          t.classList.remove("active");
+          t.setAttribute("aria-selected", "false");
         });
-
-      if (filter && !regionMatches && visibleMrcs.length === 0) return;
-
-      const card = document.createElement("div");
-      card.className = "region-card";
-
-      const head = document.createElement("div");
-      head.className = "region-head";
-      head.innerHTML = `
-        <input class="region-code" value="${escapeAttr(region.code || "")}" placeholder="Code" data-ri="${ri}">
-        <input class="region-name" value="${escapeAttr(region.name)}" data-ri="${ri}">
-        <button class="icon-btn add-region-remove" title="Supprimer la région" data-ri="${ri}">✕</button>
-      `;
-      card.appendChild(head);
-
-      const mrcsToShow = filter ? visibleMrcs : region.mrcs.map((mrc, mi) => ({ mrc, mi }));
-      mrcsToShow.forEach(({ mrc, mi }) => {
-        card.appendChild(renderMrc(region, ri, mrc, mi, filter));
-      });
-
-      const addMrcBtn = document.createElement("button");
-      addMrcBtn.className = "add-mrc-btn";
-      addMrcBtn.textContent = "+ Ajouter une MRC";
-      addMrcBtn.addEventListener("click", () => {
-        region.mrcs.push({ name: "Nouvelle MRC", municipalities: [] });
-        saveDraft();
-        render();
-      });
-      card.appendChild(addMrcBtn);
-
-      tree.appendChild(card);
-    });
-
-    // bind région inputs
-    tree.querySelectorAll(".region-name").forEach((el) => {
-      el.addEventListener("input", (e) => {
-        data.regions[e.target.dataset.ri].name = e.target.value;
-        saveDraft();
+        tab.classList.add("active");
+        tab.setAttribute("aria-selected", "true");
+        panels.forEach((p) => {
+          p.hidden = p.dataset.panel !== tab.dataset.tab;
+        });
       });
     });
-    tree.querySelectorAll(".region-code").forEach((el) => {
-      el.addEventListener("input", (e) => {
-        data.regions[e.target.dataset.ri].code = e.target.value;
-        saveDraft();
-      });
-    });
-    tree.querySelectorAll(".add-region-remove").forEach((el) => {
-      el.addEventListener("click", (e) => {
-        const ri = Number(e.target.dataset.ri);
-        if (confirm(`Supprimer la région "${data.regions[ri].name}" et tout son contenu ?`)) {
-          data.regions.splice(ri, 1);
-          saveDraft();
-          render();
-        }
-      });
-    });
-
-    updateStats();
   }
 
-  function renderMrc(region, ri, mrc, mi, filter) {
-    const block = document.createElement("div");
-    block.className = "mrc-block";
-
-    const head = document.createElement("div");
-    head.className = "mrc-head";
-    head.innerHTML = `
-      <span class="mrc-label">MRC</span>
-      <input class="mrc-name" value="${escapeAttr(mrc.name)}">
-      <button class="icon-btn danger mrc-remove" title="Supprimer la MRC">✕</button>
-    `;
-    head.querySelector(".mrc-name").addEventListener("input", (e) => {
-      mrc.name = e.target.value;
-      saveDraft();
-    });
-    head.querySelector(".mrc-remove").addEventListener("click", () => {
-      if (confirm(`Supprimer la MRC "${mrc.name}" et ses municipalités ?`)) {
-        region.mrcs.splice(mi, 1);
-        saveDraft();
-        render();
-      }
-    });
-    block.appendChild(head);
-
-    const list = document.createElement("div");
-    list.className = "muni-list";
-    const muniIndexes = mrc.municipalities
-      .map((m, idx) => idx)
-      .filter((idx) => !filter || normalize(mrc.municipalities[idx]).includes(filter) || normalize(mrc.name).includes(filter));
-
-    muniIndexes.forEach((idx) => {
-      const chip = document.createElement("span");
-      chip.className = "muni-chip";
-      chip.innerHTML = `<input value="${escapeAttr(mrc.municipalities[idx])}"><button class="icon-btn muni-remove" title="Retirer">✕</button>`;
-      chip.querySelector("input").addEventListener("input", (e) => {
-        mrc.municipalities[idx] = e.target.value;
-        saveDraft();
-      });
-      chip.querySelector(".muni-remove").addEventListener("click", () => {
-        mrc.municipalities.splice(idx, 1);
-        saveDraft();
-        render();
-      });
-      list.appendChild(chip);
-    });
-    block.appendChild(list);
-
-    const addRow = document.createElement("div");
-    addRow.className = "add-muni-row";
-    addRow.innerHTML = `<input type="text" placeholder="+ Ajouter une municipalité et appuyer sur Entrée">`;
-    const addInput = addRow.querySelector("input");
-    addInput.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" && addInput.value.trim()) {
-        mrc.municipalities.push(addInput.value.trim());
-        saveDraft();
-        render();
-      }
-    });
-    block.appendChild(addRow);
-
-    return block;
-  }
-
-  /* ---------- Utilitaires ---------- */
+  /* =========================================================
+     Utilitaires communs
+     ========================================================= */
   function normalize(str) {
     return (str || "").toString().normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
   }
   function escapeAttr(str) {
     return (str || "").toString().replace(/&/g, "&amp;").replace(/"/g, "&quot;");
   }
+  function flashStatus(el, message, isError) {
+    el.textContent = message;
+    el.classList.toggle("error", !!isError);
+    el.classList.add("show");
+    setTimeout(() => el.classList.remove("show"), 2500);
+  }
 
-  /* ---------- Actions globales ---------- */
-  document.getElementById("admin-add-region").addEventListener("click", () => {
-    data.regions.push({ name: "Nouvelle région", code: "", mrcs: [] });
-    saveDraft();
-    render();
-  });
-
-  document.getElementById("admin-reload").addEventListener("click", () => {
-    if (confirm("Recharger zones.json effacera ton brouillon local non téléchargé. Continuer ?")) {
-      localStorage.removeItem(DRAFT_KEY);
-      fetchFresh();
-    }
-  });
-
-  document.getElementById("admin-download").addEventListener("click", () => {
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "zones.json";
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
-  });
-
-  document.getElementById("admin-copy").addEventListener("click", async () => {
-    const text = JSON.stringify(data, null, 2);
-    try {
-      await navigator.clipboard.writeText(text);
-      const btn = document.getElementById("admin-copy");
-      const original = btn.textContent;
-      btn.textContent = "Copié !";
-      setTimeout(() => (btn.textContent = original), 1500);
-    } catch (e) {
-      alert("Impossible de copier automatiquement — sélectionne et copie le JSON manuellement depuis la console (F12).");
-      console.log(text);
-    }
-  });
-
-  filterInput.addEventListener("input", render);
-
-  loadDraftOrFetch();
+  let appInitialized = false;
+  function initApp() {
+    if (appInitialized) return;
+    appInitialized = true;
+    setupTabs();
+    setupContactEditor();
+    setupZonesEditor();
+  }
 
   /* =========================================================
-     MES INFORMATIONS DE CONTACT (contact.json)
+     ONGLET : MES INFORMATIONS DE CONTACT
      ========================================================= */
-  (function contactEditor() {
-    const CONTACT_DRAFT_KEY = "bl_contact_draft_v1";
+  function setupContactEditor() {
     const form = document.getElementById("contact-form-admin");
-    if (!form) return;
-
+    const saveBtn = document.getElementById("contact-save");
+    const statusEl = document.getElementById("contact-save-status");
     let contactData = {};
 
     function getPath(obj, path) {
@@ -273,81 +152,245 @@
       });
     }
 
-    function saveContactDraft() {
-      localStorage.setItem(CONTACT_DRAFT_KEY, JSON.stringify(contactData));
-    }
-
     function bindForm() {
       form.querySelectorAll("[data-key]").forEach((el) => {
         const evt = el.type === "checkbox" ? "change" : "input";
         el.addEventListener(evt, () => {
           const value = el.type === "checkbox" ? el.checked : el.value;
           setPath(contactData, el.dataset.key, value);
-          saveContactDraft();
         });
       });
     }
 
-    function fetchFreshContact() {
-      fetch("assets/contact.json")
-        .then((res) => res.json())
-        .then((json) => {
-          contactData = json;
-          populateForm();
-        })
-        .catch(() => {
-          form.innerHTML = '<p style="color:#B3403A">Impossible de charger assets/contact.json.</p>';
-        });
-    }
-
-    function loadContactDraftOrFetch() {
-      const draft = localStorage.getItem(CONTACT_DRAFT_KEY);
-      if (draft) {
-        try {
-          contactData = JSON.parse(draft);
-          populateForm();
-          return;
-        } catch (e) {
-          /* brouillon corrompu, on retombe sur contact.json */
-        }
-      }
-      fetchFreshContact();
-    }
-
-    document.getElementById("contact-reload").addEventListener("click", () => {
-      if (confirm("Recharger contact.json effacera ton brouillon local non téléchargé. Continuer ?")) {
-        localStorage.removeItem(CONTACT_DRAFT_KEY);
-        fetchFreshContact();
-      }
-    });
-
-    document.getElementById("contact-download").addEventListener("click", () => {
-      const blob = new Blob([JSON.stringify(contactData, null, 2)], { type: "application/json" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "contact.json";
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
-    });
-
-    document.getElementById("contact-copy").addEventListener("click", async () => {
-      const text = JSON.stringify(contactData, null, 2);
+    async function load() {
       try {
-        await navigator.clipboard.writeText(text);
-        const btn = document.getElementById("contact-copy");
-        const original = btn.textContent;
-        btn.textContent = "Copié !";
-        setTimeout(() => (btn.textContent = original), 1500);
+        const res = await fetch("/api/contact");
+        contactData = await res.json();
+        populateForm();
       } catch (e) {
-        alert("Impossible de copier automatiquement — ouvre la console (F12) pour voir le JSON.");
-        console.log(text);
+        flashStatus(statusEl, "Impossible de charger les données.", true);
       }
-    });
+    }
+
+    async function save() {
+      saveBtn.disabled = true;
+      saveBtn.textContent = "Enregistrement…";
+      try {
+        const res = await fetch("/api/contact", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(contactData),
+        });
+        if (res.ok) {
+          flashStatus(statusEl, "Enregistré ✓", false);
+        } else {
+          const data = await res.json().catch(() => ({}));
+          flashStatus(statusEl, data.error || "Échec de l'enregistrement.", true);
+        }
+      } catch (e) {
+        flashStatus(statusEl, "Impossible de contacter le serveur.", true);
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = "Enregistrer";
+      }
+    }
 
     bindForm();
-    loadContactDraftOrFetch();
-  })();
+    saveBtn.addEventListener("click", save);
+    load();
+  }
+
+  /* =========================================================
+     ONGLET : ZONES DE COUVERTURE (Région > MRC > Municipalité)
+     ========================================================= */
+  function setupZonesEditor() {
+    const tree = document.getElementById("admin-tree");
+    const filterInput = document.getElementById("admin-filter");
+    const statsEl = document.getElementById("admin-stats");
+    const saveBtn = document.getElementById("zones-save");
+    const statusEl = document.getElementById("zones-save-status");
+
+    let data = { regions: [] };
+
+    async function load() {
+      try {
+        const res = await fetch("/api/zones");
+        data = await res.json();
+        if (!Array.isArray(data.regions)) data.regions = [];
+        render();
+      } catch (e) {
+        tree.innerHTML = '<p style="color:#B3403A">Impossible de charger les zones.</p>';
+      }
+    }
+
+    async function save() {
+      saveBtn.disabled = true;
+      saveBtn.textContent = "Enregistrement…";
+      try {
+        const res = await fetch("/api/zones", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        });
+        if (res.ok) {
+          flashStatus(statusEl, "Enregistré ✓", false);
+        } else {
+          const d = await res.json().catch(() => ({}));
+          flashStatus(statusEl, d.error || "Échec de l'enregistrement.", true);
+        }
+      } catch (e) {
+        flashStatus(statusEl, "Impossible de contacter le serveur.", true);
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = "Enregistrer";
+      }
+    }
+
+    function updateStats() {
+      const nbRegions = data.regions.length;
+      const nbMrc = data.regions.reduce((acc, r) => acc + r.mrcs.length, 0);
+      const nbMuni = data.regions.reduce((acc, r) => acc + r.mrcs.reduce((a, m) => a + m.municipalities.length, 0), 0);
+      statsEl.innerHTML = `
+        <div><strong>${nbRegions}</strong>région${nbRegions > 1 ? "s" : ""}</div>
+        <div><strong>${nbMrc}</strong>MRC</div>
+        <div><strong>${nbMuni}</strong>municipalité${nbMuni > 1 ? "s" : ""}</div>
+      `;
+    }
+
+    function render() {
+      const filter = normalize(filterInput.value);
+      tree.innerHTML = "";
+
+      data.regions.forEach((region, ri) => {
+        const regionMatches = !filter || normalize(region.name).includes(filter);
+        const visibleMrcs = region.mrcs
+          .map((mrc, mi) => ({ mrc, mi }))
+          .filter(({ mrc }) => {
+            if (!filter) return true;
+            if (normalize(mrc.name).includes(filter)) return true;
+            return mrc.municipalities.some((m) => normalize(m).includes(filter));
+          });
+
+        if (filter && !regionMatches && visibleMrcs.length === 0) return;
+
+        const card = document.createElement("div");
+        card.className = "region-card";
+
+        const head = document.createElement("div");
+        head.className = "region-head";
+        head.innerHTML = `
+          <input class="region-code" value="${escapeAttr(region.code || "")}" placeholder="Code" data-ri="${ri}">
+          <input class="region-name" value="${escapeAttr(region.name)}" data-ri="${ri}">
+          <button class="icon-btn add-region-remove" title="Supprimer la région" data-ri="${ri}">✕</button>
+        `;
+        card.appendChild(head);
+
+        const mrcsToShow = filter ? visibleMrcs : region.mrcs.map((mrc, mi) => ({ mrc, mi }));
+        mrcsToShow.forEach(({ mrc, mi }) => {
+          card.appendChild(renderMrc(region, ri, mrc, mi, filter));
+        });
+
+        const addMrcBtn = document.createElement("button");
+        addMrcBtn.className = "add-mrc-btn";
+        addMrcBtn.textContent = "+ Ajouter une MRC";
+        addMrcBtn.addEventListener("click", () => {
+          region.mrcs.push({ name: "Nouvelle MRC", municipalities: [] });
+          render();
+        });
+        card.appendChild(addMrcBtn);
+
+        tree.appendChild(card);
+      });
+
+      tree.querySelectorAll(".region-name").forEach((el) => {
+        el.addEventListener("input", (e) => {
+          data.regions[e.target.dataset.ri].name = e.target.value;
+        });
+      });
+      tree.querySelectorAll(".region-code").forEach((el) => {
+        el.addEventListener("input", (e) => {
+          data.regions[e.target.dataset.ri].code = e.target.value;
+        });
+      });
+      tree.querySelectorAll(".add-region-remove").forEach((el) => {
+        el.addEventListener("click", (e) => {
+          const ri = Number(e.target.dataset.ri);
+          if (confirm(`Supprimer la région "${data.regions[ri].name}" et tout son contenu ?`)) {
+            data.regions.splice(ri, 1);
+            render();
+          }
+        });
+      });
+
+      updateStats();
+    }
+
+    function renderMrc(region, ri, mrc, mi, filter) {
+      const block = document.createElement("div");
+      block.className = "mrc-block";
+
+      const head = document.createElement("div");
+      head.className = "mrc-head";
+      head.innerHTML = `
+        <span class="mrc-label">MRC</span>
+        <input class="mrc-name" value="${escapeAttr(mrc.name)}">
+        <button class="icon-btn danger mrc-remove" title="Supprimer la MRC">✕</button>
+      `;
+      head.querySelector(".mrc-name").addEventListener("input", (e) => {
+        mrc.name = e.target.value;
+      });
+      head.querySelector(".mrc-remove").addEventListener("click", () => {
+        if (confirm(`Supprimer la MRC "${mrc.name}" et ses municipalités ?`)) {
+          region.mrcs.splice(mi, 1);
+          render();
+        }
+      });
+      block.appendChild(head);
+
+      const list = document.createElement("div");
+      list.className = "muni-list";
+      const muniIndexes = mrc.municipalities
+        .map((m, idx) => idx)
+        .filter((idx) => !filter || normalize(mrc.municipalities[idx]).includes(filter) || normalize(mrc.name).includes(filter));
+
+      muniIndexes.forEach((idx) => {
+        const chip = document.createElement("span");
+        chip.className = "muni-chip";
+        chip.innerHTML = `<input value="${escapeAttr(mrc.municipalities[idx])}"><button class="icon-btn muni-remove" title="Retirer">✕</button>`;
+        chip.querySelector("input").addEventListener("input", (e) => {
+          mrc.municipalities[idx] = e.target.value;
+        });
+        chip.querySelector(".muni-remove").addEventListener("click", () => {
+          mrc.municipalities.splice(idx, 1);
+          render();
+        });
+        list.appendChild(chip);
+      });
+      block.appendChild(list);
+
+      const addRow = document.createElement("div");
+      addRow.className = "add-muni-row";
+      addRow.innerHTML = `<input type="text" placeholder="+ Ajouter une municipalité et appuyer sur Entrée">`;
+      const addInput = addRow.querySelector("input");
+      addInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" && addInput.value.trim()) {
+          mrc.municipalities.push(addInput.value.trim());
+          render();
+        }
+      });
+      block.appendChild(addRow);
+
+      return block;
+    }
+
+    document.getElementById("admin-add-region").addEventListener("click", () => {
+      data.regions.push({ name: "Nouvelle région", code: "", mrcs: [] });
+      render();
+    });
+
+    filterInput.addEventListener("input", render);
+    saveBtn.addEventListener("click", save);
+
+    load();
+  }
 })();

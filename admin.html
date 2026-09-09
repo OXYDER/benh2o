@@ -21,150 +21,164 @@
 
 <main class="container admin-main">
 
-  <section class="admin-intro">
-    <h1>Administration du site</h1>
-    <p>Modifie tes coordonnées et ton secteur couvert. Tout se sauvegarde automatiquement dans ce navigateur (brouillon) — pour rendre un changement visible sur le site public, télécharge le fichier concerné et remplace-le dans le projet (instructions en bas de page).</p>
-  </section>
-
-  <section class="admin-section">
-    <h2 class="admin-section-title">Mes informations de contact</h2>
-    <p class="admin-section-desc">Numéros, courriel, Messenger et clavardage — modifie ici, puis télécharge <code>contact.json</code> et remplace-le dans le projet.</p>
-
-    <form class="admin-contact-form" id="contact-form-admin">
-      <div class="admin-field-row">
-        <div class="admin-field">
-          <label for="c-nom">Nom</label>
-          <input type="text" id="c-nom" data-key="nom">
-        </div>
-        <div class="admin-field">
-          <label for="c-titre">Titre</label>
-          <input type="text" id="c-titre" data-key="titre">
-        </div>
-      </div>
-
-      <h3 class="admin-field-group-title">Téléphone mobile (appels)</h3>
-      <div class="admin-field-row">
-        <div class="admin-field">
-          <label for="c-mobile-affiche">Affiché à l'écran</label>
-          <input type="text" id="c-mobile-affiche" data-key="telephoneMobileAffiche" placeholder="819 000-0000">
-        </div>
-        <div class="admin-field">
-          <label for="c-mobile-lien">Format international (lien)</label>
-          <input type="text" id="c-mobile-lien" data-key="telephoneMobileLien" placeholder="+18190000000">
-        </div>
-      </div>
-
-      <h3 class="admin-field-group-title">Numéro de texto (SMS)</h3>
-      <div class="admin-field-row">
-        <div class="admin-field">
-          <label for="c-sms-affiche">Affiché à l'écran</label>
-          <input type="text" id="c-sms-affiche" data-key="telephoneSmsAffiche" placeholder="819 000-0000">
-        </div>
-        <div class="admin-field">
-          <label for="c-sms-lien">Format international (lien)</label>
-          <input type="text" id="c-sms-lien" data-key="telephoneSmsLien" placeholder="+18190000000">
-        </div>
-      </div>
-      <p class="admin-field-hint">Laisse vide pour réutiliser le numéro mobile ci-dessus.</p>
-
-      <h3 class="admin-field-group-title">Ligne générale H2O Innovation</h3>
-      <div class="admin-field-row">
-        <div class="admin-field">
-          <label for="c-h2o-affiche">Affiché à l'écran</label>
-          <input type="text" id="c-h2o-affiche" data-key="telephoneH2OAffiche" placeholder="1 866 990-3891">
-        </div>
-        <div class="admin-field">
-          <label for="c-h2o-lien">Format international (lien)</label>
-          <input type="text" id="c-h2o-lien" data-key="telephoneH2OLien" placeholder="+18669903891">
-        </div>
-      </div>
-
-      <h3 class="admin-field-group-title">Courriel et web</h3>
-      <div class="admin-field-row">
-        <div class="admin-field">
-          <label for="c-courriel">Courriel affiché</label>
-          <input type="email" id="c-courriel" data-key="courriel">
-        </div>
-        <div class="admin-field">
-          <label for="c-formsubmit">Courriel qui reçoit le formulaire</label>
-          <input type="email" id="c-formsubmit" data-key="formsubmitEmail">
-        </div>
-      </div>
-      <div class="admin-field-row">
-        <div class="admin-field">
-          <label for="c-boutique">Lien boutique H2O Innovation</label>
-          <input type="text" id="c-boutique" data-key="boutiqueUrl">
-        </div>
-        <div class="admin-field">
-          <label for="c-contact-general">Lien de repli (hors zone)</label>
-          <input type="text" id="c-contact-general" data-key="contactGeneralUrl">
-        </div>
-      </div>
-
-      <h3 class="admin-field-group-title">Messenger</h3>
+  <!-- ---------- Porte de connexion ---------- -->
+  <section class="admin-login" id="login-gate">
+    <h1>Connexion</h1>
+    <p>Cette section est protégée. Connecte-toi avec ton courriel et ton mot de passe administrateur.</p>
+    <form id="login-form" class="admin-login-form">
       <div class="admin-field">
-        <label for="c-messenger">Nom d'utilisateur de la page Facebook (ou lien complet)</label>
-        <input type="text" id="c-messenger" data-key="messengerUsername" placeholder="TonNomDePageFacebook">
-      </div>
-
-      <h3 class="admin-field-group-title">Clavardage en direct</h3>
-      <label class="admin-checkbox">
-        <input type="checkbox" id="c-chat-actif" data-key="chatLive.actif">
-        Activer le widget Tawk.to
-      </label>
-      <div class="admin-field-row">
-        <div class="admin-field">
-          <label for="c-chat-property">Tawk.to — Property ID</label>
-          <input type="text" id="c-chat-property" data-key="chatLive.propertyId">
-        </div>
-        <div class="admin-field">
-          <label for="c-chat-widget">Tawk.to — Widget ID</label>
-          <input type="text" id="c-chat-widget" data-key="chatLive.widgetId">
-        </div>
+        <label for="login-email">Courriel</label>
+        <input type="email" id="login-email" autocomplete="username" required>
       </div>
       <div class="admin-field">
-        <label for="c-chat-lien">Ou lien direct vers un autre service de clavardage (si Tawk.to désactivé)</label>
-        <input type="text" id="c-chat-lien" data-key="chatLive.lienDirect" placeholder="https://...">
+        <label for="login-password">Mot de passe</label>
+        <input type="password" id="login-password" autocomplete="current-password" required>
       </div>
+      <p class="admin-login-error" id="login-error"></p>
+      <button class="btn btn-primary" type="submit" id="login-submit">Se connecter</button>
     </form>
+  </section>
 
-    <div class="admin-toolbar-actions admin-contact-actions">
-      <button class="btn btn-ghost" id="contact-reload" type="button">Recharger depuis contact.json</button>
-      <button class="btn btn-outline-dark" id="contact-copy" type="button">Copier le JSON</button>
-      <button class="btn btn-primary" id="contact-download" type="button">Télécharger contact.json</button>
+  <!-- ---------- Application d'administration (visible une fois connecté) ---------- -->
+  <section class="admin-app" id="admin-app" hidden>
+
+    <div class="admin-topbar">
+      <span id="admin-user-email"></span>
+      <button class="btn btn-ghost" id="logout-btn" type="button">Se déconnecter</button>
     </div>
-  </section>
 
-  <hr class="admin-divider">
-
-  <section class="admin-intro">
-    <h2>Régions, MRC et municipalités couvertes</h2>
-    <p>Ajoute, renomme ou retire des secteurs, puis télécharge <code>zones.json</code> et remplace-le dans le projet.</p>
-    <div class="admin-stats" id="admin-stats"></div>
-  </section>
-
-  <section class="admin-toolbar">
-    <input type="text" id="admin-filter" placeholder="Filtrer par nom…" autocomplete="off">
-    <div class="admin-toolbar-actions">
-      <button class="btn btn-ghost" id="admin-reload" type="button">Recharger depuis zones.json</button>
-      <button class="btn btn-outline-dark" id="admin-copy" type="button">Copier le JSON</button>
-      <button class="btn btn-primary" id="admin-download" type="button">Télécharger zones.json</button>
+    <div class="admin-tabs" role="tablist">
+      <button class="admin-tab active" data-tab="contact" role="tab" aria-selected="true">Mes informations</button>
+      <button class="admin-tab" data-tab="zones" role="tab" aria-selected="false">Zones de couverture</button>
     </div>
-  </section>
 
-  <section class="admin-tree" id="admin-tree"></section>
+    <!-- ===== Onglet : Mes informations de contact ===== -->
+    <div class="admin-panel" data-panel="contact">
+      <p class="admin-section-desc">Numéros, courriel, Messenger et clavardage. Les changements sont enregistrés immédiatement sur le site une fois que tu cliques <strong>Enregistrer</strong>.</p>
 
-  <button class="btn btn-primary admin-add-region" id="admin-add-region" type="button">+ Ajouter une région</button>
+      <form class="admin-contact-form" id="contact-form-admin">
+        <div class="admin-field-row">
+          <div class="admin-field">
+            <label for="c-nom">Nom</label>
+            <input type="text" id="c-nom" data-key="nom">
+          </div>
+          <div class="admin-field">
+            <label for="c-titre">Titre</label>
+            <input type="text" id="c-titre" data-key="titre">
+          </div>
+        </div>
 
-  <section class="admin-help">
-    <h2>Comment publier tes changements</h2>
-    <ol>
-      <li>Fais tes modifications ci-dessus (elles sont sauvegardées automatiquement dans ce navigateur pendant que tu travailles).</li>
-      <li>Clique <strong>Télécharger zones.json</strong> et/ou <strong>Télécharger contact.json</strong> selon ce que tu as changé.</li>
-      <li>Remplace <code>assets/zones.json</code> et/ou <code>assets/contact.json</code> dans le projet par les fichiers téléchargés.</li>
-      <li>Commit et push sur GitHub, puis sur le NAS : <code>./deploy.sh</code>.</li>
-    </ol>
-    <p class="admin-note">⚠️ Cette page n'est protégée par aucun mot de passe — n'importe qui connaissant l'adresse <code>/admin.html</code> peut la modifier (les changements restent locaux à leur navigateur tant qu'ils ne téléchargent pas les fichiers). Pour une vraie protection, ajoute une liste d'accès (utilisateur/mot de passe) sur ce chemin dans Nginx Proxy Manager.</p>
+        <h3 class="admin-field-group-title">Téléphone mobile (appels)</h3>
+        <div class="admin-field-row">
+          <div class="admin-field">
+            <label for="c-mobile-affiche">Affiché à l'écran</label>
+            <input type="text" id="c-mobile-affiche" data-key="telephoneMobileAffiche" placeholder="819 000-0000">
+          </div>
+          <div class="admin-field">
+            <label for="c-mobile-lien">Format international (lien)</label>
+            <input type="text" id="c-mobile-lien" data-key="telephoneMobileLien" placeholder="+18190000000">
+          </div>
+        </div>
+
+        <h3 class="admin-field-group-title">Numéro de texto (SMS)</h3>
+        <div class="admin-field-row">
+          <div class="admin-field">
+            <label for="c-sms-affiche">Affiché à l'écran</label>
+            <input type="text" id="c-sms-affiche" data-key="telephoneSmsAffiche" placeholder="819 000-0000">
+          </div>
+          <div class="admin-field">
+            <label for="c-sms-lien">Format international (lien)</label>
+            <input type="text" id="c-sms-lien" data-key="telephoneSmsLien" placeholder="+18190000000">
+          </div>
+        </div>
+        <p class="admin-field-hint">Laisse vide pour réutiliser le numéro mobile ci-dessus.</p>
+
+        <h3 class="admin-field-group-title">Ligne générale H2O Innovation</h3>
+        <div class="admin-field-row">
+          <div class="admin-field">
+            <label for="c-h2o-affiche">Affiché à l'écran</label>
+            <input type="text" id="c-h2o-affiche" data-key="telephoneH2OAffiche" placeholder="1 866 990-3891">
+          </div>
+          <div class="admin-field">
+            <label for="c-h2o-lien">Format international (lien)</label>
+            <input type="text" id="c-h2o-lien" data-key="telephoneH2OLien" placeholder="+18669903891">
+          </div>
+        </div>
+
+        <h3 class="admin-field-group-title">Courriel et web</h3>
+        <div class="admin-field-row">
+          <div class="admin-field">
+            <label for="c-courriel">Courriel affiché</label>
+            <input type="email" id="c-courriel" data-key="courriel">
+          </div>
+          <div class="admin-field">
+            <label for="c-formsubmit">Courriel qui reçoit le formulaire</label>
+            <input type="email" id="c-formsubmit" data-key="formsubmitEmail">
+          </div>
+        </div>
+        <div class="admin-field-row">
+          <div class="admin-field">
+            <label for="c-boutique">Lien boutique H2O Innovation</label>
+            <input type="text" id="c-boutique" data-key="boutiqueUrl">
+          </div>
+          <div class="admin-field">
+            <label for="c-contact-general">Lien de repli (hors zone)</label>
+            <input type="text" id="c-contact-general" data-key="contactGeneralUrl">
+          </div>
+        </div>
+
+        <h3 class="admin-field-group-title">Messenger</h3>
+        <div class="admin-field">
+          <label for="c-messenger">Nom d'utilisateur de la page Facebook (ou lien complet)</label>
+          <input type="text" id="c-messenger" data-key="messengerUsername" placeholder="TonNomDePageFacebook">
+        </div>
+
+        <h3 class="admin-field-group-title">Clavardage en direct</h3>
+        <label class="admin-checkbox">
+          <input type="checkbox" id="c-chat-actif" data-key="chatLive.actif">
+          Activer le widget Tawk.to
+        </label>
+        <div class="admin-field-row">
+          <div class="admin-field">
+            <label for="c-chat-property">Tawk.to — Property ID</label>
+            <input type="text" id="c-chat-property" data-key="chatLive.propertyId">
+          </div>
+          <div class="admin-field">
+            <label for="c-chat-widget">Tawk.to — Widget ID</label>
+            <input type="text" id="c-chat-widget" data-key="chatLive.widgetId">
+          </div>
+        </div>
+        <div class="admin-field">
+          <label for="c-chat-lien">Ou lien direct vers un autre service de clavardage (si Tawk.to désactivé)</label>
+          <input type="text" id="c-chat-lien" data-key="chatLive.lienDirect" placeholder="https://...">
+        </div>
+      </form>
+
+      <div class="admin-save-row">
+        <span class="admin-save-status" id="contact-save-status"></span>
+        <button class="btn btn-primary" id="contact-save" type="button">Enregistrer</button>
+      </div>
+    </div>
+
+    <!-- ===== Onglet : Zones de couverture ===== -->
+    <div class="admin-panel" data-panel="zones" hidden>
+      <p class="admin-section-desc">Régions, MRC et municipalités où tu peux vendre.</p>
+      <div class="admin-stats" id="admin-stats"></div>
+
+      <div class="admin-toolbar">
+        <input type="text" id="admin-filter" placeholder="Filtrer par nom…" autocomplete="off">
+      </div>
+
+      <div class="admin-tree" id="admin-tree"></div>
+
+      <button class="btn btn-primary admin-add-region" id="admin-add-region" type="button">+ Ajouter une région</button>
+
+      <div class="admin-save-row">
+        <span class="admin-save-status" id="zones-save-status"></span>
+        <button class="btn btn-primary" id="zones-save" type="button">Enregistrer</button>
+      </div>
+    </div>
+
   </section>
 
 </main>

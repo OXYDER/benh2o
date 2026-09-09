@@ -5,3 +5,34 @@ services:
     restart: unless-stopped
     ports:
       - "8090:80"
+    depends_on:
+      - benoitlaprise-api
+
+  benoitlaprise-api:
+    build: ./api
+    container_name: benoitlaprise-api
+    restart: unless-stopped
+    environment:
+      PGHOST: benoitlaprise-db
+      PGPORT: 5432
+      PGUSER: benoitlaprise
+      PGPASSWORD: ${DB_PASSWORD}
+      PGDATABASE: benoitlaprise
+      JWT_SECRET: ${JWT_SECRET}
+    depends_on:
+      - benoitlaprise-db
+
+  benoitlaprise-db:
+    image: postgres:16-alpine
+    container_name: benoitlaprise-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: benoitlaprise
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: benoitlaprise
+    volumes:
+      - benoitlaprise-db-data:/var/lib/postgresql/data
+      - ./api/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+
+volumes:
+  benoitlaprise-db-data:

@@ -28,47 +28,62 @@
   padding: 40px 24px 80px;
 }
 
-.admin-intro h1 {
-  font-family: var(--serif);
-  font-size: 1.7rem;
-  margin-bottom: 10px;
+/* ---------- Porte de connexion ---------- */
+
+.admin-login {
+  max-width: 380px;
+  margin: 40px auto 0;
+  text-align: center;
 }
-.admin-intro p { color: var(--ink-600); max-width: 68ch; }
-.admin-intro code {
-  background: rgba(30,155,255,0.1);
-  padding: 1px 6px;
-  border-radius: 4px;
-  font-size: 0.92em;
+.admin-login h1 { font-family: var(--serif); font-size: 1.7rem; margin-bottom: 8px; }
+.admin-login p { color: var(--ink-600); font-size: 0.92rem; margin-bottom: 24px; }
+.admin-login-form { display: grid; gap: 14px; text-align: left; }
+.admin-login-error {
+  color: #B3403A;
+  font-size: 0.88rem;
+  display: none;
+  margin: -4px 0 0;
 }
 
-.admin-stats {
+/* ---------- Barre du haut (une fois connecté) ---------- */
+
+.admin-topbar {
   display: flex;
-  gap: 24px;
-  margin-top: 16px;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
   font-size: 0.9rem;
   color: var(--ink-600);
 }
-.admin-stats strong { color: var(--ink-900); font-family: var(--serif); font-size: 1.2rem; display: block; }
 
-.admin-divider {
+/* ---------- Onglets ---------- */
+
+.admin-tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1.5px solid rgba(32,27,20,0.15);
+  margin-bottom: 28px;
+}
+.admin-tab {
+  background: none;
   border: none;
-  border-top: 1px solid rgba(32,27,20,0.12);
-  margin: 40px 0;
+  padding: 12px 18px;
+  font-family: var(--sans);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--ink-600);
+  cursor: pointer;
+  border-bottom: 2.5px solid transparent;
+  margin-bottom: -1.5px;
 }
+.admin-tab:hover { color: var(--ink-900); }
+.admin-tab.active { color: var(--amber-700); border-bottom-color: var(--amber-700); }
 
-.admin-section {
-  background: var(--birch-100);
-  border: 1px solid rgba(32,27,20,0.1);
-  border-radius: var(--radius-lg);
-  padding: 24px 26px;
-  margin-bottom: 8px;
-}
-.admin-section-title {
-  font-family: var(--serif);
-  font-size: 1.3rem;
-  margin-bottom: 6px;
-}
+.admin-panel[hidden] { display: none; }
+
 .admin-section-desc { color: var(--ink-600); font-size: 0.92rem; margin-bottom: 20px; }
+
+/* ---------- Champs de formulaire ---------- */
 
 .admin-field-group-title {
   font-family: var(--sans);
@@ -99,7 +114,7 @@
   border: 1.5px solid rgba(32,27,20,0.2);
   font-family: var(--sans);
   font-size: 0.94rem;
-  background: var(--birch-050);
+  background: var(--birch-100);
   color: var(--ink-900);
 }
 .admin-field-hint {
@@ -118,55 +133,50 @@
 }
 .admin-checkbox input { width: 16px; height: 16px; }
 
-.admin-contact-actions { margin-top: 8px; padding: 0; background: none; border: none; justify-content: flex-end; }
+/* ---------- Barre d'enregistrement ---------- */
 
-@media (max-width: 640px) {
-  .admin-field-row { grid-template-columns: 1fr; }
-}
-
-.admin-toolbar {
+.admin-save-row {
   display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  justify-content: space-between;
   align-items: center;
-  margin: 28px 0 20px;
-  padding: 16px;
-  background: var(--birch-100);
-  border-radius: var(--radius);
-  border: 1px solid rgba(32,27,20,0.1);
+  justify-content: flex-end;
+  gap: 14px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(32,27,20,0.1);
 }
-.admin-toolbar-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.admin-save-status {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--water-500);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.admin-save-status.show { opacity: 1; }
+.admin-save-status.error { color: #B3403A; }
 
+/* ---------- Filtre des zones ---------- */
+
+.admin-toolbar { margin-bottom: 20px; }
 #admin-filter {
-  flex: 1 1 220px;
+  width: 100%;
   padding: 11px 14px;
   border-radius: var(--radius);
   border: 1.5px solid rgba(32,27,20,0.2);
   font-family: var(--sans);
   font-size: 0.95rem;
-  background: var(--birch-050);
+  background: var(--birch-100);
 }
 
-.btn-outline-dark {
-  background: transparent;
-  border: 1.5px solid var(--ink-900);
-  color: var(--ink-900);
-  padding: 11px 18px;
-  border-radius: var(--radius);
-  font-weight: 600;
+.admin-stats {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 20px;
   font-size: 0.9rem;
-  cursor: pointer;
-  font-family: var(--sans);
+  color: var(--ink-600);
 }
-.btn-outline-dark:hover { background: var(--ink-900); color: var(--birch-050); }
+.admin-stats strong { color: var(--ink-900); font-family: var(--serif); font-size: 1.2rem; display: block; }
 
-.admin-toolbar .btn, .admin-toolbar button {
-  padding: 11px 18px;
-  font-size: 0.9rem;
-}
-
-/* ---------- Arborescence ---------- */
+/* ---------- Arborescence Région > MRC > Municipalité ---------- */
 
 .admin-tree { display: flex; flex-direction: column; gap: 18px; }
 
@@ -292,7 +302,7 @@
   font-family: var(--sans);
   font-size: 0.88rem;
 }
-.add-mrc-btn, .add-region-inline {
+.add-mrc-btn {
   background: none;
   border: 1.5px dashed rgba(32,27,20,0.3);
   border-radius: var(--radius);
@@ -306,30 +316,12 @@
 .add-mrc-btn:hover { border-color: var(--amber-700); color: var(--amber-700); }
 
 .admin-add-region {
-  margin: 24px 0 40px;
+  margin: 24px 0 8px;
   width: 100%;
 }
 
-.admin-help {
-  border-top: 1px solid rgba(32,27,20,0.12);
-  padding-top: 28px;
-}
-.admin-help h2 { font-size: 1.2rem; font-family: var(--serif); margin-bottom: 12px; }
-.admin-help ol { color: var(--ink-600); padding-left: 20px; }
-.admin-help li { margin-bottom: 6px; }
-.admin-note {
-  margin-top: 16px;
-  padding: 12px 16px;
-  background: rgba(179,64,58,0.08);
-  border: 1px solid rgba(179,64,58,0.3);
-  border-radius: var(--radius);
-  font-size: 0.88rem;
-  color: var(--ink-600);
-}
-
 @media (max-width: 640px) {
-  .admin-toolbar { flex-direction: column; align-items: stretch; }
-  .admin-toolbar-actions { justify-content: stretch; }
-  .admin-toolbar-actions .btn, .admin-toolbar-actions button { flex: 1; }
+  .admin-field-row { grid-template-columns: 1fr; }
   .mrc-block { margin-left: 4px; }
+  .admin-tabs { overflow-x: auto; }
 }

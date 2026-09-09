@@ -114,7 +114,7 @@
       });
     }
 
-    fetch("assets/zones.json")
+    fetch("/api/zones")
       .then((res) => res.json())
       .then((data) => {
         flat = buildFlatIndex(data);
@@ -239,7 +239,7 @@
   document.addEventListener("DOMContentLoaded", () => {
     setupZoneChecker();
 
-    fetch("assets/contact.json")
+    fetch("/api/contact")
       .then((res) => res.json())
       .then((data) => {
         Object.assign(CFG, data);
