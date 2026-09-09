@@ -144,11 +144,13 @@ Canada) — de vrais polygones administratifs, pas des points approximatifs. Ell
 à jour toute seule à partir des mêmes données que le vérificateur de zone
 (`/api/zones`) — pas besoin de la retoucher quand tu modifies tes secteurs dans `/admin`.
 
-**Limite à connaître :** les frontières (`assets/data/municipality-boundaries.geojson`)
-sont figées au moment où ce fichier a été généré. Si tu ajoutes une **nouvelle
-municipalité** dans `/admin` qui n'y est pas encore, elle apparaîtra dans le
-vérificateur de zone comme d'habitude, mais sa forme rouge n'apparaîtra pas sur la
-carte tant que je n'aurai pas ajouté sa frontière au fichier — dis-le-moi quand ça
+**Limite à connaître :** le fichier `assets/data/municipality-boundaries.geojson`
+contient les frontières de **toutes les municipalités de tes 10 MRC actuelles**
+(152 municipalités), pas seulement les 56 que tu dessers aujourd'hui — donc si tu
+ajoutes ou retires une municipalité **à l'intérieur de ces mêmes MRC** via `/admin`,
+sa forme rouge apparaît ou disparaît automatiquement sur la carte, sans rien me
+demander. Seul un ajout dans une **toute nouvelle MRC** (en dehors de tes 10 actuelles)
+nécessiterait que je génère sa frontière et l'ajoute au fichier — dis-le-moi si ça
 arrive.
 
 ## Structure du projet
