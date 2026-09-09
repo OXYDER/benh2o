@@ -17,14 +17,16 @@
   }
 
   async function init() {
-    let zonesData, boundaries;
+    let zonesData, boundaries, distributeurs;
     try {
-      const [zonesRes, boundariesRes] = await Promise.all([
+      const [zonesRes, boundariesRes, distRes] = await Promise.all([
         fetch("/api/zones"),
         fetch("assets/data/municipality-boundaries.geojson"),
+        fetch("/api/distributeurs"),
       ]);
       zonesData = await zonesRes.json();
       boundaries = await boundariesRes.json();
+      distributeurs = await distRes.json();
     } catch (e) {
       mapEl.innerHTML = '<p style="padding:20px;color:#B3403A">Impossible de charger la carte.</p>';
       return;
@@ -48,6 +50,7 @@
     });
 
     const bounds = [];
+    const centers = [];
 
     const layer = L.geoJSON(boundaries, {
       filter: (feature) => covered.has(normalize(feature.properties.municipality)),
@@ -62,7 +65,10 @@
     layer.eachLayer((l) => {
       const info = covered.get(normalize(l.feature.properties.municipality));
       l.bindPopup(`<strong>${info.name}</strong><br>MRC ${info.mrc}<br>${info.region}`);
-      if (l.getBounds) bounds.push(l.getBounds());
+      if (l.getBounds) {
+        bounds.push(l.getBounds());
+        centers.push(l.getBounds().getCenter());
+      }
     });
 
     // Diagnostic : signale toute municipalité sélectionnée dans /admin qui n'a
@@ -79,6 +85,42 @@
         );
       }
     });
+
+    // Épingles des autres distributeurs H2O Innovation (repère, discret).
+    const DIST_COLOR = "#1E9BFF";
+    (distributeurs || []).forEach((d) => {
+      if (typeof d.lat !== "number" || typeof d.lon !== "number") return;
+      L.circleMarker([d.lat, d.lon], {
+        radius: 6,
+        color: "#0B4C80",
+        weight: 1.5,
+        fillColor: DIST_COLOR,
+        fillOpacity: 0.9,
+      })
+        .addTo(map)
+        .bindPopup(
+          `<strong>${d.name}</strong>` +
+          (d.address ? `<br>${d.address}` : "") +
+          (d.phone ? `<br>${d.phone}` : "") +
+          (d.email ? `<br>${d.email}` : "")
+        );
+    });
+
+    // Une seule grosse épingle, au centre de ton secteur.
+    if (centers.length) {
+      const avgLat = centers.reduce((s, c) => s + c.lat, 0) / centers.length;
+      const avgLon = centers.reduce((s, c) => s + c.lng, 0) / centers.length;
+      const benoitIcon = L.divIcon({
+        className: "benoit-pin",
+        html: '<div class="benoit-pin-dot"></div>',
+        iconSize: [26, 26],
+        iconAnchor: [13, 13],
+      });
+      L.marker([avgLat, avgLon], { icon: benoitIcon, zIndexOffset: 1000 })
+        .addTo(map)
+        .bindPopup("<strong>Benoît Laprise</strong><br>Centre de mon secteur")
+        .bindTooltip("Benoît Laprise", { permanent: false, direction: "top" });
+    }
 
     if (bounds.length) {
       map.fitBounds(bounds, { padding: [30, 30] });

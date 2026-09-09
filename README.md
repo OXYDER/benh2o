@@ -221,6 +221,22 @@ demander. Seul un ajout dans une **toute nouvelle MRC** (en dehors de tes 10 act
 nécessiterait que je génère sa frontière et l'ajoute au fichier — dis-le-moi si ça
 arrive.
 
+## 2d. Fenêtre d'accueil et carte enrichie
+
+**Fenêtre d'accueil (première visite) :** dès qu'un nouveau visiteur arrive sur le site,
+une fenêtre lui demande sa ville avant de continuer — il obtient tout de suite soit la
+confirmation qu'il est dans ton secteur, soit le contact du distributeur le plus proche.
+Elle ne s'affiche qu'une fois par navigateur (mémorisé via `localStorage` — un lien
+« Passer cette étape » reste disponible pour ne jamais bloquer complètement quelqu'un).
+
+**Autocomplétion :** le champ de recherche (fenêtre d'accueil et section de la page)
+suggère maintenant les 2628 lieux reconnus à travers tout le Québec, pas seulement tes
+municipalités couvertes.
+
+**Carte enrichie :** en plus de ton secteur en rouge, la carte affiche maintenant :
+- un point bleu pour chacun des 17 distributeurs du réseau (nom/adresse/téléphone/courriel au clic)
+- un seul gros point ambre au centre géographique de ton secteur (calculé automatiquement à partir des municipalités couvertes)
+
 ## 2c. Contenu de la page et apparence (thèmes)
 
 L'onglet **Contenu de la page** de `/admin` regroupe les textes de chaque section de

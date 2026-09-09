@@ -13,6 +13,16 @@
       .trim();
   }
 
+  function haversineKm(lat1, lon1, lat2, lon2) {
+    const R = 6371;
+    const dLat = ((lat2 - lat1) * Math.PI) / 180;
+    const dLon = ((lon2 - lon1) * Math.PI) / 180;
+    const a =
+      Math.sin(dLat / 2) ** 2 +
+      Math.cos((lat1 * Math.PI) / 180) * Math.cos((lat2 * Math.PI) / 180) * Math.sin(dLon / 2) ** 2;
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  }
+
   /* ---------- Remplir les liens de contact à partir de contact.json ---------- */
   function wireContactLinks() {
     const telHref = "tel:" + (CFG.telephoneMobileLien || "");
@@ -55,7 +65,131 @@
     if (yearEl) yearEl.textContent = new Date().getFullYear();
   }
 
-  /* ---------- Vérificateur de zone (Région > MRC > Municipalité) ---------- */
+  /* =========================================================
+     ZONE — état et logique partagés entre la section de la page
+     et la fenêtre d'accueil (première visite)
+     ========================================================= */
+  const Zone = {
+    flat: [], // { municipality, mrc, region } — ton secteur
+    distributeurs: [],
+    centroids: {}, // toutes les municipalités/lieux du Québec (nom -> [lat, lon])
+    ready: null,
+  };
+
+  function buildFlatIndex(data) {
+    const out = [];
+    (data.regions || []).forEach((region) => {
+      (region.mrcs || []).forEach((mrc) => {
+        (mrc.municipalities || []).forEach((muni) => {
+          out.push({ municipality: muni, mrc: mrc.name, region: region.name });
+        });
+      });
+    });
+    return out;
+  }
+
+  function loadZoneData() {
+    if (Zone.ready) return Zone.ready;
+    Zone.ready = Promise.all([
+      fetch("/api/zones").then((r) => r.json()),
+      fetch("/api/distributeurs").then((r) => r.json()),
+      fetch("assets/data/municipality-centroids.json").then((r) => r.json()),
+    ]).then(([zonesData, distributeurs, centroids]) => {
+      Zone.flat = buildFlatIndex(zonesData);
+      Zone.distributeurs = distributeurs;
+      Zone.centroids = centroids;
+      return { zonesData, distributeurs, centroids };
+    });
+    return Zone.ready;
+  }
+
+  function findNearestDistributeur(query) {
+    const centroidNames = Object.keys(Zone.centroids);
+    const matchName =
+      centroidNames.find((n) => normalize(n) === query) ||
+      centroidNames.find((n) => normalize(n).includes(query) || query.includes(normalize(n)));
+    if (!matchName || !Zone.distributeurs.length) return null;
+
+    const [lat, lon] = Zone.centroids[matchName];
+    let nearest = null;
+    let bestDist = Infinity;
+    Zone.distributeurs.forEach((d) => {
+      const dist = haversineKm(lat, lon, d.lat, d.lon);
+      if (dist < bestDist) {
+        bestDist = dist;
+        nearest = d;
+      }
+    });
+    return nearest;
+  }
+
+  function findMatch(query) {
+    let hit = Zone.flat.find((z) => normalize(z.municipality) === query);
+    if (hit) return { level: "municipality", ...hit };
+
+    hit = Zone.flat.find((z) => normalize(z.municipality).includes(query) || query.includes(normalize(z.municipality)));
+    if (hit) return { level: "municipality", ...hit };
+
+    hit = Zone.flat.find((z) => normalize(z.mrc).includes(query) || query.includes(normalize(z.mrc)));
+    if (hit) return { level: "mrc", ...hit };
+
+    hit = Zone.flat.find((z) => normalize(z.region).includes(query) || query.includes(normalize(z.region)));
+    if (hit) return { level: "region", ...hit };
+
+    return null;
+  }
+
+  // Retourne { ok, html } — utilisé à la fois par la section de la page et la fenêtre d'accueil.
+  function evaluateQuery(rawQuery) {
+    const query = normalize(rawQuery);
+    if (!query) return null;
+
+    const match = findMatch(query);
+    if (match) {
+      const label =
+        match.level === "municipality"
+          ? match.municipality
+          : match.level === "mrc"
+          ? `la MRC ${match.mrc}`
+          : `la région ${match.region}`;
+      return {
+        ok: true,
+        html: `Bonne nouvelle : <strong>${label}</strong> fait partie de mon secteur. <a href="#contact">Envoie-moi ta demande</a> ou <a href="tel:${CFG.telephoneMobileLien || ""}">appelle directement</a>.`,
+      };
+    }
+
+    const nearest = findNearestDistributeur(query);
+    if (nearest) {
+      const contactBits = [
+        nearest.phone ? `<a href="tel:${nearest.phone.replace(/[^\d+]/g, "")}">${nearest.phone}</a>` : "",
+        nearest.email ? `<a href="mailto:${nearest.email}">${nearest.email}</a>` : "",
+      ]
+        .filter(Boolean)
+        .join(" · ");
+      return {
+        ok: false,
+        html: `Cette adresse est en dehors de mon secteur, mais elle est desservie par un autre distributeur H2O Innovation : <strong>${nearest.name}</strong>${nearest.address ? ` (${nearest.address})` : ""}${contactBits ? `<br>${contactBits}` : ""}`,
+      };
+    }
+
+    return {
+      ok: false,
+      html: `Cette adresse semble en dehors de mon secteur. Le site <a href="${CFG.contactGeneralUrl || CFG.boutiqueUrl || "#"}" target="_blank" rel="noopener">h2oinnovation.net</a> peut te diriger vers le bon représentant.`,
+    };
+  }
+
+  function renderSuggestionsInto(datalistEl) {
+    if (!datalistEl) return;
+    const names = new Set();
+    Zone.flat.forEach((z) => names.add(z.municipality));
+    Object.keys(Zone.centroids).forEach((n) => names.add(n));
+    datalistEl.innerHTML = Array.from(names)
+      .sort((a, b) => a.localeCompare(b, "fr"))
+      .map((n) => `<option value="${n}"></option>`)
+      .join("");
+  }
+
+  /* ---------- Section « Est-ce que je couvre ta région? » ---------- */
   function setupZoneChecker() {
     const input = document.getElementById("zone-input");
     const button = document.getElementById("zone-submit");
@@ -65,27 +199,6 @@
     const listBody = document.getElementById("zone-list-body");
 
     if (!input || !result) return;
-
-    let flat = []; // { municipality, mrc, region }
-
-    function buildFlatIndex(data) {
-      const out = [];
-      (data.regions || []).forEach((region) => {
-        (region.mrcs || []).forEach((mrc) => {
-          (mrc.municipalities || []).forEach((muni) => {
-            out.push({ municipality: muni, mrc: mrc.name, region: region.name });
-          });
-        });
-      });
-      return out;
-    }
-
-    function renderSuggestions() {
-      if (!suggestions) return;
-      suggestions.innerHTML = flat
-        .map((z) => `<option value="${z.municipality}"></option>`)
-        .join("");
-    }
 
     function renderGroupedList(data) {
       if (!listBody) return;
@@ -116,120 +229,86 @@
       });
     }
 
-    fetch("/api/zones")
-      .then((res) => res.json())
-      .then((data) => {
-        flat = buildFlatIndex(data);
-        renderSuggestions();
-        renderGroupedList(data);
+    loadZoneData()
+      .then(({ zonesData }) => {
+        renderSuggestionsInto(suggestions);
+        renderGroupedList(zonesData);
       })
       .catch(() => {
         if (listBody) listBody.textContent = "Liste de zones indisponible pour le moment.";
       });
 
-    // Réseau de distributeurs + positions approximatives des municipalités —
-    // utilisés uniquement pour orienter les visiteurs hors zone vers le bon distributeur.
-    let distributeurs = [];
-    let centroids = {};
-    Promise.all([
-      fetch("/api/distributeurs").then((r) => r.json()),
-      fetch("assets/data/municipality-centroids.json").then((r) => r.json()),
-    ])
-      .then(([d, c]) => {
-        distributeurs = d;
-        centroids = c;
-      })
-      .catch(() => {
-        /* pas grave : le repli générique reste disponible */
-      });
-
-    function haversineKm(lat1, lon1, lat2, lon2) {
-      const R = 6371;
-      const dLat = ((lat2 - lat1) * Math.PI) / 180;
-      const dLon = ((lon2 - lon1) * Math.PI) / 180;
-      const a =
-        Math.sin(dLat / 2) ** 2 +
-        Math.cos((lat1 * Math.PI) / 180) * Math.cos((lat2 * Math.PI) / 180) * Math.sin(dLon / 2) ** 2;
-      return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    }
-
-    function findNearestDistributeur(query) {
-      // trouve la position approximative de l'endroit recherché parmi les
-      // municipalités connues, puis le distributeur H2O Innovation le plus proche
-      const centroidNames = Object.keys(centroids);
-      const matchName =
-        centroidNames.find((n) => normalize(n) === query) ||
-        centroidNames.find((n) => normalize(n).includes(query) || query.includes(normalize(n)));
-      if (!matchName || !distributeurs.length) return null;
-
-      const [lat, lon] = centroids[matchName];
-      let nearest = null;
-      let bestDist = Infinity;
-      distributeurs.forEach((d) => {
-        const dist = haversineKm(lat, lon, d.lat, d.lon);
-        if (dist < bestDist) {
-          bestDist = dist;
-          nearest = d;
-        }
-      });
-      return nearest;
-    }
-
-    function findMatch(query) {
-      // priorité : municipalité exacte, puis municipalité partielle, puis MRC, puis région
-      let hit = flat.find((z) => normalize(z.municipality) === query);
-      if (hit) return { level: "municipality", ...hit };
-
-      hit = flat.find((z) => normalize(z.municipality).includes(query) || query.includes(normalize(z.municipality)));
-      if (hit) return { level: "municipality", ...hit };
-
-      hit = flat.find((z) => normalize(z.mrc).includes(query) || query.includes(normalize(z.mrc)));
-      if (hit) return { level: "mrc", ...hit };
-
-      hit = flat.find((z) => normalize(z.region).includes(query) || query.includes(normalize(z.region)));
-      if (hit) return { level: "region", ...hit };
-
-      return null;
-    }
-
     function check() {
-      const query = normalize(input.value);
-      if (!query) return;
-
-      const match = findMatch(query);
+      const r = evaluateQuery(input.value);
+      if (!r) return;
       result.classList.remove("yes", "no");
-
-      if (match) {
-        const label =
-          match.level === "municipality"
-            ? match.municipality
-            : match.level === "mrc"
-            ? `la MRC ${match.mrc}`
-            : `la région ${match.region}`;
-        result.innerHTML = `Bonne nouvelle : <strong>${label}</strong> fait partie de mon secteur. <a href="#contact">Envoie-moi ta demande</a> ou <a href="tel:${CFG.telephoneMobileLien || ""}">appelle directement</a>.`;
-        result.classList.add("yes");
-      } else {
-        const nearest = findNearestDistributeur(query);
-        if (nearest) {
-          const contactBits = [
-            nearest.phone ? `<a href="tel:${nearest.phone.replace(/[^\d+]/g, "")}">${nearest.phone}</a>` : "",
-            nearest.email ? `<a href="mailto:${nearest.email}">${nearest.email}</a>` : "",
-          ]
-            .filter(Boolean)
-            .join(" · ");
-          result.innerHTML = `Cette adresse est en dehors de mon secteur, mais elle est desservie par un autre distributeur H2O Innovation : <strong>${nearest.name}</strong>${nearest.address ? ` (${nearest.address})` : ""}${contactBits ? `<br>${contactBits}` : ""}`;
-        } else {
-          result.innerHTML = `Cette adresse semble en dehors de mon secteur. Le site <a href="${CFG.contactGeneralUrl || CFG.boutiqueUrl || "#"}" target="_blank" rel="noopener">h2oinnovation.net</a> peut te diriger vers le bon représentant.`;
-        }
-        result.classList.add("no");
-      }
-      result.classList.add("show");
+      result.innerHTML = r.html;
+      result.classList.add(r.ok ? "yes" : "no", "show");
     }
 
     if (button) button.addEventListener("click", check);
     input.addEventListener("keydown", (e) => {
       if (e.key === "Enter") check();
     });
+  }
+
+  /* ---------- Fenêtre d'accueil (première visite) ---------- */
+  function setupEntryGate() {
+    const gate = document.getElementById("entry-gate");
+    if (!gate) return;
+
+    const VISITED_KEY = "bl_visited_v1";
+    if (localStorage.getItem(VISITED_KEY)) return;
+
+    const input = document.getElementById("gate-input");
+    const button = document.getElementById("gate-submit");
+    const result = document.getElementById("gate-result");
+    const suggestions = document.getElementById("gate-suggestions");
+    const skipLink = document.getElementById("gate-skip");
+    const closeBtn = document.getElementById("gate-close");
+    const continueBtn = document.getElementById("gate-continue");
+
+    function open() {
+      gate.hidden = false;
+      document.body.classList.add("gate-open");
+      setTimeout(() => input && input.focus(), 50);
+    }
+    function close() {
+      gate.hidden = true;
+      document.body.classList.remove("gate-open");
+      localStorage.setItem(VISITED_KEY, "1");
+    }
+
+    loadZoneData().then(() => renderSuggestionsInto(suggestions));
+
+    function check() {
+      const r = evaluateQuery(input.value);
+      if (!r) return;
+      result.classList.remove("yes", "no");
+      result.innerHTML = r.html;
+      result.classList.add(r.ok ? "yes" : "no", "show");
+      if (continueBtn) continueBtn.hidden = false;
+
+      // Reflète aussi la recherche dans la section plus bas sur la page, pour la cohérence.
+      const mainInput = document.getElementById("zone-input");
+      const mainButton = document.getElementById("zone-submit");
+      if (mainInput && mainButton) {
+        mainInput.value = input.value;
+        mainButton.click();
+      }
+    }
+
+    if (button) button.addEventListener("click", check);
+    if (input) {
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") check();
+      });
+    }
+    if (skipLink) skipLink.addEventListener("click", (e) => { e.preventDefault(); close(); });
+    if (closeBtn) closeBtn.addEventListener("click", close);
+    if (continueBtn) continueBtn.addEventListener("click", close);
+
+    open();
   }
 
   /* ---------- Clavardage en direct (Chatwoot, ou lien direct alternatif) ---------- */
@@ -285,11 +364,8 @@
         if (chatFallback) chatFallback.classList.add("show");
       });
 
-      // Si le widget n'a pas confirmé son chargement après quelques secondes
-      // (bloqué par une extension anti-pub/traqueurs, réseau lent, etc.), on bascule.
       setTimeout(fallbackToSms, 4000);
     } else if (chat.lienDirect) {
-      // Un autre service de chat est utilisé : on ouvre simplement son lien.
       if (chatStatus) chatStatus.textContent = "Pose ta question en direct via notre service de clavardage.";
       if (chatButton) {
         chatButton.addEventListener("click", () => {
@@ -297,7 +373,6 @@
         });
       }
     } else {
-      // Chat pas encore configuré : on redirige vers le texto en attendant.
       if (chatStatus) chatStatus.textContent = "Clavardage bientôt disponible — en attendant, écris-moi par texto.";
       if (chatButton) {
         chatButton.textContent = "Texter";
@@ -373,6 +448,7 @@
 
   document.addEventListener("DOMContentLoaded", () => {
     setupZoneChecker();
+    setupEntryGate();
     setupContent();
 
     fetch("/api/contact")

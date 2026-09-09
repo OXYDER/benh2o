@@ -94,7 +94,7 @@ INSERT INTO site_data (key, data) VALUES ('content', '{
   "map": {
     "tag": "Vue d''ensemble",
     "title": "Mon secteur, en un coup d''œil",
-    "description": "Chaque zone rouge est une municipalité que je dessers — pas la MRC en entier, seulement les municipalités précises de mon secteur. Clique sur une zone pour voir son nom — déplace-toi et zoome librement sur la carte.",
+    "description": "Chaque zone rouge est une municipalité que je dessers — pas la MRC en entier, seulement les municipalités précises de mon secteur. Les points bleus sont les autres distributeurs H2O Innovation, et le gros point ambre marque le centre de mon secteur. Clique sur une zone ou un point pour en savoir plus — déplace-toi et zoome librement sur la carte.",
     "note": "Frontières municipales officielles (Statistique Canada). Pour une confirmation précise de ton secteur, utilise le vérificateur ci-dessus ou contacte-moi directement."
   },
   "channels": {

@@ -13,6 +13,25 @@
 </head>
 <body>
 
+<div class="entry-gate" id="entry-gate" hidden>
+  <div class="entry-gate-card">
+    <button class="entry-gate-close" id="gate-close" type="button" aria-label="Fermer">✕</button>
+    <span class="hero-eyebrow">Avant de commencer</span>
+    <h2>Où es-tu situé?</h2>
+    <p>Entre ta ville ou ta municipalité — je vais te dire tout de suite si je dessers ton secteur, ou te diriger directement vers le bon distributeur pour ne pas te faire perdre de temps.</p>
+    <div class="zone-check">
+      <input type="text" id="gate-input" list="gate-suggestions" placeholder="Ex. : Victoriaville, Weedon…" autocomplete="off">
+      <datalist id="gate-suggestions"></datalist>
+      <button class="btn btn-primary" id="gate-submit" type="button">Vérifier</button>
+    </div>
+    <div class="zone-result" id="gate-result"></div>
+    <div class="entry-gate-actions">
+      <button class="btn btn-primary" id="gate-continue" type="button" hidden>Continuer sur le site</button>
+      <a href="#" class="entry-gate-skip" id="gate-skip">Passer cette étape</a>
+    </div>
+  </div>
+</div>
+
 <header class="site-header">
   <div class="container">
     <a href="#home" class="brand">Benoît Laprise<span>Représentant des ventes — H2O Innovation</span></a>
@@ -70,7 +89,7 @@
     <div class="section-head">
       <span class="section-tag" data-c="map.tag">Vue d'ensemble</span>
       <h2 data-c="map.title">Mon secteur, en un coup d'œil</h2>
-      <p data-c="map.description">Chaque zone rouge est une municipalité que je dessers — pas la MRC en entier, seulement les municipalités précises de mon secteur. Clique sur une zone pour voir son nom — déplace-toi et zoome librement sur la carte.</p>
+      <p data-c="map.description">Chaque zone rouge est une municipalité que je dessers — pas la MRC en entier, seulement les municipalités précises de mon secteur. Les points bleus sont les autres distributeurs H2O Innovation, et le gros point ambre marque le centre de mon secteur. Clique sur une zone ou un point pour en savoir plus — déplace-toi et zoome librement sur la carte.</p>
     </div>
     <div id="coverage-map" aria-label="Carte des municipalités et MRC desservies par Benoît Laprise"></div>
     <p class="map-note" data-c="map.note">Frontières municipales officielles (Statistique Canada). Pour une confirmation précise de ton secteur, utilise le vérificateur ci-dessus ou contacte-moi directement.</p>

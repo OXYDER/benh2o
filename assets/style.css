@@ -281,6 +281,15 @@ section { padding: 76px 0; }
 }
 .leaflet-popup-content { font-size: 0.9rem; line-height: 1.4; }
 
+.benoit-pin-dot {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--amber-600);
+  border: 3px solid var(--birch-050);
+  box-shadow: 0 0 0 2px var(--amber-700), 0 3px 10px rgba(0,0,0,0.4);
+}
+
 @media (max-width: 640px) {
   #coverage-map { height: 340px; }
 }
@@ -496,4 +505,74 @@ footer a:hover { text-decoration: underline; }
   .brand span { display: none; }
   .header-call span { display: none; }
   .header-call { padding: 11px 14px; }
+}
+
+/* ---------- Fenêtre d'accueil (première visite) ---------- */
+
+body.gate-open { overflow: hidden; }
+
+.entry-gate {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(5, 11, 24, 0.82);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.entry-gate-card {
+  position: relative;
+  background: var(--birch-050);
+  border-radius: var(--radius-lg);
+  padding: 40px 36px;
+  max-width: 480px;
+  width: 100%;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+}
+
+.entry-gate-card h2 {
+  margin: 4px 0 10px;
+}
+
+.entry-gate-card p {
+  color: var(--ink-600);
+  margin-bottom: 22px;
+}
+
+.entry-gate-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  color: var(--ink-600);
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+.entry-gate-close:hover { background: rgba(32,27,20,0.08); color: var(--ink-900); }
+
+.entry-gate-actions {
+  margin-top: 18px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.entry-gate-skip {
+  font-size: 0.85rem;
+  color: var(--ink-600);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.entry-gate-skip:hover { color: var(--ink-900); }
+
+@media (max-width: 480px) {
+  .entry-gate-card { padding: 30px 22px; }
 }
