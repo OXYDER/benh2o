@@ -16,7 +16,7 @@ benoitlaprise-db     → Postgres — stocke tes coordonnées et tes zones de co
 
 Tes coordonnées et ta zone de couverture ne sont plus dans des fichiers du projet
 (`config.js`, `zones.json`) — elles vivent dans Postgres et se modifient depuis
-**`/admin.html`**, protégée par courriel + mot de passe. Les changements sont **enregistrés
+**`/admin`**, protégée par courriel + mot de passe. Les changements sont **enregistrés
 immédiatement** dès que tu cliques "Enregistrer" — pas de fichier à télécharger ni de
 `git push` requis pour ça.
 
@@ -51,9 +51,9 @@ docker compose exec benoitlaprise-api node scripts/create-admin.js "ton@courriel
 ```
 
 Tu peux relancer cette commande n'importe quand pour changer le mot de passe. Va ensuite
-sur `https://benoit.resotik.ca/admin.html` et connecte-toi.
+sur `https://benoit.resotik.ca/admin` et connecte-toi.
 
-## 2. Administration — `/admin.html`
+## 2. Administration — `/admin`
 
 Protégée par courriel + mot de passe (voir 1.3). Une fois connecté, deux onglets :
 
@@ -77,7 +77,7 @@ Le plus simple et gratuit : [Tawk.to](https://www.tawk.to)
 
 1. Crée un compte gratuit sur tawk.to
 2. Dans **Administration > Channels**, récupère ton **Property ID** et ton **Widget ID**
-3. Dans `/admin.html`, onglet **Mes informations**, coche **Activer le widget Tawk.to**,
+3. Dans `/admin`, onglet **Mes informations**, coche **Activer le widget Tawk.to**,
    colle les deux identifiants, puis **Enregistrer**
 
 Tant que ce n'est pas configuré, le bouton « Clavarder » redirige automatiquement vers le
@@ -120,11 +120,11 @@ Ce script fait `git pull`, reconstruit les images (site + API) et redémarre les
 conteneurs. `.env` et la base de données ne sont jamais touchés par un déploiement — tes
 données et ton mot de passe restent en place.
 
-### Protéger `/admin.html` davantage (optionnel)
+### Protéger `/admin` davantage (optionnel)
 
 L'authentification par courriel/mot de passe protège déjà les actions de modification.
 Si tu veux une couche supplémentaire (empêcher même de voir l'écran de connexion), ajoute
-une liste d'accès sur le chemin `/admin.html` directement dans Nginx Proxy Manager
+une liste d'accès sur le chemin `/admin` directement dans Nginx Proxy Manager
 (onglet *Access Lists* du Proxy Host).
 
 ## 7. Prochaines étapes (roadmap)
