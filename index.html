@@ -14,8 +14,8 @@
 <body>
 
 <div class="entry-gate" id="entry-gate" hidden>
+  <button class="entry-gate-close" id="gate-close" type="button" aria-label="Fermer">✕</button>
   <div class="entry-gate-card">
-    <button class="entry-gate-close" id="gate-close" type="button" aria-label="Fermer">✕</button>
     <span class="hero-eyebrow">Avant de commencer</span>
     <h2>Où es-tu situé?</h2>
     <p>Entre ta ville ou ta municipalité — je vais te dire tout de suite si je dessers ton secteur, ou te diriger directement vers le bon distributeur pour ne pas te faire perdre de temps.</p>
@@ -48,6 +48,7 @@
 <section class="hero" id="home">
   <div class="container">
     <div class="hero-copy">
+      <span class="visitor-badge" id="visitor-badge" hidden>📍 Nous te reconnaissons depuis <span id="visitor-city"></span></span>
       <span class="hero-eyebrow" data-c="hero.eyebrow">Ton représentant régional</span>
       <h1 data-c="hero.headlineHtml" data-c-html>L'eau d'érable, <em>un seul contact</em> pour ta région.</h1>
       <p class="lead" data-c="hero.lead">J'accompagne les acériculteurs de mon secteur pour l'osmose inverse, la filtration et le service après-vente H2O Innovation — par téléphone, texto, courriel, Messenger ou clavardage, selon ce qui te convient.</p>

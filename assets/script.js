@@ -140,7 +140,8 @@
   }
 
   // Retourne { ok, html } — utilisé à la fois par la section de la page et la fenêtre d'accueil.
-  function evaluateQuery(rawQuery) {
+  function evaluateQuery(rawQuery, options) {
+    const simple = options && options.simple;
     const query = normalize(rawQuery);
     if (!query) return null;
 
@@ -154,7 +155,9 @@
           : `la région ${match.region}`;
       return {
         ok: true,
-        html: `Bonne nouvelle : <strong>${label}</strong> fait partie de mon secteur. <a href="#contact">Envoie-moi ta demande</a> ou <a href="tel:${CFG.telephoneMobileLien || ""}">appelle directement</a>.`,
+        html: simple
+          ? `Bonne nouvelle : <strong>${label}</strong> fait partie de mon secteur — tu es au bon endroit!`
+          : `Bonne nouvelle : <strong>${label}</strong> fait partie de mon secteur. <a href="#contact">Envoie-moi ta demande</a> ou <a href="tel:${CFG.telephoneMobileLien || ""}">appelle directement</a>.`,
       };
     }
 
@@ -253,6 +256,18 @@
   }
 
   /* ---------- Fenêtre d'accueil (première visite) ---------- */
+  const VISITOR_CITY_KEY = "bl_visitor_city";
+
+  function showVisitorBadge() {
+    const city = localStorage.getItem(VISITOR_CITY_KEY);
+    const badge = document.getElementById("visitor-badge");
+    const cityEl = document.getElementById("visitor-city");
+    if (city && badge && cityEl) {
+      cityEl.textContent = city;
+      badge.hidden = false;
+    }
+  }
+
   function setupEntryGate() {
     const gate = document.getElementById("entry-gate");
     if (!gate) return;
@@ -260,6 +275,7 @@
     const VISITED_KEY = "bl_visited_v1";
     if (localStorage.getItem(VISITED_KEY)) return;
 
+    const card = gate.querySelector(".entry-gate-card");
     const input = document.getElementById("gate-input");
     const button = document.getElementById("gate-submit");
     const result = document.getElementById("gate-result");
@@ -282,12 +298,20 @@
     loadZoneData().then(() => renderSuggestionsInto(suggestions));
 
     function check() {
-      const r = evaluateQuery(input.value);
+      const typed = input.value.trim();
+      const r = evaluateQuery(typed, { simple: true });
       if (!r) return;
       result.classList.remove("yes", "no");
       result.innerHTML = r.html;
       result.classList.add(r.ok ? "yes" : "no", "show");
       if (continueBtn) continueBtn.hidden = false;
+
+      // Retient la ville indiquée (seulement si le visiteur a écrit quelque chose)
+      // pour la réafficher ailleurs sur le site — jamais si le champ est resté vide.
+      if (typed) {
+        localStorage.setItem(VISITOR_CITY_KEY, typed);
+        showVisitorBadge();
+      }
 
       // Reflète aussi la recherche dans la section plus bas sur la page, pour la cohérence.
       const mainInput = document.getElementById("zone-input");
@@ -307,6 +331,15 @@
     if (skipLink) skipLink.addEventListener("click", (e) => { e.preventDefault(); close(); });
     if (closeBtn) closeBtn.addEventListener("click", close);
     if (continueBtn) continueBtn.addEventListener("click", close);
+
+    // Clic sur le fond sombre (en dehors de la carte) = fermer.
+    gate.addEventListener("click", (e) => {
+      if (e.target === gate) close();
+    });
+    // Touche Échap = fermer, peu importe où se trouve le focus.
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && !gate.hidden) close();
+    });
 
     open();
   }
@@ -458,6 +491,7 @@
     setupZoneChecker();
     setupEntryGate();
     setupContent();
+    showVisitorBadge();
 
     fetch("/api/contact")
       .then((res) => res.json())
