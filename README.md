@@ -109,8 +109,7 @@ docker compose up -d --build
 docker compose exec benoitlaprise-api node scripts/create-admin.js "ton@courriel.com" "TonMotDePasse"
 ```
 Puis dans Nginx Proxy Manager, un Proxy Host `benoitlaprise.com` (et `www.benoitlaprise.com`)
-→ `http://<IP_NAS>:8090`. L'ancien sous-domaine `benoit.resotik.ca` reste aussi configuré
-dans `nginx.conf` et continue de fonctionner si tu veux le garder actif en parallèle.
+→ `http://<IP_NAS>:8090`.
 
 **Mises à jour suivantes :**
 ```bash
