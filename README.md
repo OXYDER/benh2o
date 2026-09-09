@@ -71,18 +71,65 @@ La comparaison ignore les accents et les majuscules, et fonctionne aussi si la p
 tape juste une partie du nom, une MRC, ou même une région (ex. « Victo » trouve
 « Victoriaville »; « Bécancour » seul trouve la MRC).
 
-## 3. Clavardage en direct (chat live)
+## 3. Clavardage en direct — Chatwoot (auto-hébergé, open source)
 
-Le plus simple et gratuit : [Tawk.to](https://www.tawk.to)
+Le site utilise [Chatwoot](https://www.chatwoot.com) plutôt que Tawk.to : open source
+(licence MIT), gratuit en auto-hébergement, et tes données de conversation restent sur
+ton propre NAS au lieu de transiter par un service tiers — ça évite aussi les blocages
+par les bloqueurs de publicité (le widget vient de ton propre domaine).
 
-1. Crée un compte gratuit sur tawk.to
-2. Dans **Administration > Channels**, récupère ton **Property ID** et ton **Widget ID**
-3. Dans `/admin`, onglet **Mes informations**, coche **Activer le widget Tawk.to**,
-   colle les deux identifiants, puis **Enregistrer**
+### 3.1 Premier démarrage
 
-Tant que ce n'est pas configuré, le bouton « Clavarder » redirige automatiquement vers le
-texto. Tu peux aussi utiliser un autre service de clavardage en laissant Tawk.to désactivé
-et en collant son lien direct dans le champ **Lien direct**.
+Chatwoot roule dans 4 conteneurs séparés (`chatwoot-rails`, `chatwoot-sidekiq`,
+`chatwoot-db`, `chatwoot-redis`) — plus lourd qu'un simple script à coller, mais tu
+gardes le contrôle total. Compte au moins **1 à 2 Go de RAM** additionnels pour ces
+4 conteneurs — vérifie que ton NAS a la marge disponible vu tout ce qui tourne déjà
+dessus (`docker stats` pour voir la consommation actuelle).
+
+Remplis d'abord les secrets Chatwoot dans `.env`
+(voir `.env.example` : `CHATWOOT_DB_PASSWORD`, `CHATWOOT_REDIS_PASSWORD`,
+`CHATWOOT_SECRET_KEY_BASE` — génère cette dernière avec `openssl rand -hex 64` —,
+et `CHATWOOT_FRONTEND_URL`, l'adresse publique où Chatwoot sera accessible).
+
+```bash
+docker compose up -d chatwoot-db chatwoot-redis
+docker compose run --rm chatwoot-rails bundle exec rails db:chatwoot_prepare
+docker compose up -d
+```
+
+La commande `db:chatwoot_prepare` ne s'exécute qu'**une seule fois**, à l'installation
+initiale — pas besoin de la relancer aux mises à jour suivantes.
+
+### 3.2 Sous-domaine dédié
+
+Chatwoot a besoin de sa **propre adresse** (pas un sous-chemin du site principal) —
+ex. `chat.benoitlaprise.com`. Dans Nginx Proxy Manager, ajoute un nouveau Proxy Host
+`chat.benoitlaprise.com` → `http://<IP_NAS>:8096`, avec certificat SSL. Cette adresse
+doit correspondre exactement à `CHATWOOT_FRONTEND_URL` dans `.env`.
+
+### 3.3 Créer ton compte et ton widget
+
+1. Va sur `https://chat.benoitlaprise.com` et complète l'assistant de configuration
+   initiale (ça crée ton compte administrateur Chatwoot — différent du compte de
+   `/admin` du site)
+2. Crée une **Inbox** de type **Website**
+3. Dans les paramètres de cette Inbox, copie le **Website Token**
+4. Dans `/admin` du site, onglet **Mes informations**, coche **Activer le widget
+   Chatwoot**, colle l'adresse (`https://chat.benoitlaprise.com`) et le Website Token,
+   puis **Enregistrer**
+
+Tant que ce n'est pas configuré, le bouton « Clavarder » redirige automatiquement vers
+le texto. Tu peux aussi utiliser un autre service de clavardage en laissant Chatwoot
+désactivé et en collant un lien direct dans le champ **Lien direct**.
+
+### 3.4 Mises à jour de Chatwoot
+
+`./deploy.sh` ne met à jour que le site (`benoitlaprise`/`benoitlaprise-api`), pas
+Chatwoot. Pour mettre Chatwoot à jour :
+```bash
+docker compose pull chatwoot-rails chatwoot-sidekiq
+docker compose up -d chatwoot-rails chatwoot-sidekiq
+```
 
 ## 4. Formulaire de contact
 
@@ -159,7 +206,7 @@ index.html                    → la page publique
 admin.html                     → administration (connexion + onglets)
 nginx.conf                     → sert le site + relaie /api/ vers l'API
 Dockerfile                     → image du site (nginx)
-docker-compose.yml              → les 3 conteneurs (site, API, base de données)
+docker-compose.yml              → les 7 conteneurs (site, API, base de données + Chatwoot x4)
 .env.example                    → modèle des secrets à copier en .env (jamais commité)
 deploy.sh                       → script de mise à jour (git pull + rebuild + restart)
 

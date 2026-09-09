@@ -173,49 +173,61 @@
     });
   }
 
-  /* ---------- Clavardage en direct (Tawk.to, ou lien direct alternatif) ---------- */
+  /* ---------- Clavardage en direct (Chatwoot, ou lien direct alternatif) ---------- */
   function setupChat() {
     const chatButton = document.getElementById("channel-chat");
     const chatFallback = document.getElementById("chat-fallback");
     const chatStatus = document.getElementById("chat-status");
     const chat = CFG.chatLive || {};
 
-    if (chat.actif && chat.propertyId && chat.widgetId) {
-      let tawkReady = false;
+    if (chat.actif && chat.chatwootBaseUrl && chat.chatwootWebsiteToken) {
+      let chatwootReady = false;
 
       function fallbackToSms() {
-        if (tawkReady) return;
+        if (chatwootReady) return;
         if (chatStatus) chatStatus.textContent = "Le clavardage n'a pas pu se charger (probablement bloqué par une extension) — écris-moi par texto à la place.";
         if (chatButton) chatButton.textContent = "Texter";
       }
 
-      const s1 = document.createElement("script");
-      s1.async = true;
-      s1.src = `https://embed.tawk.to/${chat.propertyId}/${chat.widgetId}`;
-      s1.setAttribute("crossorigin", "*");
-      s1.onerror = fallbackToSms;
-      document.body.appendChild(s1);
-
-      const openTawk = () => {
-        if (window.Tawk_API && window.Tawk_API.toggle && tawkReady) {
-          window.Tawk_API.toggle();
+      const openChatwoot = () => {
+        if (window.$chatwoot && chatwootReady) {
+          window.$chatwoot.toggle();
         } else {
           window.location.href = "sms:" + (CFG.telephoneSmsLien || CFG.telephoneMobileLien || "");
         }
       };
-      if (chatButton) chatButton.addEventListener("click", openTawk);
-      if (chatFallback) chatFallback.addEventListener("click", openTawk);
+      if (chatButton) chatButton.addEventListener("click", openChatwoot);
+      if (chatFallback) chatFallback.addEventListener("click", openChatwoot);
 
-      window.Tawk_API = window.Tawk_API || {};
-      window.Tawk_API.onLoad = function () {
-        tawkReady = true;
-        // On cache la bulle par défaut de Tawk.to et on affiche la nôtre à la place.
-        if (window.Tawk_API.hideWidget) window.Tawk_API.hideWidget();
-        if (chatFallback) chatFallback.classList.add("show");
+      // On cache la bulle par défaut de Chatwoot pour n'afficher que la nôtre.
+      window.chatwootSettings = {
+        hideMessageBubble: true,
+        position: "right",
+        locale: "fr",
+        type: "standard",
       };
 
+      const baseUrl = chat.chatwootBaseUrl.replace(/\/$/, "");
+      const s1 = document.createElement("script");
+      s1.src = baseUrl + "/packs/js/sdk.js";
+      s1.defer = true;
+      s1.async = true;
+      s1.onerror = fallbackToSms;
+      s1.onload = function () {
+        window.chatwootSDK.run({
+          websiteToken: chat.chatwootWebsiteToken,
+          baseUrl: baseUrl,
+        });
+      };
+      document.body.appendChild(s1);
+
+      window.addEventListener("chatwoot:ready", function () {
+        chatwootReady = true;
+        if (chatFallback) chatFallback.classList.add("show");
+      });
+
       // Si le widget n'a pas confirmé son chargement après quelques secondes
-      // (bloqué par un extension anti-pub/traqueurs, réseau lent, etc.), on bascule.
+      // (bloqué par une extension anti-pub/traqueurs, réseau lent, etc.), on bascule.
       setTimeout(fallbackToSms, 4000);
     } else if (chat.lienDirect) {
       // Un autre service de chat est utilisé : on ouvre simplement son lien.

@@ -461,7 +461,7 @@ footer a:hover { text-decoration: underline; }
   margin-bottom: 20px;
 }
 
-/* ---------- Bulle de chat flottante (remplace celle de Tawk.to, cachée via hideWidget) ---------- */
+/* ---------- Bulle de chat flottante (remplace celle de Chatwoot, cachée via hideMessageBubble) ---------- */
 
 .chat-fallback {
   position: fixed;

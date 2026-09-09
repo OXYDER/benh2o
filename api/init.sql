@@ -32,8 +32,8 @@ INSERT INTO site_data (key, data) VALUES ('contact', '{
   "messengerUsername": "TonNomDePageFacebook",
   "chatLive": {
     "actif": false,
-    "propertyId": "000000000000000000000000",
-    "widgetId": "1abcdefgh",
+    "chatwootBaseUrl": "https://chat.benoitlaprise.com",
+    "chatwootWebsiteToken": "",
     "lienDirect": ""
   },
   "formsubmitEmail": "benoit.laprise@h2oinnovation.com",
