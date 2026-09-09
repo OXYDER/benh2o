@@ -136,18 +136,24 @@ une liste d'accès sur le chemin `/admin` directement dans Nginx Proxy Manager
 
 ## 2b. Carte interactive du secteur
 
-Une carte (Leaflet + OpenStreetMap, gratuits, sans clé requise) affiche automatiquement
-tes municipalités couvertes en rouge, avec une zone teintée par MRC. Elle se met à jour
-toute seule à partir des mêmes données que le vérificateur de zone (`/api/zones`) — pas
-besoin de la retoucher quand tu modifies tes secteurs dans `/admin`.
+Une carte (Leaflet + OpenStreetMap, gratuits, sans clé requise) affiche les **frontières
+officielles** de tes 10 MRC couvertes en rouge, avec un point pour chaque municipalité.
+Les frontières de MRC viennent de Statistique Canada (limites du Recensement 2021,
+Licence du gouvernement ouvert – Canada) — ce sont de vrais tracés administratifs, pas
+une approximation. Elle se met à jour toute seule à partir des mêmes données que le
+vérificateur de zone (`/api/zones`) — pas besoin de la retoucher quand tu modifies tes
+secteurs dans `/admin`.
 
-**Limite à connaître :** les positions viennent de `assets/data/municipality-coords.json`,
-une liste de coordonnées approximatives (centre-ville), pas de tracés officiels de
-frontières administratives — je n'ai pas pu obtenir de fichier de polygones précis du
-gouvernement du Québec pour ce projet. Si tu ajoutes une nouvelle municipalité dans
-`/admin` qui n'a pas encore de coordonnées dans ce fichier, elle apparaîtra simplement
-absente de la carte (le reste du site continue de fonctionner normalement) — ajoute sa
-latitude/longitude dans `assets/data/municipality-coords.json` pour qu'elle s'affiche.
+**Limites à connaître :**
+- Les frontières de MRC (`assets/data/mrc-boundaries.geojson`) sont figées au moment où
+  ce fichier a été généré — si tu ajoutes une **nouvelle MRC** dans `/admin` qui n'y est
+  pas encore, sa zone rouge n'apparaîtra simplement pas sur la carte (les municipalités
+  du reste du site continuent de fonctionner normalement). Dis-le-moi si ça arrive, je
+  peux ajouter la nouvelle MRC au fichier.
+- Les points de municipalités viennent de `assets/data/municipality-coords.json`, une
+  liste de coordonnées approximatives (centre-ville), pas de tracés cadastraux parcelle
+  par parcelle. Même règle si tu ajoutes une nouvelle municipalité : ajoute sa
+  latitude/longitude dans ce fichier pour qu'elle apparaisse sur la carte.
 
 ## Structure du projet
 
@@ -164,6 +170,7 @@ assets/style.css                → tout le visuel du site public
 assets/admin.css                → visuel de l'administration
 assets/script.js                → logique du site public (zone, contact, chat, formulaire)
 assets/coverage-map.js           → carte interactive Leaflet du secteur couvert
+assets/data/mrc-boundaries.geojson → vraies frontières des 10 MRC couvertes (Statistique Canada)
 assets/data/municipality-coords.json → coordonnées approximatives des municipalités (pour la carte)
 assets/admin.js                 → logique de connexion + des deux onglets d'administration
 
