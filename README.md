@@ -136,24 +136,20 @@ une liste d'accès sur le chemin `/admin` directement dans Nginx Proxy Manager
 
 ## 2b. Carte interactive du secteur
 
-Une carte (Leaflet + OpenStreetMap, gratuits, sans clé requise) affiche les **frontières
-officielles** de tes 10 MRC couvertes en rouge, avec un point pour chaque municipalité.
-Les frontières de MRC viennent de Statistique Canada (limites du Recensement 2021,
-Licence du gouvernement ouvert – Canada) — ce sont de vrais tracés administratifs, pas
-une approximation. Elle se met à jour toute seule à partir des mêmes données que le
-vérificateur de zone (`/api/zones`) — pas besoin de la retoucher quand tu modifies tes
-secteurs dans `/admin`.
+Une carte (Leaflet + OpenStreetMap, gratuits, sans clé requise) surligne en rouge les
+**frontières officielles de chaque municipalité** que tu desservers — pas la MRC en
+entier, seulement les municipalités précises de ton secteur. Les tracés viennent de
+Statistique Canada (limites du Recensement 2021, Licence du gouvernement ouvert –
+Canada) — de vrais polygones administratifs, pas des points approximatifs. Elle se met
+à jour toute seule à partir des mêmes données que le vérificateur de zone
+(`/api/zones`) — pas besoin de la retoucher quand tu modifies tes secteurs dans `/admin`.
 
-**Limites à connaître :**
-- Les frontières de MRC (`assets/data/mrc-boundaries.geojson`) sont figées au moment où
-  ce fichier a été généré — si tu ajoutes une **nouvelle MRC** dans `/admin` qui n'y est
-  pas encore, sa zone rouge n'apparaîtra simplement pas sur la carte (les municipalités
-  du reste du site continuent de fonctionner normalement). Dis-le-moi si ça arrive, je
-  peux ajouter la nouvelle MRC au fichier.
-- Les points de municipalités viennent de `assets/data/municipality-coords.json`, une
-  liste de coordonnées approximatives (centre-ville), pas de tracés cadastraux parcelle
-  par parcelle. Même règle si tu ajoutes une nouvelle municipalité : ajoute sa
-  latitude/longitude dans ce fichier pour qu'elle apparaisse sur la carte.
+**Limite à connaître :** les frontières (`assets/data/municipality-boundaries.geojson`)
+sont figées au moment où ce fichier a été généré. Si tu ajoutes une **nouvelle
+municipalité** dans `/admin` qui n'y est pas encore, elle apparaîtra dans le
+vérificateur de zone comme d'habitude, mais sa forme rouge n'apparaîtra pas sur la
+carte tant que je n'aurai pas ajouté sa frontière au fichier — dis-le-moi quand ça
+arrive.
 
 ## Structure du projet
 
@@ -170,8 +166,7 @@ assets/style.css                → tout le visuel du site public
 assets/admin.css                → visuel de l'administration
 assets/script.js                → logique du site public (zone, contact, chat, formulaire)
 assets/coverage-map.js           → carte interactive Leaflet du secteur couvert
-assets/data/mrc-boundaries.geojson → vraies frontières des 10 MRC couvertes (Statistique Canada)
-assets/data/municipality-coords.json → coordonnées approximatives des municipalités (pour la carte)
+assets/data/municipality-boundaries.geojson → vraies frontières des 56 municipalités couvertes (Statistique Canada)
 assets/admin.js                 → logique de connexion + des deux onglets d'administration
 
 api/server.js                   → serveur Node/Express : auth + API contact/zones

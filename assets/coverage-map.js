@@ -10,16 +10,14 @@
   }
 
   async function init() {
-    let zonesData, coords, mrcBoundaries;
+    let zonesData, boundaries;
     try {
-      const [zonesRes, coordsRes, boundariesRes] = await Promise.all([
+      const [zonesRes, boundariesRes] = await Promise.all([
         fetch("/api/zones"),
-        fetch("assets/data/municipality-coords.json"),
-        fetch("assets/data/mrc-boundaries.geojson"),
+        fetch("assets/data/municipality-boundaries.geojson"),
       ]);
       zonesData = await zonesRes.json();
-      coords = await coordsRes.json();
-      mrcBoundaries = await boundariesRes.json();
+      boundaries = await boundariesRes.json();
     } catch (e) {
       mapEl.innerHTML = '<p style="padding:20px;color:#B3403A">Impossible de charger la carte.</p>';
       return;
@@ -28,61 +26,40 @@
     const map = L.map(mapEl, { scrollWheelZoom: false }).setView([46.2, -72.0], 8);
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution:
-        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> · Limites MRC : Statistique Canada (Limites, Recensement 2021), Licence du gouvernement ouvert – Canada',
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> · Limites municipales : Statistique Canada (Limites, Recensement 2021), Licence du gouvernement ouvert – Canada',
       maxZoom: 18,
     }).addTo(map);
 
-    // Index des MRC couvertes (nom -> {region})
-    const coveredMrcs = new Map();
+    // Index des municipalités couvertes (nom -> {mrc, region})
+    const covered = new Map();
     (zonesData.regions || []).forEach((region) => {
       (region.mrcs || []).forEach((mrc) => {
-        coveredMrcs.set(normalize(mrc.name), { name: mrc.name, region: region.name });
+        mrc.municipalities.forEach((name) => {
+          covered.set(normalize(name), { name, mrc: mrc.name, region: region.name });
+        });
       });
     });
 
     const bounds = [];
 
-    // Frontières officielles des MRC couvertes
-    const mrcLayer = L.geoJSON(mrcBoundaries, {
-      filter: (feature) => coveredMrcs.has(normalize(feature.properties.mrc)),
+    const layer = L.geoJSON(boundaries, {
+      filter: (feature) => covered.has(normalize(feature.properties.municipality)),
       style: {
         color: RED,
         weight: 2,
         fillColor: RED_FILL,
-        fillOpacity: 0.16,
+        fillOpacity: 0.35,
       },
     }).addTo(map);
 
-    mrcLayer.eachLayer((layer) => {
-      const info = coveredMrcs.get(normalize(layer.feature.properties.mrc));
-      layer.bindPopup(`<strong>MRC ${info.name}</strong><br>${info.region}`);
-      layer.getBounds && bounds.push(layer.getBounds());
-    });
-
-    // Points pour chaque municipalité desservie
-    (zonesData.regions || []).forEach((region) => {
-      (region.mrcs || []).forEach((mrc) => {
-        mrc.municipalities.forEach((name) => {
-          const c = coords[name];
-          if (!c) return;
-          bounds.push(L.latLng(c[0], c[1]));
-          L.circleMarker(c, {
-            radius: 4.5,
-            color: "#7A1C1C",
-            weight: 1.5,
-            fillColor: "#FFFFFF",
-            fillOpacity: 1,
-          })
-            .addTo(map)
-            .bindPopup(`<strong>${name}</strong><br>MRC ${mrc.name}<br>${region.name}`);
-        });
-      });
+    layer.eachLayer((l) => {
+      const info = covered.get(normalize(l.feature.properties.municipality));
+      l.bindPopup(`<strong>${info.name}</strong><br>MRC ${info.mrc}<br>${info.region}`);
+      if (l.getBounds) bounds.push(l.getBounds());
     });
 
     if (bounds.length) {
       map.fitBounds(bounds, { padding: [30, 30] });
-    } else {
-      map.setView([46.2, -72.0], 8);
     }
 
     mapEl.addEventListener("mouseenter", () => map.scrollWheelZoom.enable());
