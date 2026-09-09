@@ -51,7 +51,7 @@ docker compose exec benoitlaprise-api node scripts/create-admin.js "ton@courriel
 ```
 
 Tu peux relancer cette commande n'importe quand pour changer le mot de passe. Va ensuite
-sur `https://benoit.resotik.ca/admin` et connecte-toi.
+sur `https://benoitlaprise.com/admin` et connecte-toi.
 
 ## 2. Administration — `/admin`
 
@@ -108,9 +108,9 @@ cp .env.example .env   # puis édite .env — voir section 1.1
 docker compose up -d --build
 docker compose exec benoitlaprise-api node scripts/create-admin.js "ton@courriel.com" "TonMotDePasse"
 ```
-Puis dans Nginx Proxy Manager, un Proxy Host `benoit.resotik.ca` → `http://<IP_NAS>:8090`,
-comme d'habitude. (Le jour où tu loues `benoitlaprise.com`, ajoute un deuxième Proxy Host
-vers la même adresse, et mets à jour `server_name` dans `nginx.conf`.)
+Puis dans Nginx Proxy Manager, un Proxy Host `benoitlaprise.com` (et `www.benoitlaprise.com`)
+→ `http://<IP_NAS>:8090`. L'ancien sous-domaine `benoit.resotik.ca` reste aussi configuré
+dans `nginx.conf` et continue de fonctionner si tu veux le garder actif en parallèle.
 
 **Mises à jour suivantes :**
 ```bash
