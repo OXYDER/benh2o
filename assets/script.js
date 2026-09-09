@@ -127,6 +127,54 @@
         if (listBody) listBody.textContent = "Liste de zones indisponible pour le moment.";
       });
 
+    // Réseau de distributeurs + positions approximatives des municipalités —
+    // utilisés uniquement pour orienter les visiteurs hors zone vers le bon distributeur.
+    let distributeurs = [];
+    let centroids = {};
+    Promise.all([
+      fetch("assets/data/distributeurs.json").then((r) => r.json()),
+      fetch("assets/data/municipality-centroids.json").then((r) => r.json()),
+    ])
+      .then(([d, c]) => {
+        distributeurs = d;
+        centroids = c;
+      })
+      .catch(() => {
+        /* pas grave : le repli générique reste disponible */
+      });
+
+    function haversineKm(lat1, lon1, lat2, lon2) {
+      const R = 6371;
+      const dLat = ((lat2 - lat1) * Math.PI) / 180;
+      const dLon = ((lon2 - lon1) * Math.PI) / 180;
+      const a =
+        Math.sin(dLat / 2) ** 2 +
+        Math.cos((lat1 * Math.PI) / 180) * Math.cos((lat2 * Math.PI) / 180) * Math.sin(dLon / 2) ** 2;
+      return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    }
+
+    function findNearestDistributeur(query) {
+      // trouve la position approximative de l'endroit recherché parmi les
+      // municipalités connues, puis le distributeur H2O Innovation le plus proche
+      const centroidNames = Object.keys(centroids);
+      const matchName =
+        centroidNames.find((n) => normalize(n) === query) ||
+        centroidNames.find((n) => normalize(n).includes(query) || query.includes(normalize(n)));
+      if (!matchName || !distributeurs.length) return null;
+
+      const [lat, lon] = centroids[matchName];
+      let nearest = null;
+      let bestDist = Infinity;
+      distributeurs.forEach((d) => {
+        const dist = haversineKm(lat, lon, d.lat, d.lon);
+        if (dist < bestDist) {
+          bestDist = dist;
+          nearest = d;
+        }
+      });
+      return nearest;
+    }
+
     function findMatch(query) {
       // priorité : municipalité exacte, puis municipalité partielle, puis MRC, puis région
       let hit = flat.find((z) => normalize(z.municipality) === query);
@@ -161,7 +209,18 @@
         result.innerHTML = `Bonne nouvelle : <strong>${label}</strong> fait partie de mon secteur. <a href="#contact">Envoie-moi ta demande</a> ou <a href="tel:${CFG.telephoneMobileLien || ""}">appelle directement</a>.`;
         result.classList.add("yes");
       } else {
-        result.innerHTML = `Cette adresse semble en dehors de mon secteur. Le site <a href="${CFG.contactGeneralUrl || CFG.boutiqueUrl || "#"}" target="_blank" rel="noopener">h2oinnovation.net</a> peut te diriger vers le bon représentant.`;
+        const nearest = findNearestDistributeur(query);
+        if (nearest) {
+          const contactBits = [
+            nearest.phone ? `<a href="tel:${nearest.phone.replace(/[^\d+]/g, "")}">${nearest.phone}</a>` : "",
+            nearest.email ? `<a href="mailto:${nearest.email}">${nearest.email}</a>` : "",
+          ]
+            .filter(Boolean)
+            .join(" · ");
+          result.innerHTML = `Cette adresse est en dehors de mon secteur, mais elle est desservie par un autre distributeur H2O Innovation : <strong>${nearest.name}</strong>${nearest.address ? ` (${nearest.address})` : ""}${contactBits ? `<br>${contactBits}` : ""}`;
+        } else {
+          result.innerHTML = `Cette adresse semble en dehors de mon secteur. Le site <a href="${CFG.contactGeneralUrl || CFG.boutiqueUrl || "#"}" target="_blank" rel="noopener">h2oinnovation.net</a> peut te diriger vers le bon représentant.`;
+        }
         result.classList.add("no");
       }
       result.classList.add("show");

@@ -74,6 +74,14 @@ La comparaison ignore les accents et les majuscules, et fonctionne aussi si la p
 tape juste une partie du nom, une MRC, ou même une région (ex. « Victo » trouve
 « Victoriaville »; « Bécancour » seul trouve la MRC).
 
+**Hors zone :** si la municipalité tapée est reconnue (voir
+`assets/data/municipality-centroids.json` — les 152 municipalités de tes 10 MRC), la
+page l'oriente automatiquement vers le **distributeur H2O Innovation le plus proche**
+(`assets/data/distributeurs.json` — réseau de 17 distributeurs au Québec, avec
+nom/adresse/téléphone/courriel), calculé par distance à vol d'oiseau. Si la municipalité
+n'est pas reconnue (en dehors de tes 10 MRC), la page retombe sur le lien générique
+`contactGeneralUrl` (onglet Mes informations de `/admin`).
+
 ## 3. Clavardage en direct — Chatwoot (auto-hébergé, open source)
 
 Le site utilise [Chatwoot](https://www.chatwoot.com) plutôt que Tawk.to : open source
