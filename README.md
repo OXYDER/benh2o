@@ -87,9 +87,11 @@ gardes le contrôle total. Compte au moins **1 à 2 Go de RAM** additionnels pou
 dessus (`docker stats` pour voir la consommation actuelle).
 
 Remplis d'abord les secrets Chatwoot dans `.env`
-(voir `.env.example` : `CHATWOOT_DB_PASSWORD`, `CHATWOOT_REDIS_PASSWORD`,
-`CHATWOOT_SECRET_KEY_BASE` — génère cette dernière avec `openssl rand -hex 64` —,
-et `CHATWOOT_FRONTEND_URL`, l'adresse publique où Chatwoot sera accessible).
+(voir `.env.example` : `CHATWOOT_DB_PASSWORD` et `CHATWOOT_REDIS_PASSWORD` — génère-les
+avec `openssl rand -hex 24` **et non `-base64`**, sinon un `/` ou un `+` dans le mot de
+passe peut casser l'URL `redis://...` que Chatwoot construit avec — `CHATWOOT_SECRET_KEY_BASE`
+avec `openssl rand -hex 64` —, et `CHATWOOT_FRONTEND_URL`, l'adresse publique où Chatwoot
+sera accessible).
 
 ```bash
 docker compose up -d chatwoot-db chatwoot-redis
