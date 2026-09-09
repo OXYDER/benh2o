@@ -29,6 +29,12 @@
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 
+/* Garantit que l'attribut natif "hidden" gagne toujours, même si un autre
+   style plus loin dans la feuille donne un "display" à cet élément
+   (ex. .btn, .entry-gate) — sinon un élément peut rester visible malgré
+   hidden=true appliqué en JavaScript. */
+[hidden] { display: none !important; }
+
 body {
   margin: 0;
   font-family: var(--sans);
@@ -597,6 +603,7 @@ body.gate-open { overflow: hidden; }
   justify-content: center;
   padding: 20px;
 }
+.entry-gate[hidden] { display: none; }
 
 .entry-gate-card {
   position: relative;
