@@ -67,6 +67,9 @@
   });
 
   document.getElementById("logout-btn").addEventListener("click", async () => {
+    if (dirty.contact || dirty.zones) {
+      if (!confirm("Tu as des changements non enregistrés. Te déconnecter quand même ?")) return;
+    }
     await fetch("/api/logout", { method: "POST" });
     showLogin();
   });
@@ -107,8 +110,36 @@
     el.textContent = message;
     el.classList.toggle("error", !!isError);
     el.classList.add("show");
-    setTimeout(() => el.classList.remove("show"), 2500);
+    if (!isError) {
+      setTimeout(() => el.classList.remove("show"), 2500);
+    }
+    // les messages d'erreur restent affichés jusqu'à la prochaine tentative
   }
+
+  /* ---------- Avertit avant de quitter s'il y a des changements non enregistrés ---------- */
+  const dirty = { contact: false, zones: false };
+  const dirtyEls = { contact: null, zones: null };
+  function registerDirtyIndicator(key, el) {
+    dirtyEls[key] = el;
+  }
+  function markDirty(key) {
+    dirty[key] = true;
+    const el = dirtyEls[key];
+    if (el) {
+      el.textContent = "Changements non enregistrés";
+      el.classList.remove("error");
+      el.classList.add("show");
+    }
+  }
+  function clearDirty(key) {
+    dirty[key] = false;
+  }
+  window.addEventListener("beforeunload", (e) => {
+    if (dirty.contact || dirty.zones) {
+      e.preventDefault();
+      e.returnValue = "";
+    }
+  });
 
   let appInitialized = false;
   function initApp() {
@@ -158,6 +189,7 @@
         el.addEventListener(evt, () => {
           const value = el.type === "checkbox" ? el.checked : el.value;
           setPath(contactData, el.dataset.key, value);
+          markDirty("contact");
         });
       });
     }
@@ -183,6 +215,7 @@
         });
         if (res.ok) {
           flashStatus(statusEl, "Enregistré ✓", false);
+          clearDirty("contact");
         } else {
           const data = await res.json().catch(() => ({}));
           flashStatus(statusEl, data.error || "Échec de l'enregistrement.", true);
@@ -196,6 +229,7 @@
     }
 
     bindForm();
+    registerDirtyIndicator("contact", statusEl);
     saveBtn.addEventListener("click", save);
     load();
   }
@@ -234,6 +268,7 @@
         });
         if (res.ok) {
           flashStatus(statusEl, "Enregistré ✓", false);
+          clearDirty("zones");
         } else {
           const d = await res.json().catch(() => ({}));
           flashStatus(statusEl, d.error || "Échec de l'enregistrement.", true);
@@ -295,6 +330,7 @@
         addMrcBtn.textContent = "+ Ajouter une MRC";
         addMrcBtn.addEventListener("click", () => {
           region.mrcs.push({ name: "Nouvelle MRC", municipalities: [] });
+          markDirty("zones");
           render();
         });
         card.appendChild(addMrcBtn);
@@ -305,11 +341,13 @@
       tree.querySelectorAll(".region-name").forEach((el) => {
         el.addEventListener("input", (e) => {
           data.regions[e.target.dataset.ri].name = e.target.value;
+          markDirty("zones");
         });
       });
       tree.querySelectorAll(".region-code").forEach((el) => {
         el.addEventListener("input", (e) => {
           data.regions[e.target.dataset.ri].code = e.target.value;
+          markDirty("zones");
         });
       });
       tree.querySelectorAll(".add-region-remove").forEach((el) => {
@@ -317,6 +355,7 @@
           const ri = Number(e.target.dataset.ri);
           if (confirm(`Supprimer la région "${data.regions[ri].name}" et tout son contenu ?`)) {
             data.regions.splice(ri, 1);
+            markDirty("zones");
             render();
           }
         });
@@ -338,10 +377,12 @@
       `;
       head.querySelector(".mrc-name").addEventListener("input", (e) => {
         mrc.name = e.target.value;
+        markDirty("zones");
       });
       head.querySelector(".mrc-remove").addEventListener("click", () => {
         if (confirm(`Supprimer la MRC "${mrc.name}" et ses municipalités ?`)) {
           region.mrcs.splice(mi, 1);
+          markDirty("zones");
           render();
         }
       });
@@ -359,9 +400,11 @@
         chip.innerHTML = `<input value="${escapeAttr(mrc.municipalities[idx])}"><button class="icon-btn muni-remove" title="Retirer">✕</button>`;
         chip.querySelector("input").addEventListener("input", (e) => {
           mrc.municipalities[idx] = e.target.value;
+          markDirty("zones");
         });
         chip.querySelector(".muni-remove").addEventListener("click", () => {
           mrc.municipalities.splice(idx, 1);
+          markDirty("zones");
           render();
         });
         list.appendChild(chip);
@@ -379,6 +422,7 @@
       function confirmAdd() {
         if (addInput.value.trim()) {
           mrc.municipalities.push(addInput.value.trim());
+          markDirty("zones");
           render();
         }
       }
@@ -393,11 +437,13 @@
 
     document.getElementById("admin-add-region").addEventListener("click", () => {
       data.regions.push({ name: "Nouvelle région", code: "", mrcs: [] });
+      markDirty("zones");
       render();
     });
 
     filterInput.addEventListener("input", render);
     saveBtn.addEventListener("click", save);
+    registerDirtyIndicator("zones", statusEl);
 
     load();
   }
