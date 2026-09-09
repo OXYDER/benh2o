@@ -52,6 +52,7 @@
       <button class="admin-tab active" data-tab="contact" role="tab" aria-selected="true">Mes informations</button>
       <button class="admin-tab" data-tab="zones" role="tab" aria-selected="false">Zones de couverture</button>
       <button class="admin-tab" data-tab="content" role="tab" aria-selected="false">Contenu de la page</button>
+      <button class="admin-tab" data-tab="distributeurs" role="tab" aria-selected="false">Distributeurs</button>
     </div>
 
     <!-- ===== Onglet : Mes informations de contact ===== -->
@@ -412,6 +413,20 @@
       <div class="admin-save-row">
         <span class="admin-save-status" id="content-save-status"></span>
         <button class="btn btn-primary" id="content-save" type="button">Enregistrer</button>
+      </div>
+    </div>
+
+    <!-- ===== Onglet : Distributeurs (réseau H2O Innovation) ===== -->
+    <div class="admin-panel" data-panel="distributeurs" hidden>
+      <p class="admin-section-desc">Le réseau de distributeurs H2O Innovation utilisé pour rediriger automatiquement les visiteurs hors de ta zone vers le plus proche de chez eux. Modifie un nom, une adresse ou un numéro si un distributeur change — la redirection se recalcule toute seule.</p>
+
+      <div id="distributeurs-list" class="distributeurs-list"></div>
+
+      <button class="btn btn-primary admin-add-region" id="dist-add" type="button">+ Ajouter un distributeur</button>
+
+      <div class="admin-save-row">
+        <span class="admin-save-status" id="dist-save-status"></span>
+        <button class="btn btn-primary" id="dist-save" type="button">Enregistrer</button>
       </div>
     </div>
 

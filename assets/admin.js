@@ -67,7 +67,7 @@
   });
 
   document.getElementById("logout-btn").addEventListener("click", async () => {
-    if (dirty.contact || dirty.zones || dirty.content) {
+    if (dirty.contact || dirty.zones || dirty.content || dirty.distributeurs) {
       if (!confirm("Tu as des changements non enregistrés. Te déconnecter quand même ?")) return;
     }
     await fetch("/api/logout", { method: "POST" });
@@ -124,8 +124,8 @@
   }
 
   /* ---------- Avertit avant de quitter s'il y a des changements non enregistrés ---------- */
-  const dirty = { contact: false, zones: false, content: false };
-  const dirtyEls = { contact: null, zones: null, content: null };
+  const dirty = { contact: false, zones: false, content: false, distributeurs: false };
+  const dirtyEls = { contact: null, zones: null, content: null, distributeurs: null };
   function registerDirtyIndicator(key, el) {
     dirtyEls[key] = el;
   }
@@ -142,7 +142,7 @@
     dirty[key] = false;
   }
   window.addEventListener("beforeunload", (e) => {
-    if (dirty.contact || dirty.zones || dirty.content) {
+    if (dirty.contact || dirty.zones || dirty.content || dirty.distributeurs) {
       e.preventDefault();
       e.returnValue = "";
     }
@@ -156,6 +156,7 @@
     setupContactEditor();
     setupZonesEditor();
     setupContentEditor();
+    setupDistributeursEditor();
   }
 
   /* =========================================================
@@ -581,6 +582,135 @@
     bindForm();
     saveBtn.addEventListener("click", save);
     registerDirtyIndicator("content", statusEl);
+    load();
+  }
+
+  /* =========================================================
+     ONGLET : DISTRIBUTEURS (réseau H2O Innovation)
+     ========================================================= */
+  function setupDistributeursEditor() {
+    const listEl = document.getElementById("distributeurs-list");
+    if (!listEl) return;
+    const addBtn = document.getElementById("dist-add");
+    const saveBtn = document.getElementById("dist-save");
+    const statusEl = document.getElementById("dist-save-status");
+
+    let dists = [];
+
+    function render() {
+      listEl.innerHTML = "";
+      dists.forEach((d, i) => {
+        const card = document.createElement("div");
+        card.className = "dist-card";
+        card.innerHTML = `
+          <div class="dist-card-head">
+            <input type="text" class="dist-name" value="${escapeAttr(d.name)}" placeholder="Nom du distributeur">
+            <button class="icon-btn danger dist-remove" title="Supprimer">✕</button>
+          </div>
+          <div class="dist-fields">
+            <div class="full">
+              <label>Adresse</label>
+              <input type="text" class="f-address" value="${escapeAttr(d.address || "")}" placeholder="123 Rue Principale, Ville, QC">
+            </div>
+            <div>
+              <label>Téléphone</label>
+              <input type="text" class="f-phone" value="${escapeAttr(d.phone || "")}" placeholder="819-000-0000">
+            </div>
+            <div>
+              <label>Courriel</label>
+              <input type="email" class="f-email" value="${escapeAttr(d.email || "")}">
+            </div>
+            <div>
+              <label>Latitude</label>
+              <input type="text" class="f-lat" value="${d.lat ?? ""}" placeholder="45.5049">
+            </div>
+            <div>
+              <label>Longitude</label>
+              <input type="text" class="f-lon" value="${d.lon ?? ""}" placeholder="-72.3159">
+            </div>
+            <p class="dist-coords-hint">Pour trouver les coordonnées : cherche l'adresse sur <a href="https://www.google.com/maps" target="_blank" rel="noopener">Google Maps</a>, clic droit sur le point exact → clique les chiffres pour les copier.</p>
+          </div>
+        `;
+
+        card.querySelector(".dist-name").addEventListener("input", (e) => {
+          dists[i].name = e.target.value;
+          markDirty("distributeurs");
+        });
+        card.querySelector(".f-address").addEventListener("input", (e) => {
+          dists[i].address = e.target.value;
+          markDirty("distributeurs");
+        });
+        card.querySelector(".f-phone").addEventListener("input", (e) => {
+          dists[i].phone = e.target.value;
+          markDirty("distributeurs");
+        });
+        card.querySelector(".f-email").addEventListener("input", (e) => {
+          dists[i].email = e.target.value;
+          markDirty("distributeurs");
+        });
+        card.querySelector(".f-lat").addEventListener("input", (e) => {
+          dists[i].lat = parseFloat(e.target.value);
+          markDirty("distributeurs");
+        });
+        card.querySelector(".f-lon").addEventListener("input", (e) => {
+          dists[i].lon = parseFloat(e.target.value);
+          markDirty("distributeurs");
+        });
+        card.querySelector(".dist-remove").addEventListener("click", () => {
+          if (confirm(`Supprimer "${dists[i].name}" ?`)) {
+            dists.splice(i, 1);
+            markDirty("distributeurs");
+            render();
+          }
+        });
+
+        listEl.appendChild(card);
+      });
+    }
+
+    async function load() {
+      try {
+        const res = await fetch("/api/distributeurs");
+        dists = await res.json();
+        if (!Array.isArray(dists)) dists = [];
+        render();
+      } catch (e) {
+        listEl.innerHTML = '<p style="color:#B3403A">Impossible de charger les distributeurs.</p>';
+      }
+    }
+
+    async function save() {
+      saveBtn.disabled = true;
+      saveBtn.textContent = "Enregistrement…";
+      try {
+        const res = await fetch("/api/distributeurs", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(dists),
+        });
+        if (res.ok) {
+          flashStatus(statusEl, "Enregistré ✓", false);
+          clearDirty("distributeurs");
+        } else {
+          const data = await res.json().catch(() => ({}));
+          flashStatus(statusEl, data.error || "Échec de l'enregistrement.", true);
+        }
+      } catch (e) {
+        flashStatus(statusEl, "Impossible de contacter le serveur.", true);
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = "Enregistrer";
+      }
+    }
+
+    addBtn.addEventListener("click", () => {
+      dists.push({ name: "Nouveau distributeur", address: "", phone: "", email: "", lat: 46.0, lon: -71.5 });
+      markDirty("distributeurs");
+      render();
+    });
+
+    saveBtn.addEventListener("click", save);
+    registerDirtyIndicator("distributeurs", statusEl);
     load();
   }
 })();

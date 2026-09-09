@@ -55,13 +55,15 @@ sur `https://benoitlaprise.com/admin` et connecte-toi.
 
 ## 2. Administration — `/admin`
 
-Protégée par courriel + mot de passe (voir 1.3). Une fois connecté, trois onglets :
+Protégée par courriel + mot de passe (voir 1.3). Une fois connecté, quatre onglets :
 
 - **Mes informations** : téléphones (mobile, SMS, ligne générale H2O Innovation),
   courriel, Messenger, clavardage en direct
 - **Zones de couverture** : régions, MRC, municipalités — ajoute, renomme, retire
 - **Contenu de la page** : les textes de chaque section de la page principale, et un
   choix de thème (couleurs + polices) — voir section 2b ci-dessous
+- **Distributeurs** : le réseau de distributeurs H2O Innovation utilisé pour la
+  redirection hors zone — voir section 2 (Vérificateur de zone) ci-dessus
 
 Chaque onglet a son propre bouton **Enregistrer** (l'onglet Zones s'enregistre
 automatiquement à l'ajout/suppression) — les changements sont écrits dans Postgres et
@@ -77,10 +79,15 @@ tape juste une partie du nom, une MRC, ou même une région (ex. « Victo » tro
 **Hors zone :** si la municipalité tapée est reconnue (voir
 `assets/data/municipality-centroids.json` — les 152 municipalités de tes 10 MRC), la
 page l'oriente automatiquement vers le **distributeur H2O Innovation le plus proche**
-(`assets/data/distributeurs.json` — réseau de 17 distributeurs au Québec, avec
-nom/adresse/téléphone/courriel), calculé par distance à vol d'oiseau. Si la municipalité
-n'est pas reconnue (en dehors de tes 10 MRC), la page retombe sur le lien générique
-`contactGeneralUrl` (onglet Mes informations de `/admin`).
+(onglet **Distributeurs** de `/admin` — réseau de 17 distributeurs au Québec, avec
+nom/adresse/téléphone/courriel/coordonnées), calculé par distance à vol d'oiseau. Si la
+municipalité n'est pas reconnue (en dehors de tes 10 MRC), la page retombe sur le lien
+générique `contactGeneralUrl` (onglet Mes informations de `/admin`).
+
+**Onglet Distributeurs :** modifie le nom, l'adresse, le téléphone, le courriel ou les
+coordonnées de n'importe quel distributeur, ou ajoutes-en un nouveau — la redirection
+automatique se recalcule aussitôt enregistré. Les coordonnées (latitude/longitude)
+se trouvent facilement sur Google Maps (clic droit sur l'endroit exact).
 
 ## 3. Clavardage en direct — Chatwoot (auto-hébergé, open source)
 
@@ -252,6 +259,8 @@ assets/admin.js                 → logique de connexion + des trois onglets d'a
 api/server.js                   → serveur Node/Express : auth + API contact/zones/content
 api/db.js                       → connexion à Postgres
 api/init.sql                    → schéma de la base + données initiales
+api/seed-content.sql            → injecte le contenu de départ sur une base déjà existante
+api/seed-distributeurs.sql       → injecte le réseau de distributeurs sur une base déjà existante
 api/scripts/create-admin.js     → crée/modifie le compte administrateur (mot de passe)
 api/Dockerfile                  → image de l'API
 ```

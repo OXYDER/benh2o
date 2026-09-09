@@ -132,7 +132,7 @@
     let distributeurs = [];
     let centroids = {};
     Promise.all([
-      fetch("assets/data/distributeurs.json").then((r) => r.json()),
+      fetch("/api/distributeurs").then((r) => r.json()),
       fetch("assets/data/municipality-centroids.json").then((r) => r.json()),
     ])
       .then(([d, c]) => {

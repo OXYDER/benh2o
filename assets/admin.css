@@ -368,8 +368,62 @@
 .theme-name { font-weight: 700; font-size: 0.94rem; color: var(--ink-900); }
 .theme-desc { font-size: 0.8rem; color: var(--ink-600); line-height: 1.4; }
 
+/* ---------- Liste des distributeurs ---------- */
+
+.distributeurs-list { display: flex; flex-direction: column; gap: 14px; margin-bottom: 20px; }
+.dist-card {
+  background: var(--birch-100);
+  border: 1px solid rgba(32,27,20,0.1);
+  border-radius: var(--radius-lg);
+  padding: 16px 18px;
+}
+.dist-card-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.dist-card-head input.dist-name {
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  font-weight: 600;
+  border: none;
+  background: transparent;
+  color: var(--ink-900);
+  padding: 4px 6px;
+  border-radius: 4px;
+  flex: 1;
+}
+.dist-card-head input.dist-name:focus { background: var(--birch-050); outline: 2px solid var(--water-300); }
+.dist-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.dist-fields .full { grid-column: 1 / -1; }
+.dist-fields label {
+  display: block;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--ink-600);
+  margin-bottom: 3px;
+}
+.dist-fields input {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 5px;
+  border: 1.5px solid rgba(32,27,20,0.18);
+  font-family: var(--sans);
+  font-size: 0.88rem;
+  background: var(--birch-050);
+  color: var(--ink-900);
+}
+.dist-coords-hint {
+  grid-column: 1 / -1;
+  font-size: 0.78rem;
+  color: var(--ink-600);
+}
+.dist-coords-hint a { color: var(--amber-700); }
+
 @media (max-width: 640px) {
   .admin-field-row { grid-template-columns: 1fr; }
   .mrc-block { margin-left: 4px; }
   .admin-tabs { overflow-x: auto; }
+  .dist-fields { grid-template-columns: 1fr; }
 }

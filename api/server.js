@@ -143,6 +143,16 @@ app.get("/api/content", async (req, res) => {
   }
 });
 
+app.get("/api/distributeurs", async (req, res) => {
+  try {
+    const r = await pool.query("SELECT data FROM site_data WHERE key = 'distributeurs'");
+    res.json(r.rows[0]?.data || []);
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "Erreur serveur." });
+  }
+});
+
 /* ---------- Écriture protégée (admin seulement) ---------- */
 app.put("/api/contact", requireAuth, async (req, res) => {
   const data = req.body;
@@ -188,6 +198,24 @@ app.put("/api/content", requireAuth, async (req, res) => {
   try {
     await pool.query(
       `INSERT INTO site_data (key, data, updated_at) VALUES ('content', $1, now())
+       ON CONFLICT (key) DO UPDATE SET data = $1, updated_at = now()`,
+      [JSON.stringify(data)]
+    );
+    res.json({ ok: true });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "Erreur serveur." });
+  }
+});
+
+app.put("/api/distributeurs", requireAuth, async (req, res) => {
+  const data = req.body;
+  if (!Array.isArray(data)) {
+    return res.status(400).json({ error: "Format invalide (attendu: un tableau)." });
+  }
+  try {
+    await pool.query(
+      `INSERT INTO site_data (key, data, updated_at) VALUES ('distributeurs', $1, now())
        ON CONFLICT (key) DO UPDATE SET data = $1, updated_at = now()`,
       [JSON.stringify(data)]
     );
