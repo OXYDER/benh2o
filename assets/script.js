@@ -174,6 +174,7 @@
   /* ---------- Clavardage en direct (Tawk.to, ou lien direct alternatif) ---------- */
   function setupChat() {
     const chatButton = document.getElementById("channel-chat");
+    const chatFallback = document.getElementById("chat-fallback");
     const chatStatus = document.getElementById("chat-status");
     const chat = CFG.chatLive || {};
 
@@ -201,9 +202,14 @@
         }
       };
       if (chatButton) chatButton.addEventListener("click", openTawk);
+      if (chatFallback) chatFallback.addEventListener("click", openTawk);
+
       window.Tawk_API = window.Tawk_API || {};
       window.Tawk_API.onLoad = function () {
         tawkReady = true;
+        // On cache la bulle par défaut de Tawk.to et on affiche la nôtre à la place.
+        if (window.Tawk_API.hideWidget) window.Tawk_API.hideWidget();
+        if (chatFallback) chatFallback.classList.add("show");
       };
 
       // Si le widget n'a pas confirmé son chargement après quelques secondes

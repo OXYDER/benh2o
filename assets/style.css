@@ -433,6 +433,26 @@ footer a:hover { text-decoration: underline; }
   margin-bottom: 20px;
 }
 
+/* ---------- Bulle de chat flottante (remplace celle de Tawk.to, cachée via hideWidget) ---------- */
+
+.chat-fallback {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 50;
+  background: var(--amber-600);
+  color: var(--spruce-950);
+  border: none;
+  border-radius: 999px;
+  padding: 14px 20px;
+  font-weight: 700;
+  font-family: var(--sans);
+  box-shadow: 0 8px 24px rgba(32,27,20,0.25);
+  cursor: pointer;
+  display: none;
+}
+.chat-fallback.show { display: inline-flex; align-items: center; gap: 8px; }
+
 /* ---------- Responsive ---------- */
 
 @media (max-width: 860px) {
