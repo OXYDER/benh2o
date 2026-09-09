@@ -76,12 +76,14 @@ La comparaison ignore les accents et les majuscules, et fonctionne aussi si la p
 tape juste une partie du nom, une MRC, ou même une région (ex. « Victo » trouve
 « Victoriaville »; « Bécancour » seul trouve la MRC).
 
-**Hors zone :** si la municipalité tapée est reconnue (voir
-`assets/data/municipality-centroids.json` — les 152 municipalités de tes 10 MRC), la
-page l'oriente automatiquement vers le **distributeur H2O Innovation le plus proche**
-(onglet **Distributeurs** de `/admin` — réseau de 17 distributeurs au Québec, avec
-nom/adresse/téléphone/courriel/coordonnées), calculé par distance à vol d'oiseau. Si la
-municipalité n'est pas reconnue (en dehors de tes 10 MRC), la page retombe sur le lien
+**Hors zone :** la page reconnaît maintenant **2628 lieux à travers tout le Québec**
+(`assets/data/municipality-centroids.json` — les 152 municipalités officielles de tes
+10 MRC, plus 2476 autres municipalités/villages/lieux nommés de toute la province, via
+[GeoNames.org](https://www.geonames.org), licence CC-BY 4.0). Peu importe où la personne
+tape sa ville, la page l'oriente automatiquement vers le **distributeur H2O Innovation
+le plus proche** (onglet **Distributeurs** de `/admin` — réseau de 17 distributeurs au
+Québec, avec nom/adresse/téléphone/courriel/coordonnées), calculé par distance à vol
+d'oiseau. Seul un lieu vraiment absent de cette liste (très rare) retombe sur le lien
 générique `contactGeneralUrl` (onglet Mes informations de `/admin`).
 
 **Onglet Distributeurs :** modifie le nom, l'adresse, le téléphone, le courriel ou les
