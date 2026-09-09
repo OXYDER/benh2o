@@ -134,6 +134,21 @@ une liste d'accès sur le chemin `/admin` directement dans Nginx Proxy Manager
 - Historique des demandes reçues via le formulaire (actuellement, tout part par courriel seulement — rien n'est stocké)
 - Support de plusieurs comptes admin si un jour quelqu'un d'autre doit gérer le site
 
+## 2b. Carte interactive du secteur
+
+Une carte (Leaflet + OpenStreetMap, gratuits, sans clé requise) affiche automatiquement
+tes municipalités couvertes en rouge, avec une zone teintée par MRC. Elle se met à jour
+toute seule à partir des mêmes données que le vérificateur de zone (`/api/zones`) — pas
+besoin de la retoucher quand tu modifies tes secteurs dans `/admin`.
+
+**Limite à connaître :** les positions viennent de `assets/data/municipality-coords.json`,
+une liste de coordonnées approximatives (centre-ville), pas de tracés officiels de
+frontières administratives — je n'ai pas pu obtenir de fichier de polygones précis du
+gouvernement du Québec pour ce projet. Si tu ajoutes une nouvelle municipalité dans
+`/admin` qui n'a pas encore de coordonnées dans ce fichier, elle apparaîtra simplement
+absente de la carte (le reste du site continue de fonctionner normalement) — ajoute sa
+latitude/longitude dans `assets/data/municipality-coords.json` pour qu'elle s'affiche.
+
 ## Structure du projet
 
 ```
@@ -148,6 +163,8 @@ deploy.sh                       → script de mise à jour (git pull + rebuild +
 assets/style.css                → tout le visuel du site public
 assets/admin.css                → visuel de l'administration
 assets/script.js                → logique du site public (zone, contact, chat, formulaire)
+assets/coverage-map.js           → carte interactive Leaflet du secteur couvert
+assets/data/municipality-coords.json → coordonnées approximatives des municipalités (pour la carte)
 assets/admin.js                 → logique de connexion + des deux onglets d'administration
 
 api/server.js                   → serveur Node/Express : auth + API contact/zones

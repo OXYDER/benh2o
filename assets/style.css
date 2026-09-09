@@ -257,6 +257,34 @@ section { padding: 76px 0; }
   border-bottom: 1px solid rgba(32,27,20,0.08);
 }
 
+/* ---------- Carte de couverture ---------- */
+
+.coverage-map-section { background: var(--birch-050); }
+
+#coverage-map {
+  height: 460px;
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(32,27,20,0.12);
+  overflow: hidden;
+  background: var(--birch-100);
+}
+
+.map-note {
+  margin-top: 14px;
+  font-size: 0.85rem;
+  color: var(--ink-600);
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: 8px;
+  font-family: var(--sans);
+}
+.leaflet-popup-content { font-size: 0.9rem; line-height: 1.4; }
+
+@media (max-width: 640px) {
+  #coverage-map { height: 340px; }
+}
+
 .zone-check {
   display: flex;
   gap: 10px;
