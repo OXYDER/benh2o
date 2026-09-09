@@ -420,6 +420,14 @@
         el.textContent = val;
       }
     });
+
+    // Champs texte "virgule-séparée" affichés comme une liste de badges (ex. équipements).
+    document.querySelectorAll("[data-c-list]").forEach((el) => {
+      const val = getPath(data, el.dataset.cList);
+      if (val === undefined || val === null) return;
+      const items = val.split(",").map((s) => s.trim()).filter(Boolean);
+      el.innerHTML = items.map((item) => `<span class="pill">${item}</span>`).join("");
+    });
   }
 
   function applyTheme(themeId, themes) {
