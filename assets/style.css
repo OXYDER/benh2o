@@ -592,7 +592,6 @@ footer a:hover { text-decoration: underline; }
   .field-row { grid-template-columns: 1fr; }
   .channel-row { grid-template-columns: 40px 1fr; }
   .channel-action, .channel-actions-group { grid-column: 1 / -1; justify-self: start; margin-top: 4px; }
-  .channel-number { display: none; }
   .header-logo img { height: 22px; }
   .site-header .container { column-gap: 8px; }
   .brand { font-size: 1rem; }
