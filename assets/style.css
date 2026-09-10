@@ -93,7 +93,7 @@ p { margin: 0 0 1em; max-width: 62ch; }
   align-items: center;
 }
 .header-logo img {
-  height: 30px;
+  height: 42px;
   width: auto;
   display: block;
   opacity: 0.94;
@@ -685,7 +685,7 @@ footer a:hover { text-decoration: underline; }
   .field-row { grid-template-columns: 1fr; }
   .channel-row { grid-template-columns: 40px 1fr; }
   .channel-action, .channel-actions-group { grid-column: 2 / -1; justify-self: start; margin-top: 10px; }
-  .header-logo img { height: 22px; }
+  .header-logo img { height: 30px; }
   .site-header .container { column-gap: 8px; }
   .brand { font-size: 1rem; }
   .brand span { display: none; }
