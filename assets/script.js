@@ -613,16 +613,25 @@
 
   /* ---------- Menu de navigation (hamburger) ---------- */
   /* ---------- Recherche de produits (redirige vers h2oinnovation.net) ---------- */
+  function openH2oSearch(query) {
+    const q = query.trim();
+    if (!q) return;
+    const url = "https://h2oinnovation.net/int_fr/catalogsearch/result/?q=" + encodeURIComponent(q);
+    window.open(url, "_blank", "noopener");
+  }
+
   function setupProductSearch() {
-    const form = document.getElementById("product-search-form");
-    const input = document.getElementById("product-search-input");
-    if (!form || !input) return;
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const q = input.value.trim();
-      if (!q) return;
-      const url = "https://h2oinnovation.net/int_fr/catalogsearch/result/?q=" + encodeURIComponent(q);
-      window.open(url, "_blank", "noopener");
+    [
+      ["product-search-form", "product-search-input"],
+      ["nav-product-search-form", "nav-product-search-input"],
+    ].forEach(([formId, inputId]) => {
+      const form = document.getElementById(formId);
+      const input = document.getElementById(inputId);
+      if (!form || !input) return;
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        openH2oSearch(input.value);
+      });
     });
   }
 
@@ -631,6 +640,14 @@
     const nav = document.getElementById("site-nav");
     if (!toggle || !nav) return;
 
+    const prodDropdown = document.getElementById("nav-produits-dropdown");
+    const prodToggle = document.getElementById("nav-produits-toggle");
+
+    function closeProductsDropdown() {
+      if (prodDropdown) prodDropdown.classList.remove("open");
+      if (prodToggle) prodToggle.setAttribute("aria-expanded", "false");
+    }
+
     function open() {
       nav.hidden = false;
       toggle.setAttribute("aria-expanded", "true");
@@ -638,6 +655,7 @@
     function close() {
       nav.hidden = true;
       toggle.setAttribute("aria-expanded", "false");
+      closeProductsDropdown();
     }
 
     toggle.addEventListener("click", () => {
@@ -645,12 +663,25 @@
       else close();
     });
 
+    // Le bouton "Produits H2O" ouvre/ferme seulement son sous-menu — il ne ferme
+    // jamais tout le menu (c'est un <button>, pas un <a>, donc la délégation
+    // ci-dessous ne le referme pas non plus).
+    if (prodDropdown && prodToggle) {
+      prodToggle.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const isOpen = prodDropdown.classList.toggle("open");
+        prodToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+      });
+    }
+
+    // Un clic sur un vrai lien (destination MRC, section, sous-lien produit…) referme tout le menu.
     nav.addEventListener("click", (e) => {
       if (e.target.closest("a")) close();
     });
 
     document.addEventListener("click", (e) => {
       if (!nav.hidden && !nav.contains(e.target) && !toggle.contains(e.target)) close();
+      else if (prodDropdown && !prodDropdown.contains(e.target)) closeProductsDropdown();
     });
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape" && !nav.hidden) close();
