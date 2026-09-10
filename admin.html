@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,500&family=Playfair+Display:wght@600;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="icon" href="assets/favicon.ico">
-<link rel="stylesheet" href="assets/style.css?v=7">
-<link rel="stylesheet" href="assets/admin.css?v=7">
+<link rel="stylesheet" href="assets/style.css?v=6">
+<link rel="stylesheet" href="assets/admin.css?v=6">
 </head>
 <body class="admin-body">
 
@@ -336,8 +336,36 @@
         </div>
       </div>
       <div class="admin-field">
-        <label for="cc-about-body">Texte principal — un paragraphe par ligne, entouré de &lt;p&gt;...&lt;/p&gt;. Mets &lt;strong&gt;...&lt;/strong&gt; autour d'un passage pour le faire ressortir en bleu.</label>
-        <textarea id="cc-about-body" data-key="about.bodyHtml" rows="16"></textarea>
+        <label for="cc-about-intro">Texte d'introduction</label>
+        <textarea id="cc-about-intro" data-key="about.intro" rows="3"></textarea>
+      </div>
+      <div class="admin-field">
+        <label for="cc-about-quote1">Citation mise en évidence #1</label>
+        <textarea id="cc-about-quote1" data-key="about.quote1" rows="2"></textarea>
+      </div>
+      <div class="admin-field">
+        <label for="cc-about-body1">Paragraphe — qui tu accompagnes</label>
+        <textarea id="cc-about-body1" data-key="about.body1" rows="3"></textarea>
+      </div>
+      <div class="admin-field">
+        <label for="cc-about-equiplabel">Titre de la liste d'équipements</label>
+        <input type="text" id="cc-about-equiplabel" data-key="about.equipmentLabel">
+      </div>
+      <div class="admin-field">
+        <label for="cc-about-equiplist">Liste d'équipements (séparés par des virgules)</label>
+        <textarea id="cc-about-equiplist" data-key="about.equipmentList" rows="2"></textarea>
+      </div>
+      <div class="admin-field">
+        <label for="cc-about-body2">Paragraphe — personne-ressource / appel à l'action</label>
+        <textarea id="cc-about-body2" data-key="about.body2" rows="3"></textarea>
+      </div>
+      <div class="admin-field">
+        <label for="cc-about-quote2">Citation mise en évidence #2</label>
+        <textarea id="cc-about-quote2" data-key="about.quote2" rows="2"></textarea>
+      </div>
+      <div class="admin-field">
+        <label for="cc-about-body3">Paragraphe — service avant/pendant/après</label>
+        <textarea id="cc-about-body3" data-key="about.body3" rows="3"></textarea>
       </div>
       <div class="admin-field">
         <label for="cc-about-tagline">Phrase de fermeture (HTML simple accepté, ex. &lt;br&gt; et &lt;strong&gt;)</label>
@@ -434,6 +462,6 @@
 
 </main>
 
-<script src="assets/admin.js?v=7"></script>
+<script src="assets/admin.js?v=6"></script>
 </body>
 </html>
