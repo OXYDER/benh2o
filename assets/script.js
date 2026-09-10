@@ -47,6 +47,53 @@
     if (el && text) el.textContent = text;
   }
 
+  /* ---------- Bouton et panneau d'urgence (service à la clientèle H2O) ---------- */
+  function setupUrgence(cfg) {
+    const panel = document.getElementById("urgence-panel");
+    if (!panel) return;
+    const closeBtn = document.getElementById("urgence-close");
+    const urgence = cfg.urgence || {};
+
+    const callEl = document.getElementById("urgence-call");
+    const callNumEl = document.getElementById("urgence-call-number");
+    if (callEl && urgence.telLien) {
+      callEl.href = "tel:" + phoneHref(urgence.telLien);
+      if (callNumEl) callNumEl.textContent = phoneDisplay(urgence.telLien);
+    }
+    const smsEl = document.getElementById("urgence-sms");
+    const smsNumEl = document.getElementById("urgence-sms-number");
+    if (smsEl && urgence.smsLien) {
+      smsEl.href = "sms:" + phoneHref(urgence.smsLien);
+      if (smsNumEl) smsNumEl.textContent = phoneDisplay(urgence.smsLien);
+    }
+    const emailEl = document.getElementById("urgence-email");
+    const emailLabelEl = document.getElementById("urgence-email-label");
+    if (emailEl && urgence.courriel) {
+      emailEl.href = "mailto:" + urgence.courriel;
+      if (emailLabelEl) emailLabelEl.textContent = urgence.courriel;
+    }
+
+    function open() {
+      panel.hidden = false;
+      document.body.classList.add("gate-open");
+    }
+    function close() {
+      panel.hidden = true;
+      document.body.classList.remove("gate-open");
+    }
+
+    document.querySelectorAll("[data-urgence-trigger]").forEach((btn) => {
+      btn.addEventListener("click", open);
+    });
+    if (closeBtn) closeBtn.addEventListener("click", close);
+    panel.addEventListener("click", (e) => {
+      if (e.target === panel) close();
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && !panel.hidden) close();
+    });
+  }
+
   function wireContactLinks() {
     const mobileRaw = CFG.telephoneMobileLien;
     const smsRaw = CFG.telephoneSmsLien || CFG.telephoneMobileLien;
@@ -621,6 +668,7 @@
       .then((data) => {
         Object.assign(CFG, data);
         wireContactLinks();
+        setupUrgence(data);
         setupChat();
         setupForm();
       })

@@ -153,6 +153,16 @@ docker compose pull chatwoot-rails chatwoot-sidekiq
 docker compose up -d chatwoot-rails chatwoot-sidekiq
 ```
 
+## 3a. Bouton Urgence — service à la clientèle H2O
+
+Un bouton rouge flottant (coin inférieur gauche, visible sur toutes les pages) et un
+bouton identique dans la fenêtre d'accueil — pensés pour la période des sucres, quand
+un client a un bris urgent. Les deux ouvrent le même petit panneau avec trois façons de
+rejoindre le **service à la clientèle et le service technique H2O Innovation**
+directement (pas toi) : téléphone, texto, courriel.
+
+Coordonnées éditables dans `/admin` → Mes informations → section « Bouton Urgence ».
+
 ## 3b. Section « Produits H2O »
 
 Un moteur de recherche qui redirige vers `https://h2oinnovation.net/int_fr/catalogsearch/result/?q=...`

@@ -33,6 +33,11 @@ INSERT INTO site_data (key, data) VALUES ('contact', '{
     "chatwootWebsiteToken": "",
     "lienDirect": ""
   },
+  "urgence": {
+    "telLien": "819 344-2288",
+    "smsLien": "819 803-0384",
+    "courriel": "serv@h2oinnovation.com"
+  },
   "formsubmitEmail": "benoit.laprise@h2oinnovation.com",
   "boutiqueUrl": "https://h2oinnovation.net",
   "contactGeneralUrl": "https://h2oinnovation.net/contact"
