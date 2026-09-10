@@ -525,7 +525,42 @@ section { padding: 76px 0; }
 .about .section-tag { color: var(--amber-300); }
 .about p { color: rgba(246,241,228,0.85); max-width: 72ch; }
 
-.about-intro { max-width: 62ch; margin-bottom: 8px; }
+.about-intro-row {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 40px;
+  align-items: center;
+  margin-bottom: 36px;
+}
+.about-intro { max-width: 62ch; margin-bottom: 0; }
+
+.about-photo img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  filter: grayscale(1) contrast(1.05);
+  -webkit-mask-image: radial-gradient(ellipse 62% 62% at center, black 55%, transparent 100%);
+  mask-image: radial-gradient(ellipse 62% 62% at center, black 55%, transparent 100%);
+}
+
+.about-banner {
+  margin: 8px 0 40px;
+}
+.about-banner img {
+  width: 100%;
+  height: auto;
+  max-height: 320px;
+  object-fit: cover;
+  filter: grayscale(1) contrast(1.05);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%),
+                       linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%),
+              linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
+  mask-composite: intersect;
+}
+
 .about-lead {
   font-size: 1.1rem;
   color: rgba(246,241,228,0.92) !important;
@@ -682,6 +717,9 @@ footer a:hover { text-decoration: underline; }
   .hero-art { max-width: 220px; margin: 0 auto; order: -1; }
   .about-quote { padding-left: 16px; font-size: 1.1rem; }
   .about-tagline p { font-size: 1.1rem; }
+  .about-intro-row { grid-template-columns: 1fr; gap: 24px; }
+  .about-photo { max-width: 220px; margin: 0 auto; }
+  .about-banner img { max-height: 200px; }
   .field-row { grid-template-columns: 1fr; }
   .channel-row { grid-template-columns: 40px 1fr; }
   .channel-action, .channel-actions-group { grid-column: 2 / -1; justify-self: start; margin-top: 10px; }
