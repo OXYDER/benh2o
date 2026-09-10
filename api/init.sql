@@ -104,7 +104,8 @@ INSERT INTO site_data (key, data) VALUES ('content', '{
   "title": "Trouve le bon produit H2O Innovation",
   "description": "Cherche directement dans le catalogue officiel H2O Innovation — évaporateurs, tubulure, pompes, filtration et bien plus. Les résultats s'ouvrent dans un nouvel onglet, directement sur h2oinnovation.net.",
   "searchButton": "Rechercher",
-  "searchNote": "Besoin d'aide pour choisir? Écris-moi directement — je peux te conseiller sur le bon produit pour ton érablière."
+  "searchNote": "Besoin d'aide pour choisir? Écris-moi directement — je peux te conseiller sur le bon produit pour ton érablière.",
+  "categoriesLabel": "Ou accède directement à une catégorie :"
 },
   "channels": {
     "tag": "Nous joindre",

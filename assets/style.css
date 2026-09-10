@@ -181,6 +181,21 @@ p { margin: 0 0 1em; max-width: 62ch; }
 .site-nav a:last-child { border-bottom: none; }
 .site-nav a.site-nav-highlight { color: var(--amber-700); }
 
+.site-nav-item-dropdown { border-bottom: 1px solid rgba(32,27,20,0.06); }
+.site-nav-item-dropdown .site-nav-dropdown-toggle { border-bottom: none; }
+.site-nav-submenu {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0 24px 14px;
+}
+.site-nav-submenu .pill {
+  background: var(--birch-100);
+  border-color: rgba(32,27,20,0.15);
+  color: var(--ink-900);
+}
+.site-nav-submenu .pill:hover { background: var(--amber-600); border-color: var(--amber-600); color: var(--ink-900); }
+
 @media (min-width: 900px) {
   .site-nav {
     flex-direction: row;
@@ -190,6 +205,28 @@ p { margin: 0 0 1em; max-width: 62ch; }
   }
   .site-nav a { border-bottom: none; padding: 10px 16px; border-radius: 999px; }
   .site-nav a:hover { background: var(--birch-100); }
+
+  .site-nav-item-dropdown { position: relative; border-bottom: none; }
+  .site-nav-submenu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: max-content;
+    max-width: 320px;
+    background: var(--birch-050);
+    border: 1px solid rgba(32,27,20,0.12);
+    border-radius: var(--radius);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+    padding: 12px;
+    margin-top: 4px;
+    z-index: 30;
+  }
+  .site-nav-item-dropdown:hover .site-nav-submenu,
+  .site-nav-item-dropdown:focus-within .site-nav-submenu {
+    display: flex;
+  }
 }
 
 /* ---------- Hero ---------- */
@@ -344,6 +381,21 @@ section { padding: 76px 0; }
   color: var(--ink-600);
   max-width: 560px;
 }
+.product-links-label {
+  margin-top: 32px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--ink-600);
+}
+.product-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.product-links .pill {
+  background: var(--birch-050);
+  border-color: rgba(32,27,20,0.15);
+  color: var(--ink-900);
+}
+.product-links .pill:hover { background: var(--amber-600); border-color: var(--amber-600); color: var(--ink-900); }
 
 #coverage-map {
   height: 460px;

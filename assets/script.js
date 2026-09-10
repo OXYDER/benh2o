@@ -645,7 +645,9 @@
       else close();
     });
 
-    nav.querySelectorAll("a").forEach((a) => a.addEventListener("click", close));
+    nav.addEventListener("click", (e) => {
+      if (e.target.closest("a")) close();
+    });
 
     document.addEventListener("click", (e) => {
       if (!nav.hidden && !nav.contains(e.target) && !toggle.contains(e.target)) close();
