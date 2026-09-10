@@ -635,6 +635,34 @@
     });
   }
 
+  /* ---------- Particules animées derrière la feuille d'érable (hero) ---------- */
+  function setupLeafParticles() {
+    const container = document.getElementById("leaf-particles");
+    if (!container) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const COUNT = 22;
+    for (let i = 0; i < COUNT; i++) {
+      const p = document.createElement("div");
+      p.className = "leaf-particle";
+      const size = (Math.random() * 3 + 2).toFixed(1); // 2–5px
+      const x = (Math.random() * 100).toFixed(1); // % horizontal
+      const duration = (Math.random() * 4 + 5).toFixed(1); // 5–9s
+      const delay = (Math.random() * -9).toFixed(1); // décalage négatif = déjà en vol au chargement
+      const drift = (Math.random() * 60 - 30).toFixed(0); // dérive latérale -30 à 30px
+      const rise = -(Math.random() * 120 + 260).toFixed(0); // hauteur de montée
+      const tail = (Math.random() * 16 + 10).toFixed(0); // longueur de la traînée
+      p.style.setProperty("--size", size + "px");
+      p.style.setProperty("--x", x + "%");
+      p.style.setProperty("--duration", duration + "s");
+      p.style.setProperty("--delay", delay + "s");
+      p.style.setProperty("--drift", drift + "px");
+      p.style.setProperty("--rise", rise + "px");
+      p.style.setProperty("--tail", tail + "px");
+      container.appendChild(p);
+    }
+  }
+
   function setupNav() {
     const toggle = document.getElementById("nav-toggle");
     const nav = document.getElementById("site-nav");
@@ -694,6 +722,7 @@
     setupContent();
     showVisitorBadge();
     setupNav();
+    setupLeafParticles();
     setupProductSearch();
 
     fetch("/api/contact")
