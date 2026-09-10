@@ -559,11 +559,42 @@
       });
   }
 
+  /* ---------- Menu de navigation (hamburger) ---------- */
+  function setupNav() {
+    const toggle = document.getElementById("nav-toggle");
+    const nav = document.getElementById("site-nav");
+    if (!toggle || !nav) return;
+
+    function open() {
+      nav.hidden = false;
+      toggle.setAttribute("aria-expanded", "true");
+    }
+    function close() {
+      nav.hidden = true;
+      toggle.setAttribute("aria-expanded", "false");
+    }
+
+    toggle.addEventListener("click", () => {
+      if (nav.hidden) open();
+      else close();
+    });
+
+    nav.querySelectorAll("a").forEach((a) => a.addEventListener("click", close));
+
+    document.addEventListener("click", (e) => {
+      if (!nav.hidden && !nav.contains(e.target) && !toggle.contains(e.target)) close();
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && !nav.hidden) close();
+    });
+  }
+
   document.addEventListener("DOMContentLoaded", () => {
     setupZoneChecker();
     setupEntryGate();
     setupContent();
     showVisitorBadge();
+    setupNav();
 
     fetch("/api/contact")
       .then((res) => res.json())
