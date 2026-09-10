@@ -155,9 +155,24 @@ docker compose up -d chatwoot-rails chatwoot-sidekiq
 
 ## 4. Formulaire de contact
 
-Utilise [FormSubmit.co](https://formsubmit.co) — gratuit, aucune configuration serveur
-requise. La première soumission demande de confirmer l'adresse indiquée dans le champ
-« Courriel qui reçoit le formulaire » (onglet Mes informations) — un seul clic à faire.
+Deux façons d'envoyer les demandes du formulaire, gérées par le serveur (`POST
+/api/contact-form`) — jamais directement depuis le navigateur :
+
+**Par défaut : FormSubmit.co** (gratuit, aucune configuration). La première
+soumission demande de confirmer l'adresse indiquée dans le champ « Courriel qui reçoit
+le formulaire » (onglet Mes informations) — un seul clic à faire.
+
+**Optionnel : ton propre serveur SMTP.** Dans `/admin` → Mes informations → section
+« Envoi du formulaire de contact par SMTP » — coche **Activer l'envoi par SMTP**,
+remplis l'hôte, le port, le nom d'utilisateur, le mot de passe et l'adresse qui reçoit
+les demandes, puis **Enregistrer**. Le bouton **Tester la connexion** envoie un vrai
+courriel de test avec la configuration enregistrée, pour confirmer que tout fonctionne
+avant de compter dessus. Le mot de passe n'est jamais renvoyé au navigateur après
+l'enregistrement (par sécurité) — laisse le champ vide pour le garder tel quel, ou
+tape-en un nouveau pour le remplacer.
+
+**Anti-spam :** peu importe la méthode choisie, un même visiteur ne peut pas envoyer
+plus d'un message aux **2 minutes** (limite appliquée par le serveur, par adresse IP).
 
 ## 5. GitHub (repo OXYDER/benh2o)
 

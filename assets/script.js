@@ -454,21 +454,59 @@
   function setupForm() {
     const form = document.getElementById("contact-form");
     if (!form) return;
-    const email = CFG.formsubmitEmail || CFG.courriel;
-    if (email) {
-      form.action = `https://formsubmit.co/${email}`;
-    }
-    const hiddenFields = {
-      _subject: "Nouvelle demande — benoitlaprise.com",
-      _template: "table",
-      _captcha: "false"
-    };
-    Object.entries(hiddenFields).forEach(([name, value]) => {
-      const input = document.createElement("input");
-      input.type = "hidden";
-      input.name = name;
-      input.value = value;
-      form.appendChild(input);
+    const submitBtn = document.getElementById("contact-submit");
+    const status = document.getElementById("form-status");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Envoi en cours…";
+      }
+      if (status) {
+        status.className = "form-status";
+        status.textContent = "";
+      }
+
+      const payload = {
+        name: document.getElementById("f-name").value.trim(),
+        erabliere: document.getElementById("f-erabliere").value.trim(),
+        ville: document.getElementById("f-ville").value.trim(),
+        tel: document.getElementById("f-tel").value.trim(),
+        courriel: document.getElementById("f-courriel").value.trim(),
+        message: document.getElementById("f-message").value.trim(),
+      };
+
+      try {
+        const res = await fetch("/api/contact-form", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (res.ok) {
+          form.reset();
+          if (status) {
+            status.textContent = "Merci! Ta demande m'a été envoyée, je te réponds dès que possible.";
+            status.classList.add("show", "ok");
+          }
+        } else {
+          if (status) {
+            status.textContent = data.error || "L'envoi a échoué. Réessaie plus tard ou contacte-moi directement.";
+            status.classList.add("show", "error");
+          }
+        }
+      } catch (e) {
+        if (status) {
+          status.textContent = "Impossible de contacter le serveur. Réessaie plus tard ou contacte-moi directement.";
+          status.classList.add("show", "error");
+        }
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Envoyer";
+        }
+      }
     });
   }
 

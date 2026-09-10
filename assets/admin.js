@@ -67,7 +67,7 @@
   });
 
   document.getElementById("logout-btn").addEventListener("click", async () => {
-    if (dirty.contact || dirty.zones || dirty.content || dirty.distributeurs) {
+    if (dirty.contact || dirty.zones || dirty.content || dirty.distributeurs || dirty.smtp) {
       if (!confirm("Tu as des changements non enregistrés. Te déconnecter quand même ?")) return;
     }
     await fetch("/api/logout", { method: "POST" });
@@ -124,8 +124,8 @@
   }
 
   /* ---------- Avertit avant de quitter s'il y a des changements non enregistrés ---------- */
-  const dirty = { contact: false, zones: false, content: false, distributeurs: false };
-  const dirtyEls = { contact: null, zones: null, content: null, distributeurs: null };
+  const dirty = { contact: false, zones: false, content: false, distributeurs: false, smtp: false };
+  const dirtyEls = { contact: null, zones: null, content: null, distributeurs: null, smtp: null };
   function registerDirtyIndicator(key, el) {
     dirtyEls[key] = el;
   }
@@ -142,7 +142,7 @@
     dirty[key] = false;
   }
   window.addEventListener("beforeunload", (e) => {
-    if (dirty.contact || dirty.zones || dirty.content || dirty.distributeurs) {
+    if (dirty.contact || dirty.zones || dirty.content || dirty.distributeurs || dirty.smtp) {
       e.preventDefault();
       e.returnValue = "";
     }
@@ -157,6 +157,7 @@
     setupZonesEditor();
     setupContentEditor();
     setupDistributeursEditor();
+    setupSmtpEditor();
   }
 
   /* =========================================================
@@ -711,6 +712,108 @@
 
     saveBtn.addEventListener("click", save);
     registerDirtyIndicator("distributeurs", statusEl);
+    load();
+  }
+
+  /* =========================================================
+     ONGLET : Mes informations — section SMTP (formulaire de contact)
+     ========================================================= */
+  function setupSmtpEditor() {
+    const section = document.getElementById("smtp-section");
+    if (!section) return;
+    const saveBtn = document.getElementById("smtp-save");
+    const testBtn = document.getElementById("smtp-test");
+    const statusEl = document.getElementById("smtp-save-status");
+    const passwordHint = document.getElementById("smtp-password-hint");
+    const passwordInput = document.getElementById("smtp-password");
+
+    let smtpData = {};
+
+    function populateForm() {
+      section.querySelectorAll("[data-key]").forEach((el) => {
+        const val = smtpData[el.dataset.key];
+        if (el.type === "checkbox") {
+          el.checked = !!val;
+        } else if (el.type !== "password") {
+          el.value = val === undefined || val === null ? "" : val;
+        }
+      });
+      if (passwordHint) {
+        passwordHint.textContent = smtpData.passwordSet
+          ? "Un mot de passe est déjà enregistré — laisse ce champ vide pour le garder, ou tape-en un nouveau pour le remplacer."
+          : "Aucun mot de passe enregistré pour l'instant.";
+      }
+    }
+
+    function bindForm() {
+      section.querySelectorAll("[data-key]").forEach((el) => {
+        const evt = el.type === "checkbox" ? "change" : "input";
+        el.addEventListener(evt, () => {
+          smtpData[el.dataset.key] = el.type === "checkbox" ? el.checked : el.value;
+          markDirty("smtp");
+        });
+      });
+    }
+
+    async function load() {
+      try {
+        const res = await fetch("/api/smtp");
+        smtpData = await res.json();
+        populateForm();
+      } catch (e) {
+        flashStatus(statusEl, "Impossible de charger la configuration SMTP.", true);
+      }
+    }
+
+    async function save() {
+      saveBtn.disabled = true;
+      saveBtn.textContent = "Enregistrement…";
+      try {
+        const res = await fetch("/api/smtp", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(smtpData),
+        });
+        if (res.ok) {
+          flashStatus(statusEl, "Enregistré ✓", false);
+          clearDirty("smtp");
+          if (passwordInput) passwordInput.value = "";
+          await load();
+        } else {
+          const data = await res.json().catch(() => ({}));
+          flashStatus(statusEl, data.error || "Échec de l'enregistrement.", true);
+        }
+      } catch (e) {
+        flashStatus(statusEl, "Impossible de contacter le serveur.", true);
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = "Enregistrer";
+      }
+    }
+
+    async function test() {
+      testBtn.disabled = true;
+      testBtn.textContent = "Test en cours…";
+      try {
+        const res = await fetch("/api/smtp/test", { method: "POST" });
+        const data = await res.json().catch(() => ({}));
+        if (res.ok) {
+          flashStatus(statusEl, data.message || "Connexion réussie ✓", false);
+        } else {
+          flashStatus(statusEl, data.error || "Échec du test.", true);
+        }
+      } catch (e) {
+        flashStatus(statusEl, "Impossible de contacter le serveur.", true);
+      } finally {
+        testBtn.disabled = false;
+        testBtn.textContent = "Tester la connexion";
+      }
+    }
+
+    bindForm();
+    saveBtn.addEventListener("click", save);
+    testBtn.addEventListener("click", test);
+    registerDirtyIndicator("smtp", statusEl);
     load();
   }
 })();

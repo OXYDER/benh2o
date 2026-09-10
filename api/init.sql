@@ -294,3 +294,16 @@ INSERT INTO site_data (key, data) VALUES ('distributeurs', '[
   }
 ]'::jsonb)
 ON CONFLICT (key) DO NOTHING;
+
+INSERT INTO site_data (key, data) VALUES ('smtp', '{
+  "actif": false,
+  "host": "",
+  "port": 587,
+  "secure": false,
+  "user": "",
+  "password": "",
+  "fromName": "Benoît Laprise",
+  "fromEmail": "",
+  "toEmail": ""
+}'::jsonb)
+ON CONFLICT (key) DO NOTHING;
