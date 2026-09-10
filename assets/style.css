@@ -404,6 +404,29 @@ section { padding: 76px 0; }
 }
 .channel-row:first-of-type { border-top: 1px solid rgba(32,27,20,0.1); }
 
+.channel-actions-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.copy-btn {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border-radius: var(--radius);
+  border: 1.5px solid rgba(32,27,20,0.18);
+  background: var(--birch-100);
+  color: var(--ink-600);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+.copy-btn svg { width: 16px; height: 16px; }
+.copy-btn:hover { background: var(--birch-050); border-color: var(--amber-600); color: var(--amber-700); }
+.copy-btn.copied { background: var(--amber-600); border-color: var(--amber-600); color: #fff; }
+
 .channel-icon {
   width: 44px; height: 44px;
   display: flex; align-items: center; justify-content: center;
@@ -579,7 +602,7 @@ footer a:hover { text-decoration: underline; }
   .about-tagline p { font-size: 1.1rem; }
   .field-row { grid-template-columns: 1fr; }
   .channel-row { grid-template-columns: 40px 1fr; }
-  .channel-action { grid-column: 1 / -1; justify-self: start; margin-top: 4px; }
+  .channel-action, .channel-actions-group { grid-column: 1 / -1; justify-self: start; margin-top: 4px; }
   .header-logo img { height: 22px; }
   .site-header .container { column-gap: 8px; }
   .brand { font-size: 1rem; }
