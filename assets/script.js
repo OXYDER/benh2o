@@ -24,34 +24,9 @@
   }
 
   /* ---------- Remplir les liens de contact à partir de contact.json ---------- */
-  /* ---------- Copier un numéro (utile sur PC, où tel:/sms: n'ouvre souvent rien) ---------- */
-  function setupCopyButton(buttonId, textToCopy) {
-    const btn = document.getElementById(buttonId);
-    if (!btn || !textToCopy) return;
-    btn.addEventListener("click", () => {
-      const done = () => {
-        btn.classList.add("copied");
-        const original = btn.getAttribute("title");
-        btn.setAttribute("title", "Copié !");
-        setTimeout(() => {
-          btn.classList.remove("copied");
-          btn.setAttribute("title", original);
-        }, 1500);
-      };
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(textToCopy).then(done).catch(() => {});
-      } else {
-        // Repli pour navigateurs plus anciens sans l'API Clipboard.
-        const tmp = document.createElement("textarea");
-        tmp.value = textToCopy;
-        tmp.style.position = "fixed";
-        tmp.style.opacity = "0";
-        document.body.appendChild(tmp);
-        tmp.select();
-        try { document.execCommand("copy"); done(); } catch (e) {}
-        document.body.removeChild(tmp);
-      }
-    });
+  function setupNumberDisplay(id, text) {
+    const el = document.getElementById(id);
+    if (el && text) el.textContent = text;
   }
 
   function wireContactLinks() {
@@ -91,9 +66,9 @@
     const footerEmail = document.getElementById("footer-email");
     if (footerEmail) footerEmail.textContent = CFG.courriel || "";
 
-    setupCopyButton("channel-call-copy", CFG.telephoneMobileAffiche);
-    setupCopyButton("channel-sms-copy", CFG.telephoneSmsAffiche || CFG.telephoneMobileAffiche);
-    setupCopyButton("channel-h2o-copy", CFG.telephoneH2OAffiche);
+    setupNumberDisplay("channel-call-number", CFG.telephoneMobileAffiche);
+    setupNumberDisplay("channel-sms-number", CFG.telephoneSmsAffiche || CFG.telephoneMobileAffiche);
+    setupNumberDisplay("channel-h2o-number", CFG.telephoneH2OAffiche);
 
     const yearEl = document.getElementById("year");
     if (yearEl) yearEl.textContent = new Date().getFullYear();
