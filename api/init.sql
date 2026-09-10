@@ -94,6 +94,13 @@ INSERT INTO site_data (key, data) VALUES ('content', '{
     "description": "Chaque zone rouge est une municipalité que je dessers — pas la MRC en entier, seulement les municipalités précises de mon secteur. Les points bleus sont les autres distributeurs H2O Innovation, et le gros point ambre marque le centre de mon secteur. Clique sur une zone ou un point pour en savoir plus — déplace-toi et zoome librement sur la carte.",
     "note": "Frontières municipales officielles (Statistique Canada). Pour une confirmation précise de ton secteur, utilise le vérificateur ci-dessus ou contacte-moi directement."
   },
+  "products": {
+  "tag": "Catalogue",
+  "title": "Trouve le bon produit H2O Innovation",
+  "description": "Cherche directement dans le catalogue officiel H2O Innovation — évaporateurs, tubulure, pompes, filtration et bien plus. Les résultats s'ouvrent dans un nouvel onglet, directement sur h2oinnovation.net.",
+  "searchButton": "Rechercher",
+  "searchNote": "Besoin d'aide pour choisir? Écris-moi directement — je peux te conseiller sur le bon produit pour ton érablière."
+},
   "channels": {
     "tag": "Nous joindre",
     "title": "Choisis le moyen qui te convient",
@@ -129,7 +136,7 @@ INSERT INTO site_data (key, data) VALUES ('content', '{
     "quote1": "Je ne veux pas simplement vous vendre un produit. Je veux comprendre votre érablière, vos besoins et vos projets afin de vous proposer la bonne solution.",
     "body1": "Que vous soyez acériculteur débutant, producteur établi ou prêt à faire évoluer votre installation, je suis là pour vous accompagner dans vos choix et vous aider à bâtir une installation efficace, fiable et adaptée à votre réalité.",
     "equipmentLabel": "Je peux vous conseiller pour une vaste gamme d'équipements et de fournitures acéricoles :",
-    "equipmentList": "Évaporateurs, Séparateurs par osmose inverse, Relâcheurs et extracteurs, Pompes à vacuum, Maîtres-lignes, Tubulure, Pompes, Outils, Capteurs de monitoring, Systèmes de surveillance et de contrôle à distance",
+    "equipmentItems": [{"label": "Évaporateurs", "url": "https://h2oinnovation.net/int_fr/catalog/category/view/s/evaporation/id/232/"}, {"label": "Séparateurs par osmose inverse", "url": "https://h2oinnovation.net/int_fr/catalog/category/view/s/osmoses-inverses/id/603/"}, {"label": "Relâcheurs et extracteurs", "url": "https://h2oinnovation.net/int_fr/catalog/category/view/s/extracteurs/id/261/"}, {"label": "Pompes à vacuum", "url": "https://h2oinnovation.net/int_fr/catalog/category/view/s/pompes-a-vide-seules/id/578/"}, {"label": "Maîtres-lignes", "url": "https://h2oinnovation.net/int_fr/catalog/category/view/s/maitre-lignes/id/402/"}, {"label": "Tubulure", "url": "https://h2oinnovation.net/int_fr/catalog/category/view/s/tubulures/id/401/"}, {"label": "Pompes", "url": "https://h2oinnovation.net/int_fr/catalog/category/view/s/pompes-a-vide/id/227/"}, {"label": "Outils", "url": "https://h2oinnovation.net/int_fr/catalog/category/view/s/outils/id/437/"}, {"label": "Capteurs de monitoring", "url": "https://h2oinnovation.net/int_fr/h2o-monitoring-surveillance-sans-fil/capteurs-et-sondes.html"}, {"label": "Systèmes de surveillance et de contrôle à distance", "url": "https://h2oinnovation.net/int_fr/h2o-monitoring-surveillance-sans-fil.html"}],
     "body2": "Mais surtout, je veux être votre personne-ressource. Vous avez une question? Un projet? Un équipement qui vous cause problème? Vous hésitez entre deux solutions? Appelez-moi, écrivez-moi ou parlez-moi de votre projet. Je prendrai le temps de vous écouter, de vous expliquer vos options et de vous conseiller honnêtement.",
     "quote2": "Parce que pour moi, vendre un équipement, ce n'est pas simplement faire une transaction. C'est commencer une relation.",
     "body3": "Je veux que vous puissiez compter sur moi avant, pendant et après votre achat : pour vos conseils, votre installation, votre mise en route, vos pièces, vos fournitures, votre dépannage et votre service après-vente. Mon objectif est simple : vous aider à produire mieux, à travailler plus efficacement et à investir dans des équipements qui ont réellement leur place dans votre érablière.",

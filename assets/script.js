@@ -526,12 +526,17 @@
       }
     });
 
-    // Champs texte "virgule-séparée" affichés comme une liste de badges (ex. équipements).
-    document.querySelectorAll("[data-c-list]").forEach((el) => {
-      const val = getPath(data, el.dataset.cList);
-      if (val === undefined || val === null) return;
-      const items = val.split(",").map((s) => s.trim()).filter(Boolean);
-      el.innerHTML = items.map((item) => `<span class="pill">${item}</span>`).join("");
+    // Liste de badges cliquables (ex. équipements -> catégories du site h2oinnovation.net).
+    document.querySelectorAll("[data-c-links]").forEach((el) => {
+      const items = getPath(data, el.dataset.cLinks);
+      if (!Array.isArray(items)) return;
+      el.innerHTML = items
+        .map((item) =>
+          item.url
+            ? `<a class="pill" href="${item.url}" target="_blank" rel="noopener">${item.label}</a>`
+            : `<span class="pill">${item.label}</span>`
+        )
+        .join("");
     });
   }
 
@@ -560,6 +565,20 @@
   }
 
   /* ---------- Menu de navigation (hamburger) ---------- */
+  /* ---------- Recherche de produits (redirige vers h2oinnovation.net) ---------- */
+  function setupProductSearch() {
+    const form = document.getElementById("product-search-form");
+    const input = document.getElementById("product-search-input");
+    if (!form || !input) return;
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const q = input.value.trim();
+      if (!q) return;
+      const url = "https://h2oinnovation.net/int_fr/catalogsearch/result/?q=" + encodeURIComponent(q);
+      window.open(url, "_blank", "noopener");
+    });
+  }
+
   function setupNav() {
     const toggle = document.getElementById("nav-toggle");
     const nav = document.getElementById("site-nav");
@@ -595,6 +614,7 @@
     setupContent();
     showVisitorBadge();
     setupNav();
+    setupProductSearch();
 
     fetch("/api/contact")
       .then((res) => res.json())

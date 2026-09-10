@@ -337,6 +337,14 @@ section { padding: 76px 0; }
 
 .coverage-map-section { background: var(--birch-050); }
 
+.products { background: var(--birch-100); border-top: 1px solid rgba(32,27,20,0.08); }
+.product-search-note {
+  margin-top: 14px;
+  font-size: 0.85rem;
+  color: var(--ink-600);
+  max-width: 560px;
+}
+
 #coverage-map {
   height: 460px;
   border-radius: var(--radius-lg);
@@ -581,6 +589,14 @@ section { padding: 76px 0; }
   font-family: var(--sans);
   font-size: 0.85rem;
   color: rgba(246,241,228,0.9);
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+.pill:hover {
+  background: var(--amber-600);
+  border-color: var(--amber-600);
+  color: var(--ink-900);
 }
 
 .about-stats-row {

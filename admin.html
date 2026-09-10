@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,500&family=Playfair+Display:wght@600;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="icon" href="assets/favicon.ico">
-<link rel="stylesheet" href="assets/style.css?v=20">
-<link rel="stylesheet" href="assets/admin.css?v=20">
+<link rel="stylesheet" href="assets/style.css?v=21">
+<link rel="stylesheet" href="assets/admin.css?v=21">
 </head>
 <body class="admin-body">
 
@@ -290,6 +290,33 @@
         <textarea id="cc-map-note" data-key="map.note" rows="2"></textarea>
       </div>
 
+      <h3 class="admin-field-group-title">Section « Produits H2O »</h3>
+      <p class="admin-field-hint">Le moteur de recherche ouvre directement les résultats sur h2oinnovation.net dans un nouvel onglet — aucun produit n'est copié sur ton site.</p>
+      <div class="admin-field-row">
+        <div class="admin-field">
+          <label for="cc-products-tag">Étiquette</label>
+          <input type="text" id="cc-products-tag" data-key="products.tag">
+        </div>
+        <div class="admin-field">
+          <label for="cc-products-title">Titre</label>
+          <input type="text" id="cc-products-title" data-key="products.title">
+        </div>
+      </div>
+      <div class="admin-field">
+        <label for="cc-products-desc">Description</label>
+        <textarea id="cc-products-desc" data-key="products.description" rows="2"></textarea>
+      </div>
+      <div class="admin-field-row">
+        <div class="admin-field">
+          <label for="cc-products-btn">Texte du bouton de recherche</label>
+          <input type="text" id="cc-products-btn" data-key="products.searchButton">
+        </div>
+        <div class="admin-field">
+          <label for="cc-products-note">Note sous le moteur de recherche</label>
+          <input type="text" id="cc-products-note" data-key="products.searchNote">
+        </div>
+      </div>
+
       <h3 class="admin-field-group-title">Section « Nous joindre »</h3>
       <div class="admin-field-row">
         <div class="admin-field">
@@ -389,8 +416,9 @@
         <input type="text" id="cc-about-equiplabel" data-key="about.equipmentLabel">
       </div>
       <div class="admin-field">
-        <label for="cc-about-equiplist">Liste d'équipements (séparés par des virgules)</label>
-        <textarea id="cc-about-equiplist" data-key="about.equipmentList" rows="2"></textarea>
+        <label>Badges d'équipements (texte + lien vers la catégorie sur h2oinnovation.net)</label>
+        <div id="equipment-items-list" class="equipment-items-list"></div>
+        <button class="btn btn-outline" id="equipment-item-add" type="button" style="margin-top:8px">+ Ajouter un badge</button>
       </div>
       <div class="admin-field">
         <label for="cc-about-body2">Paragraphe — personne-ressource / appel à l'action</label>
@@ -499,6 +527,6 @@
 
 </main>
 
-<script src="assets/admin.js?v=20"></script>
+<script src="assets/admin.js?v=21"></script>
 </body>
 </html>

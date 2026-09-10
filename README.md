@@ -153,6 +153,21 @@ docker compose pull chatwoot-rails chatwoot-sidekiq
 docker compose up -d chatwoot-rails chatwoot-sidekiq
 ```
 
+## 3b. Section « Produits H2O »
+
+Un moteur de recherche qui redirige vers `https://h2oinnovation.net/int_fr/catalogsearch/result/?q=...`
+dans un nouvel onglet — aucun produit, prix ni image n'est copié ou affiché sur ton
+site. C'est volontaire : leur catalogue change constamment (stock, prix), et
+reproduire leur contenu créerait un site fragile (qui casse dès qu'ils changent leur
+site) et poserait un problème de droits d'auteur sur leurs photos et descriptions.
+Le texte de cette section (titre, description, bouton) est éditable dans `/admin` →
+Contenu de la page.
+
+**Badges d'équipements (section À propos) :** chaque badge (Évaporateurs, Pompes,
+etc.) est maintenant un vrai lien vers la catégorie correspondante sur
+h2oinnovation.net, éditable individuellement dans `/admin` → Contenu de la page →
+À propos → « Badges d'équipements » (texte + lien, ajoute/retire-en librement).
+
 ## 4. Formulaire de contact
 
 Deux façons d'envoyer les demandes du formulaire, gérées par le serveur (`POST

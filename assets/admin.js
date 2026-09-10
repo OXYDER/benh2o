@@ -540,6 +540,40 @@
       });
     }
 
+    function renderEquipmentItems() {
+      const listEl = document.getElementById("equipment-items-list");
+      if (!listEl) return;
+      if (!Array.isArray(contentData.about?.equipmentItems)) {
+        setPath(contentData, "about.equipmentItems", []);
+      }
+      const items = contentData.about.equipmentItems;
+
+      listEl.innerHTML = "";
+      items.forEach((item, i) => {
+        const row = document.createElement("div");
+        row.className = "equipment-item-row";
+        row.innerHTML = `
+          <input type="text" class="eq-label" placeholder="Texte du badge" value="${escapeAttr(item.label || "")}">
+          <input type="text" class="eq-url" placeholder="https://h2oinnovation.net/..." value="${escapeAttr(item.url || "")}">
+          <button class="icon-btn danger eq-remove" type="button" title="Supprimer">✕</button>
+        `;
+        row.querySelector(".eq-label").addEventListener("input", (e) => {
+          items[i].label = e.target.value;
+          markDirty("content");
+        });
+        row.querySelector(".eq-url").addEventListener("input", (e) => {
+          items[i].url = e.target.value;
+          markDirty("content");
+        });
+        row.querySelector(".eq-remove").addEventListener("click", () => {
+          items.splice(i, 1);
+          markDirty("content");
+          renderEquipmentItems();
+        });
+        listEl.appendChild(row);
+      });
+    }
+
     async function load() {
       try {
         const [contentRes, themesRes] = await Promise.all([
@@ -551,6 +585,16 @@
         themes = themeData.themes || [];
         populateForm();
         renderThemePicker();
+        renderEquipmentItems();
+        const addBtn = document.getElementById("equipment-item-add");
+        if (addBtn && !addBtn.dataset.wired) {
+          addBtn.dataset.wired = "1";
+          addBtn.addEventListener("click", () => {
+            contentData.about.equipmentItems.push({ label: "Nouveau produit", url: "" });
+            markDirty("content");
+            renderEquipmentItems();
+          });
+        }
       } catch (e) {
         flashStatus(statusEl, "Impossible de charger les données.", true);
       }
