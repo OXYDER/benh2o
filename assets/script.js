@@ -24,15 +24,37 @@
   }
 
   /* ---------- Remplir les liens de contact à partir de contact.json ---------- */
+  /* ---------- Format standardisé des numéros : 1 (819) 823-6343 ---------- */
+  function phoneDigits(raw) {
+    if (!raw) return null;
+    const digits = raw.replace(/\D/g, "");
+    if (digits.length === 11 && digits[0] === "1") return digits.slice(1);
+    if (digits.length === 10) return digits;
+    return null;
+  }
+  function phoneHref(raw) {
+    const d = phoneDigits(raw);
+    return d ? "+1" + d : (raw || "").replace(/\s+/g, "");
+  }
+  function phoneDisplay(raw) {
+    const d = phoneDigits(raw);
+    if (!d) return raw || ""; // format non reconnu : on affiche tel quel plutôt que rien
+    return `1 (${d.slice(0, 3)}) ${d.slice(3, 6)}-${d.slice(6)}`;
+  }
+
   function setupNumberDisplay(id, text) {
     const el = document.getElementById(id);
     if (el && text) el.textContent = text;
   }
 
   function wireContactLinks() {
-    const telHref = "tel:" + (CFG.telephoneMobileLien || "");
-    const smsHref = "sms:" + (CFG.telephoneSmsLien || CFG.telephoneMobileLien || "");
-    const h2oTelHref = "tel:" + (CFG.telephoneH2OLien || "");
+    const mobileRaw = CFG.telephoneMobileLien;
+    const smsRaw = CFG.telephoneSmsLien || CFG.telephoneMobileLien;
+    const h2oRaw = CFG.telephoneH2OLien;
+
+    const telHref = "tel:" + phoneHref(mobileRaw);
+    const smsHref = "sms:" + phoneHref(smsRaw);
+    const h2oTelHref = "tel:" + phoneHref(h2oRaw);
     const mailHref = "mailto:" + (CFG.courriel || "");
 
     ["header-call", "hero-call", "channel-call"].forEach((id) => {
@@ -49,10 +71,10 @@
     const h2oEl = document.getElementById("channel-h2o");
     if (h2oEl) h2oEl.href = h2oTelHref;
     const h2oLabel = document.getElementById("channel-h2o-label");
-    if (h2oLabel && CFG.telephoneH2OAffiche) h2oLabel.textContent = CFG.telephoneH2OAffiche;
+    if (h2oLabel) h2oLabel.textContent = phoneDisplay(h2oRaw);
 
     const headerLabel = document.getElementById("header-call-label");
-    if (headerLabel && CFG.telephoneMobileAffiche) headerLabel.textContent = CFG.telephoneMobileAffiche;
+    if (headerLabel) headerLabel.textContent = phoneDisplay(mobileRaw);
 
     const messengerEl = document.getElementById("channel-messenger");
     if (messengerEl && CFG.messengerUsername) {
@@ -62,13 +84,13 @@
     }
 
     const footerPhone = document.getElementById("footer-phone");
-    if (footerPhone) footerPhone.textContent = CFG.telephoneMobileAffiche || "";
+    if (footerPhone) footerPhone.textContent = phoneDisplay(mobileRaw);
     const footerEmail = document.getElementById("footer-email");
     if (footerEmail) footerEmail.textContent = CFG.courriel || "";
 
-    setupNumberDisplay("channel-call-number", CFG.telephoneMobileAffiche);
-    setupNumberDisplay("channel-sms-number", CFG.telephoneSmsAffiche || CFG.telephoneMobileAffiche);
-    setupNumberDisplay("channel-h2o-number", CFG.telephoneH2OAffiche);
+    setupNumberDisplay("channel-call-number", phoneDisplay(mobileRaw));
+    setupNumberDisplay("channel-sms-number", phoneDisplay(smsRaw));
+    setupNumberDisplay("channel-h2o-number", phoneDisplay(h2oRaw));
 
     const yearEl = document.getElementById("year");
     if (yearEl) yearEl.textContent = new Date().getFullYear();

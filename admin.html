@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,500&family=Playfair+Display:wght@600;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="icon" href="assets/favicon.ico">
-<link rel="stylesheet" href="assets/style.css?v=12">
-<link rel="stylesheet" href="assets/admin.css?v=12">
+<link rel="stylesheet" href="assets/style.css?v=13">
+<link rel="stylesheet" href="assets/admin.css?v=13">
 </head>
 <body class="admin-body">
 
@@ -72,40 +72,23 @@
         </div>
 
         <h3 class="admin-field-group-title">Téléphone mobile (appels)</h3>
-        <div class="admin-field-row">
-          <div class="admin-field">
-            <label for="c-mobile-affiche">Affiché à l'écran</label>
-            <input type="text" id="c-mobile-affiche" data-key="telephoneMobileAffiche" placeholder="819 000-0000">
-          </div>
-          <div class="admin-field">
-            <label for="c-mobile-lien">Format international (lien)</label>
-            <input type="text" id="c-mobile-lien" data-key="telephoneMobileLien" placeholder="+18190000000">
-          </div>
+        <div class="admin-field">
+          <label for="c-mobile-lien">Numéro de téléphone</label>
+          <input type="text" id="c-mobile-lien" data-key="telephoneMobileLien" placeholder="819 823-6343">
+          <p class="admin-field-hint">Écris-le comme tu veux (avec espaces, tirets, parenthèses…) — il s'affichera automatiquement comme <strong>1 (819) 823-6343</strong> partout sur le site.</p>
         </div>
 
         <h3 class="admin-field-group-title">Numéro de texto (SMS)</h3>
-        <div class="admin-field-row">
-          <div class="admin-field">
-            <label for="c-sms-affiche">Affiché à l'écran</label>
-            <input type="text" id="c-sms-affiche" data-key="telephoneSmsAffiche" placeholder="819 000-0000">
-          </div>
-          <div class="admin-field">
-            <label for="c-sms-lien">Format international (lien)</label>
-            <input type="text" id="c-sms-lien" data-key="telephoneSmsLien" placeholder="+18190000000">
-          </div>
+        <div class="admin-field">
+          <label for="c-sms-lien">Numéro de téléphone</label>
+          <input type="text" id="c-sms-lien" data-key="telephoneSmsLien" placeholder="819 823-6343">
         </div>
         <p class="admin-field-hint">Laisse vide pour réutiliser le numéro mobile ci-dessus.</p>
 
         <h3 class="admin-field-group-title">Ligne générale H2O Innovation</h3>
-        <div class="admin-field-row">
-          <div class="admin-field">
-            <label for="c-h2o-affiche">Affiché à l'écran</label>
-            <input type="text" id="c-h2o-affiche" data-key="telephoneH2OAffiche" placeholder="1 866 990-3891">
-          </div>
-          <div class="admin-field">
-            <label for="c-h2o-lien">Format international (lien)</label>
-            <input type="text" id="c-h2o-lien" data-key="telephoneH2OLien" placeholder="+18669903891">
-          </div>
+        <div class="admin-field">
+          <label for="c-h2o-lien">Numéro de téléphone</label>
+          <input type="text" id="c-h2o-lien" data-key="telephoneH2OLien" placeholder="1 866 990-3891">
         </div>
 
         <h3 class="admin-field-group-title">Courriel et web</h3>
@@ -462,6 +445,6 @@
 
 </main>
 
-<script src="assets/admin.js?v=12"></script>
+<script src="assets/admin.js?v=13"></script>
 </body>
 </html>

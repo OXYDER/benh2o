@@ -22,12 +22,9 @@ CREATE TABLE IF NOT EXISTS site_data (
 INSERT INTO site_data (key, data) VALUES ('contact', '{
   "nom": "Benoît Laprise",
   "titre": "Représentant des ventes — H2O Innovation",
-  "telephoneMobileAffiche": "819 000-0000",
-  "telephoneMobileLien": "+18190000000",
-  "telephoneSmsAffiche": "819 000-0000",
-  "telephoneSmsLien": "+18190000000",
-  "telephoneH2OAffiche": "1 866 990-3891",
-  "telephoneH2OLien": "+18669903891",
+  "telephoneMobileLien": "819 000-0000",
+  "telephoneSmsLien": "819 000-0000",
+  "telephoneH2OLien": "1 866 990-3891",
   "courriel": "benoit.laprise@h2oinnovation.com",
   "messengerUsername": "TonNomDePageFacebook",
   "chatLive": {
