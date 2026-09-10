@@ -676,7 +676,7 @@
 
     // Un clic sur un vrai lien (destination MRC, section, sous-lien produit…) referme tout le menu.
     nav.addEventListener("click", (e) => {
-      if (e.target.closest("a")) close();
+      if (e.target.closest("a") || e.target.closest(".site-nav-urgence")) close();
     });
 
     document.addEventListener("click", (e) => {
