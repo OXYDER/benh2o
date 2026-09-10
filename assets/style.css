@@ -1047,7 +1047,6 @@ footer a:hover { text-decoration: underline; }
   .header-logo img { height: 30px; }
   .site-header .container { column-gap: 8px; }
   .brand { font-size: 1rem; }
-  .brand span { display: none; }
   .header-call span { display: none; }
   .header-call { padding: 11px 14px; }
 }
