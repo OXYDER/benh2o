@@ -251,6 +251,8 @@ p { margin: 0 0 1em; max-width: 62ch; }
 .site-nav-submenu-links .pill:hover { background: var(--birch-100); color: var(--amber-700); }
 
 @media (min-width: 900px) {
+  .nav-toggle { display: none; }
+  .site-nav[hidden] { display: flex !important; }
   .site-nav {
     flex-direction: row;
     justify-content: center;
