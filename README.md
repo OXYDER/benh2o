@@ -255,6 +255,15 @@ Wix/Webflow) avec aperçu en temps réel et contraintes responsive est un projet
 nettement plus lourd qu'un formulaire de texte — pour ce genre de changement, plus
 sûr et plus rapide de me le demander directement, comme pour le reste du site.
 
+**Une seule source de vérité :** `index.html` ne contient plus aucun texte par défaut
+pour les champs éditables — seulement la structure (les balises) avec leur attribut
+`data-c`. Tout le texte vient exclusivement de la base de données (`/api/content`), lu
+au chargement de la page. Ça évite d'avoir à garder deux copies du texte synchronisées
+(le code ET la base) — la source unique, c'est `/admin`. La contrepartie : sur une
+**base neuve** sans données, ou si `/api/content` échoue, les sections concernées
+s'affichent vides plutôt que d'afficher un texte de repli — c'est pourquoi `api/init.sql`
+doit toujours contenir un contenu complet et à jour pour les nouvelles installations.
+
 ## Structure du projet
 
 ```

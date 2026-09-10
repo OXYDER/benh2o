@@ -9,7 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,500&family=Playfair+Display:wght@600;700&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="icon" href="assets/favicon.ico">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
-<link rel="stylesheet" href="assets/style.css?v=8">
+<link rel="stylesheet" href="assets/style.css?v=9">
 </head>
 <body>
 
@@ -53,13 +53,13 @@
   <div class="container">
     <div class="hero-copy">
       <span class="visitor-badge" id="visitor-badge" hidden>📍 Nous te reconnaissons depuis <span id="visitor-city"></span></span>
-      <span class="hero-eyebrow" data-c="hero.eyebrow">Ton représentant régional</span>
-      <h1 data-c="hero.headlineHtml" data-c-html>L'eau d'érable, <em>un seul contact</em> pour ta région.</h1>
-      <p class="lead" data-c="hero.lead">J'accompagne les acériculteurs de mon secteur pour l'osmose inverse, la filtration et le service après-vente H2O Innovation — par téléphone, texto, courriel, Messenger ou clavardage, selon ce qui te convient.</p>
+      <span class="hero-eyebrow" data-c="hero.eyebrow"></span>
+      <h1 data-c="hero.headlineHtml" data-c-html></h1>
+      <p class="lead" data-c="hero.lead"></p>
       <div class="hero-actions">
-        <a class="btn btn-primary" id="hero-call" href="tel:" data-c="hero.ctaCall">Appeler maintenant</a>
-        <a class="btn btn-outline" id="hero-sms" href="sms:" data-c="hero.ctaSms">Texter</a>
-        <a class="btn btn-outline" href="#zone" data-c="hero.ctaZone">Vérifier ma région</a>
+        <a class="btn btn-primary" id="hero-call" href="tel:" data-c="hero.ctaCall"></a>
+        <a class="btn btn-outline" id="hero-sms" href="sms:" data-c="hero.ctaSms"></a>
+        <a class="btn btn-outline" href="#zone" data-c="hero.ctaZone"></a>
       </div>
     </div>
     <div class="hero-art" aria-hidden="true">
@@ -71,9 +71,9 @@
 <section class="zone" id="zone">
   <div class="container">
     <div class="section-head">
-      <span class="section-tag" data-c="zone.tag">Territoire</span>
-      <h2 data-c="zone.title">Est-ce que je couvre ta région?</h2>
-      <p data-c="zone.description">Entre le nom de ta ville ou de ta MRC. Je ne dessers qu'un secteur précis — si tu es ailleurs, je te dirige directement vers le bon représentant.</p>
+      <span class="section-tag" data-c="zone.tag"></span>
+      <h2 data-c="zone.title"></h2>
+      <p data-c="zone.description"></p>
     </div>
 
     <div class="zone-check">
@@ -92,28 +92,28 @@
 <section class="coverage-map-section" id="carte">
   <div class="container">
     <div class="section-head">
-      <span class="section-tag" data-c="map.tag">Vue d'ensemble</span>
-      <h2 data-c="map.title">Mon secteur, en un coup d'œil</h2>
-      <p data-c="map.description">Chaque zone rouge est une municipalité que je dessers — pas la MRC en entier, seulement les municipalités précises de mon secteur. Les points bleus sont les autres distributeurs H2O Innovation, et le gros point ambre marque le centre de mon secteur. Clique sur une zone ou un point pour en savoir plus — déplace-toi et zoome librement sur la carte.</p>
+      <span class="section-tag" data-c="map.tag"></span>
+      <h2 data-c="map.title"></h2>
+      <p data-c="map.description"></p>
     </div>
     <div id="coverage-map" aria-label="Carte des municipalités et MRC desservies par Benoît Laprise"></div>
-    <p class="map-note" data-c="map.note">Frontières municipales officielles (Statistique Canada). Pour une confirmation précise de ton secteur, utilise le vérificateur ci-dessus ou contacte-moi directement.</p>
+    <p class="map-note" data-c="map.note"></p>
   </div>
 </section>
 
 <section class="channels">
   <div class="container">
     <div class="section-head">
-      <span class="section-tag" data-c="channels.tag">Nous joindre</span>
-      <h2 data-c="channels.title">Choisis le moyen qui te convient</h2>
-      <p data-c="channels.description">Même question, cinq façons de me la poser. Réponse habituellement en moins d'une journée ouvrable.</p>
+      <span class="section-tag" data-c="channels.tag"></span>
+      <h2 data-c="channels.title"></h2>
+      <p data-c="channels.description"></p>
     </div>
 
     <div class="channel-row">
       <div class="channel-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
       <div class="channel-text">
-        <h3 data-c="channels.phone.title">Téléphone</h3>
-        <p data-c="channels.phone.desc">Pour une question rapide ou un dépannage urgent sur le système.</p>
+        <h3 data-c="channels.phone.title"></h3>
+        <p data-c="channels.phone.desc"></p>
       </div>
       <a class="channel-action" id="channel-call" href="tel:">Appeler</a>
     </div>
@@ -121,8 +121,8 @@
     <div class="channel-row">
       <div class="channel-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
       <div class="channel-text">
-        <h3 data-c="channels.sms.title">Texto (SMS)</h3>
-        <p data-c="channels.sms.desc">Écris-moi directement, je réponds dès que possible.</p>
+        <h3 data-c="channels.sms.title"></h3>
+        <p data-c="channels.sms.desc"></p>
       </div>
       <a class="channel-action" id="channel-sms" href="sms:">Texter</a>
     </div>
@@ -130,8 +130,8 @@
     <div class="channel-row">
       <div class="channel-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z" opacity="0"/><path d="M22 6l-10 7L2 6"/><path d="M2 6h20v12H2z"/></svg></div>
       <div class="channel-text">
-        <h3 data-c="channels.email.title">Courriel</h3>
-        <p data-c="channels.email.desc">Pour une demande détaillée ou l'envoi de documents.</p>
+        <h3 data-c="channels.email.title"></h3>
+        <p data-c="channels.email.desc"></p>
       </div>
       <a class="channel-action" id="channel-email" href="mailto:">Écrire</a>
     </div>
@@ -139,8 +139,8 @@
     <div class="channel-row">
       <div class="channel-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C6.5 2 2 6.1 2 11.2c0 2.9 1.4 5.5 3.7 7.2V22l3.4-1.9c.9.25 1.9.4 2.9.4 5.5 0 10-4.1 10-9.3S17.5 2 12 2z"/></svg></div>
       <div class="channel-text">
-        <h3 data-c="channels.messenger.title">Messenger</h3>
-        <p data-c="channels.messenger.desc">Pour rester dans une conversation que tu as déjà l'habitude d'utiliser.</p>
+        <h3 data-c="channels.messenger.title"></h3>
+        <p data-c="channels.messenger.desc"></p>
       </div>
       <a class="channel-action" id="channel-messenger" href="#" target="_blank" rel="noopener">Ouvrir</a>
     </div>
@@ -148,8 +148,8 @@
     <div class="channel-row">
       <div class="channel-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="7" y1="9" x2="17" y2="9"/><line x1="7" y1="13" x2="13" y2="13"/></svg></div>
       <div class="channel-text">
-        <h3 data-c="channels.chat.title">Clavardage en direct</h3>
-        <p id="chat-status" data-c="channels.chat.desc">Pose ta question en direct sur cette page pendant mes heures de bureau.</p>
+        <h3 data-c="channels.chat.title"></h3>
+        <p id="chat-status" data-c="channels.chat.desc"></p>
       </div>
       <button class="channel-action" id="channel-chat" type="button">Clavarder</button>
     </div>
@@ -157,7 +157,7 @@
     <div class="channel-row">
       <div class="channel-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
       <div class="channel-text">
-        <h3 data-c="channels.h2o.title">Ligne générale H2O Innovation</h3>
+        <h3 data-c="channels.h2o.title"></h3>
         <p>Pour le service à la clientèle ou une question qui ne me concerne pas directement — <span id="channel-h2o-label">1 866 990-3891</span>.</p>
       </div>
       <a class="channel-action" id="channel-h2o" href="tel:">Appeler</a>
@@ -168,44 +168,44 @@
 <section class="about" id="about">
   <div class="container">
     <div class="about-intro">
-      <span class="section-tag" data-c="about.tag">À propos</span>
-      <h2 data-c="about.title">Du bois à la cabane, à vos côtés à chaque étape</h2>
-      <p class="about-lead" data-c="about.intro">En acériculture, chaque détail compte. Du premier gallon de sève qui sort du bois jusqu'à la dernière goutte de sirop, je crois que le bon équipement, le bon conseil et un service humain peuvent faire toute la différence.</p>
+      <span class="section-tag" data-c="about.tag"></span>
+      <h2 data-c="about.title"></h2>
+      <p class="about-lead" data-c="about.intro"></p>
     </div>
 
-    <blockquote class="about-quote" data-c="about.quote1">Je ne veux pas simplement vous vendre un produit. Je veux comprendre votre érablière, vos besoins et vos projets afin de vous proposer la bonne solution.</blockquote>
+    <blockquote class="about-quote" data-c="about.quote1"></blockquote>
 
-    <p data-c="about.body1">Que vous soyez acériculteur débutant, producteur établi ou prêt à faire évoluer votre installation, je suis là pour vous accompagner dans vos choix et vous aider à bâtir une installation efficace, fiable et adaptée à votre réalité.</p>
+    <p data-c="about.body1"></p>
 
     <div class="about-equipment">
-      <p class="about-equipment-label" data-c="about.equipmentLabel">Je peux vous conseiller pour une vaste gamme d'équipements et de fournitures acéricoles :</p>
-      <div class="about-equipment-pills" id="about-equipment-pills" data-c-list="about.equipmentList">Évaporateurs, Séparateurs par osmose inverse, Relâcheurs et extracteurs, Pompes à vacuum, Maîtres-lignes, Tubulure, Pompes, Outils, Capteurs de monitoring, Systèmes de surveillance et de contrôle à distance</div>
+      <p class="about-equipment-label" data-c="about.equipmentLabel"></p>
+      <div class="about-equipment-pills" id="about-equipment-pills" data-c-list="about.equipmentList"></div>
     </div>
 
-    <p data-c="about.body2">Mais surtout, je veux être votre personne-ressource. Vous avez une question? Un projet? Un équipement qui vous cause problème? Vous hésitez entre deux solutions? Appelez-moi, écrivez-moi ou parlez-moi de votre projet. Je prendrai le temps de vous écouter, de vous expliquer vos options et de vous conseiller honnêtement.</p>
+    <p data-c="about.body2"></p>
 
-    <blockquote class="about-quote" data-c="about.quote2">Parce que pour moi, vendre un équipement, ce n'est pas simplement faire une transaction. C'est commencer une relation.</blockquote>
+    <blockquote class="about-quote" data-c="about.quote2"></blockquote>
 
-    <p data-c="about.body3">Je veux que vous puissiez compter sur moi avant, pendant et après votre achat : pour vos conseils, votre installation, votre mise en route, vos pièces, vos fournitures, votre dépannage et votre service après-vente. Mon objectif est simple : vous aider à produire mieux, à travailler plus efficacement et à investir dans des équipements qui ont réellement leur place dans votre érablière.</p>
+    <p data-c="about.body3"></p>
 
     <div class="about-stats-row">
-      <div class="about-stat"><strong data-c="about.stat1Value">1</strong><span data-c="about.stat1Label">représentant dédié à ton secteur</span></div>
-      <div class="about-stat"><strong data-c="about.stat2Value">5</strong><span data-c="about.stat2Label">façons de me joindre, une seule réponse</span></div>
-      <div class="about-stat"><strong data-c="about.stat3Value">H2O</strong><span data-c="about.stat3Label">Innovation — division érablière</span></div>
+      <div class="about-stat"><strong data-c="about.stat1Value"></strong><span data-c="about.stat1Label"></span></div>
+      <div class="about-stat"><strong data-c="about.stat2Value"></strong><span data-c="about.stat2Label"></span></div>
+      <div class="about-stat"><strong data-c="about.stat3Value"></strong><span data-c="about.stat3Label"></span></div>
     </div>
   </div>
 
   <div class="about-tagline">
-    <p data-c="about.taglineHtml" data-c-html>Du bois à la cabane.<br>Je vous accompagne à chaque étape.<br><strong>Vous produisez le sirop. Je m'occupe de vous aider à bien vous équiper.</strong></p>
+    <p data-c="about.taglineHtml" data-c-html></p>
   </div>
 </section>
 
 <section class="form-section" id="contact">
   <div class="container">
     <div class="section-head">
-      <span class="section-tag" data-c="form.tag">Formulaire</span>
-      <h2 data-c="form.title">Envoyer une demande</h2>
-      <p data-c="form.description">Pour une demande d'information générale ou un premier pas vers un devis. Je te reviens directement par téléphone ou courriel.</p>
+      <span class="section-tag" data-c="form.tag"></span>
+      <h2 data-c="form.title"></h2>
+      <p data-c="form.description"></p>
     </div>
 
     <form class="contact-form" id="contact-form" method="POST">
@@ -238,7 +238,7 @@
         <textarea id="f-message" name="message" required placeholder="Décris ton besoin : entretien, remplacement, agrandissement, nouveau système…"></textarea>
       </div>
       <button class="btn btn-primary" type="submit" style="justify-self:start">Envoyer</button>
-      <p class="form-note" data-c="form.note">En envoyant ce formulaire, ta demande m'est acheminée directement par courriel.</p>
+      <p class="form-note" data-c="form.note"></p>
     </form>
   </div>
 </section>
@@ -248,8 +248,8 @@
     <div class="footer-top">
       <div>
         <strong style="font-family:var(--serif); font-size:1.1rem; color:var(--birch-100)">Benoît Laprise</strong><br>
-        <span data-c="footer.line1">Représentant régional — Division Érablière</span><br>
-        <span data-c="footer.line2">H2O Innovation</span>
+        <span data-c="footer.line1"></span><br>
+        <span data-c="footer.line2"></span>
       </div>
       <div>
         <div id="footer-phone"></div>
@@ -257,14 +257,14 @@
         <a href="https://h2oinnovation.net" target="_blank" rel="noopener">h2oinnovation.net</a>
       </div>
     </div>
-    <div>© <span id="year"></span> <span data-c="footer.copyrightSuffix">Benoît Laprise — Représentant indépendant de secteur, H2O Innovation.</span></div>
+    <div>© <span id="year"></span> <span data-c="footer.copyrightSuffix"></span></div>
   </div>
 </footer>
 
 <button class="chat-fallback" id="chat-fallback" type="button">Clavarder avec Benoît</button>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-<script src="assets/script.js?v=8"></script>
-<script src="assets/coverage-map.js?v=8"></script>
+<script src="assets/script.js?v=9"></script>
+<script src="assets/coverage-map.js?v=9"></script>
 </body>
 </html>
