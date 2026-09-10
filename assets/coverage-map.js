@@ -126,8 +126,25 @@
       map.fitBounds(bounds, { padding: [30, 30] });
     }
 
-    mapEl.addEventListener("mouseenter", () => map.scrollWheelZoom.enable());
-    mapEl.addEventListener("mouseleave", () => map.scrollWheelZoom.disable());
+    // Le zoom à la molette ne s'active qu'après un clic sur la carte — comme ça,
+    // le simple fait de défiler la page en passant par-dessus la carte ne la
+    // zoom/dézoom pas par accident. Une fois activé, on zoome normalement (sans
+    // combinaison de touches) jusqu'à ce qu'on clique ailleurs sur la page.
+    const zoomHint = document.createElement("div");
+    zoomHint.className = "map-zoom-hint";
+    zoomHint.textContent = "Cliquer pour activer le zoom";
+    mapEl.appendChild(zoomHint);
+
+    mapEl.addEventListener("click", () => {
+      map.scrollWheelZoom.enable();
+      mapEl.classList.add("map-active");
+    });
+    document.addEventListener("click", (e) => {
+      if (!mapEl.contains(e.target)) {
+        map.scrollWheelZoom.disable();
+        mapEl.classList.remove("map-active");
+      }
+    });
   }
 
   document.addEventListener("DOMContentLoaded", init);

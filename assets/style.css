@@ -343,6 +343,9 @@ section { padding: 76px 0; }
   border: 1px solid rgba(32,27,20,0.12);
   overflow: hidden;
   background: var(--birch-100);
+  position: relative;
+  isolation: isolate;
+  z-index: 0;
 }
 
 .map-note {
@@ -356,6 +359,23 @@ section { padding: 76px 0; }
   font-family: var(--sans);
 }
 .leaflet-popup-content { font-size: 0.9rem; line-height: 1.4; }
+
+.map-zoom-hint {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  z-index: 500;
+  background: rgba(11,18,32,0.82);
+  color: var(--birch-100);
+  font-family: var(--sans);
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 999px;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+.map-active .map-zoom-hint { opacity: 0; }
 
 .benoit-pin-dot {
   width: 22px;
