@@ -98,6 +98,7 @@
         fillOpacity: 0.9,
       })
         .addTo(map)
+        .bindTooltip(d.name, { direction: "top", offset: [0, -6] })
         .bindPopup(
           `<strong>${d.name}</strong>` +
           (d.address ? `<br>${d.address}` : "") +
