@@ -601,6 +601,13 @@
       .then((res) => res.json())
       .then((data) => {
         applyContent(data);
+        if (data.site && data.site.pageTitle) {
+          document.title = data.site.pageTitle;
+        }
+        if (data.site && data.site.metaDescription) {
+          const metaEl = document.getElementById("meta-description");
+          if (metaEl) metaEl.setAttribute("content", data.site.metaDescription);
+        }
         return fetch("assets/data/themes.json")
           .then((res) => res.json())
           .then((themeData) => applyTheme(data.activeTheme, themeData.themes))

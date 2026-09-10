@@ -277,6 +277,15 @@ municipalités couvertes.
 - un point bleu pour chacun des 17 distributeurs du réseau (nom/adresse/téléphone/courriel au clic)
 - un seul gros point ambre au centre géographique de ton secteur (calculé automatiquement à partir des municipalités couvertes)
 
+Aussi éditables dans ce même onglet, tout en haut : le **titre de la page** et la
+**description** (ce qui apparaît dans l'onglet du navigateur et dans les résultats
+Google), le **nom et sous-titre de l'en-tête**, et **tous les libellés du menu
+principal** (Accueil, Territoire, Carte, Produits H2O, Nous joindre, À propos,
+Formulaire de contact, URGENCE).
+
+**Lien admin discret :** un petit lien « Administration » est présent dans le pied de
+page de chaque page publique, à côté du droit d'auteur — mène directement à `/admin`.
+
 ## 2c. Contenu de la page et apparence (thèmes)
 
 L'onglet **Contenu de la page** de `/admin` regroupe les textes de chaque section de

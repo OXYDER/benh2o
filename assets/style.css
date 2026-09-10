@@ -110,7 +110,7 @@ p { margin: 0 0 1em; max-width: 62ch; }
   color: var(--ink-900);
 }
 
-.brand span {
+.brand .brand-subtitle {
   display: block;
   font-family: var(--sans);
   font-size: 0.68rem;
@@ -120,6 +120,7 @@ p { margin: 0 0 1em; max-width: 62ch; }
   color: var(--ink-600);
   margin-top: 3px;
 }
+.brand .brand-name { display: inline; }
 
 .header-call {
   display: inline-flex;
@@ -876,6 +877,8 @@ footer {
   mask-image: radial-gradient(ellipse 55% 62% at center, black 15%, transparent 88%);
 }
 footer a { color: var(--amber-300); text-decoration: none; }
+footer a.footer-admin-link { color: rgba(246,241,228,0.4); font-size: 0.82rem; }
+footer a.footer-admin-link:hover { color: rgba(246,241,228,0.7); }
 footer a:hover { text-decoration: underline; }
 .footer-top {
   display: flex;

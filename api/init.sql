@@ -80,6 +80,24 @@ ON CONFLICT (key) DO NOTHING;
 
 INSERT INTO site_data (key, data) VALUES ('content', '{
   "activeTheme": "navy-electrique",
+  "site": {
+    "pageTitle": "Benoît Laprise — Représentant, Division Érablière, H2O Innovation",
+    "metaDescription": "Représentant régional H2O Innovation pour la division érablière. Contacte-moi par téléphone, texto, courriel, Messenger ou clavardage."
+  },
+  "header": {
+    "brandName": "Benoît Laprise",
+    "brandSubtitle": "Représentant des ventes"
+  },
+  "nav": {
+    "home": "Accueil",
+    "zone": "Territoire",
+    "carte": "Carte",
+    "produits": "Produits H2O",
+    "channels": "Nous joindre",
+    "about": "À propos",
+    "contact": "Formulaire de contact",
+    "urgence": "URGENCE"
+  },
   "hero": {
     "eyebrow": "Ton représentant régional",
     "headlineHtml": "L''eau d''érable, <em>un seul contact</em> pour ta région.",

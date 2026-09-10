@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,500&family=Playfair+Display:wght@600;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="icon" href="assets/favicon.ico">
-<link rel="stylesheet" href="assets/style.css?v=31">
-<link rel="stylesheet" href="assets/admin.css?v=31">
+<link rel="stylesheet" href="assets/style.css?v=32">
+<link rel="stylesheet" href="assets/admin.css?v=32">
 </head>
 <body class="admin-body">
 
@@ -242,6 +242,71 @@
       <h3 class="admin-field-group-title">Apparence du site</h3>
       <p class="admin-field-hint">Choisis une combinaison de couleurs et de polices — s'applique à tout le site après enregistrement.</p>
       <div class="theme-picker" id="theme-picker"></div>
+
+      <h3 class="admin-field-group-title">Titre de la page et référencement</h3>
+      <p class="admin-field-hint">Le titre apparaît dans l'onglet du navigateur et dans les résultats Google. La description apparaît sous le titre dans les résultats de recherche.</p>
+      <div class="admin-field">
+        <label for="cc-site-title">Titre de la page</label>
+        <input type="text" id="cc-site-title" data-key="site.pageTitle">
+      </div>
+      <div class="admin-field">
+        <label for="cc-site-desc">Description (résultats de recherche)</label>
+        <textarea id="cc-site-desc" data-key="site.metaDescription" rows="2"></textarea>
+      </div>
+
+      <h3 class="admin-field-group-title">En-tête du site (haut de chaque page)</h3>
+      <div class="admin-field-row">
+        <div class="admin-field">
+          <label for="cc-header-name">Nom affiché</label>
+          <input type="text" id="cc-header-name" data-key="header.brandName">
+        </div>
+        <div class="admin-field">
+          <label for="cc-header-subtitle">Sous-titre</label>
+          <input type="text" id="cc-header-subtitle" data-key="header.brandSubtitle">
+        </div>
+      </div>
+
+      <h3 class="admin-field-group-title">Menu principal (en haut)</h3>
+      <div class="admin-field-row">
+        <div class="admin-field">
+          <label for="cc-nav-home">Lien « Accueil »</label>
+          <input type="text" id="cc-nav-home" data-key="nav.home">
+        </div>
+        <div class="admin-field">
+          <label for="cc-nav-zone">Lien « Territoire »</label>
+          <input type="text" id="cc-nav-zone" data-key="nav.zone">
+        </div>
+      </div>
+      <div class="admin-field-row">
+        <div class="admin-field">
+          <label for="cc-nav-carte">Lien « Carte »</label>
+          <input type="text" id="cc-nav-carte" data-key="nav.carte">
+        </div>
+        <div class="admin-field">
+          <label for="cc-nav-produits">Lien « Produits H2O »</label>
+          <input type="text" id="cc-nav-produits" data-key="nav.produits">
+        </div>
+      </div>
+      <div class="admin-field-row">
+        <div class="admin-field">
+          <label for="cc-nav-channels">Lien « Nous joindre »</label>
+          <input type="text" id="cc-nav-channels" data-key="nav.channels">
+        </div>
+        <div class="admin-field">
+          <label for="cc-nav-about">Lien « À propos »</label>
+          <input type="text" id="cc-nav-about" data-key="nav.about">
+        </div>
+      </div>
+      <div class="admin-field-row">
+        <div class="admin-field">
+          <label for="cc-nav-contact">Lien « Formulaire de contact »</label>
+          <input type="text" id="cc-nav-contact" data-key="nav.contact">
+        </div>
+        <div class="admin-field">
+          <label for="cc-nav-urgence">Bouton « URGENCE »</label>
+          <input type="text" id="cc-nav-urgence" data-key="nav.urgence">
+        </div>
+      </div>
 
       <h3 class="admin-field-group-title">Section « En-tête » (Hero)</h3>
       <div class="admin-field">
@@ -548,6 +613,6 @@
 
 </main>
 
-<script src="assets/admin.js?v=31"></script>
+<script src="assets/admin.js?v=32"></script>
 </body>
 </html>
