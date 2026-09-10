@@ -27,7 +27,7 @@
 }
 
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; scroll-padding-top: 90px; }
 
 /* Garantit que l'attribut natif "hidden" gagne toujours, même si un autre
    style plus loin dans la feuille donne un "display" à cet élément
@@ -285,7 +285,8 @@ p { margin: 0 0 1em; max-width: 62ch; }
     border-radius: var(--radius);
     box-shadow: 0 12px 30px rgba(0,0,0,0.15);
     padding: 14px;
-    margin-top: 6px;
+    margin-top: 0;
+    padding-top: 20px;
     z-index: 30;
   }
   .site-nav-item-dropdown:hover .site-nav-submenu { display: flex; }
