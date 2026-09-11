@@ -988,6 +988,8 @@
 
     loadType("nouvelle", "nouvelles-full-grid", "nouvelles-full-empty", "nouvelles-featured");
     loadType("tutoriel", "tutoriels-full-grid", "tutoriels-full-empty", "tutoriels-featured");
+    loadType("manuel", "manuels-full-grid", "manuels-full-empty", "manuels-featured");
+    loadType("fiche", "fiches-full-grid", "fiches-full-empty", "fiches-featured");
   }
 
   function setupProductSearch() {

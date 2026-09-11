@@ -245,15 +245,30 @@ charge, je sais où chercher.
 
 ## 3f. Menu principal allégé
 
-Avec toutes ces sections, le menu du haut aurait été surchargé — les liens utilitaires
-ont été regroupés en menus déroulants pour rester lisible :
+Le menu du haut regroupe les liens utilitaires en menus déroulants pour rester
+lisible :
 
 - **Produits H2O ▾** — recherche + catégories
-- **Support & Contact ▾** — Nous joindre, Tutoriels, Rendez-vous, Formulaire de contact, URGENCE
+- **Support & Contact ▾** — Nous joindre, Tutoriels, Manuels de l'utilisateur, Fiches
+  Techniques, Rendez-vous, Formulaire de contact
+- **URGENCE** reste en lien principal, à droite, en rouge (pas dans un sous-menu)
 
-Le reste (Accueil, Territoire, Carte, Nouvelles, À propos) reste en liens directs. Tous
-les libellés — y compris ceux des deux menus déroulants — sont éditables dans Contenu
+Le reste (Accueil, Territoire, Carte, Nouvelles, À propos) reste en liens directs.
+Tous les libellés — y compris ceux des menus déroulants — sont éditables dans Contenu
 de la page → Menu principal.
+
+## 3g. Manuels de l'utilisateur / Fiches Techniques
+
+Deux pages de plus, sur le même modèle que Nouvelles/Tutoriels : `manuels.html` et
+`fiches-techniques.html`, chacune avec son lien dans le sous-menu Support & Contact.
+Elles réutilisent le même système de publications (`/admin` → onglet Publications) —
+choisis simplement le bon type dans le menu déroulant de chaque publication (Nouvelle
+/ Événement, Tutoriel, Manuel de l'utilisateur, ou Fiche technique). Contrairement à
+Nouvelles/Tutoriels, ces deux pages n'ont pas d'aperçu sur la page d'accueil — seul le
+lien de menu y mène.
+
+Les textes (étiquette, titre, description) de chaque page sont éditables dans Contenu
+de la page.
 
 ## 4. Formulaire de contact
 

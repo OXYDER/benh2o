@@ -1198,6 +1198,8 @@
               <select class="p-type">
                 <option value="nouvelle" ${p.type === "nouvelle" ? "selected" : ""}>Nouvelle / Événement</option>
                 <option value="tutoriel" ${p.type === "tutoriel" ? "selected" : ""}>Tutoriel</option>
+                <option value="manuel" ${p.type === "manuel" ? "selected" : ""}>Manuel de l'utilisateur</option>
+                <option value="fiche" ${p.type === "fiche" ? "selected" : ""}>Fiche technique</option>
               </select>
             </div>
             <div class="admin-field">

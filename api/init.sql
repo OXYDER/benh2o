@@ -134,7 +134,9 @@ INSERT INTO site_data (key, data) VALUES ('content', '{
   "rdv": "Rendez-vous",
   "nouvelles": "Nouvelles",
   "tutoriels": "Tutoriels",
-  "support": "Support & Contact"
+  "support": "Support & Contact",
+  "manuels": "Manuels de l'utilisateur",
+  "fiches": "Fiches Techniques"
   },
   "hero": {
     "eyebrow": "Ton représentant régional",
@@ -142,7 +144,8 @@ INSERT INTO site_data (key, data) VALUES ('content', '{
     "lead": "J''accompagne les acériculteurs de mon secteur pour l''osmose inverse, la filtration et le service après-vente H2O Innovation — par téléphone, texto, courriel, Messenger ou clavardage, selon ce qui te convient.",
     "ctaCall": "Appeler maintenant",
     "ctaSms": "Texter",
-    "ctaZone": "Vérifier ma région"
+    "ctaZone": "Vérifier ma région",
+    "ctaRdv": "Rendez-vous"
   },
   "zone": {
     "tag": "Territoire",
@@ -197,6 +200,16 @@ INSERT INTO site_data (key, data) VALUES ('content', '{
     "title": "Tutoriels, informations et modes d'emploi",
     "description": "Des guides et conseils pratiques pour bien utiliser et entretenir ton équipement.",
     "voirTout": "Voir tous les tutoriels"
+  },
+  "manuels": {
+    "tag": "Documentation",
+    "title": "Manuels de l'utilisateur",
+    "description": "Les guides complets pour installer, configurer et utiliser ton équipement H2O Innovation."
+  },
+  "fiches": {
+    "tag": "Documentation",
+    "title": "Fiches Techniques",
+    "description": "Spécifications, caractéristiques et données techniques de l'équipement H2O Innovation."
   },
   "channels": {
     "tag": "Nous joindre",

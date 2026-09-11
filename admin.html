@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,500&family=Playfair+Display:wght@600;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="icon" href="assets/favicon.ico">
-<link rel="stylesheet" href="assets/style.css?v=40">
-<link rel="stylesheet" href="assets/admin.css?v=40">
+<link rel="stylesheet" href="assets/style.css?v=41">
+<link rel="stylesheet" href="assets/admin.css?v=41">
 </head>
 <body class="admin-body">
 
@@ -323,6 +323,16 @@
         <label for="cc-nav-support">Menu déroulant « Support & Contact »</label>
         <input type="text" id="cc-nav-support" data-key="nav.support">
       </div>
+      <div class="admin-field-row">
+        <div class="admin-field">
+          <label for="cc-nav-manuels">Lien « Manuels de l'utilisateur »</label>
+          <input type="text" id="cc-nav-manuels" data-key="nav.manuels">
+        </div>
+        <div class="admin-field">
+          <label for="cc-nav-fiches">Lien « Fiches Techniques »</label>
+          <input type="text" id="cc-nav-fiches" data-key="nav.fiches">
+        </div>
+      </div>
 
       <h3 class="admin-field-group-title">Section « En-tête » (Hero)</h3>
       <div class="admin-field">
@@ -347,9 +357,15 @@
           <input type="text" id="cc-hero-ctasms" data-key="hero.ctaSms">
         </div>
       </div>
-      <div class="admin-field">
-        <label for="cc-hero-ctazone">Bouton « Vérifier ma région »</label>
-        <input type="text" id="cc-hero-ctazone" data-key="hero.ctaZone">
+      <div class="admin-field-row">
+        <div class="admin-field">
+          <label for="cc-hero-ctazone">Bouton « Vérifier ma région »</label>
+          <input type="text" id="cc-hero-ctazone" data-key="hero.ctaZone">
+        </div>
+        <div class="admin-field">
+          <label for="cc-hero-ctardv">Bouton « Rendez-vous »</label>
+          <input type="text" id="cc-hero-ctardv" data-key="hero.ctaRdv">
+        </div>
       </div>
 
       <h3 class="admin-field-group-title">Section « Vérificateur de zone »</h3>
@@ -557,6 +573,38 @@
       <div class="admin-field" style="max-width:280px">
         <label for="cc-tutoriels-voirtout">Texte du lien « Voir tous »</label>
         <input type="text" id="cc-tutoriels-voirtout" data-key="tutoriels.voirTout">
+      </div>
+
+      <h3 class="admin-field-group-title">Page « Manuels de l'utilisateur »</h3>
+      <div class="admin-field-row">
+        <div class="admin-field">
+          <label for="cc-manuels-tag">Étiquette</label>
+          <input type="text" id="cc-manuels-tag" data-key="manuels.tag">
+        </div>
+        <div class="admin-field">
+          <label for="cc-manuels-title">Titre</label>
+          <input type="text" id="cc-manuels-title" data-key="manuels.title">
+        </div>
+      </div>
+      <div class="admin-field">
+        <label for="cc-manuels-desc">Description</label>
+        <textarea id="cc-manuels-desc" data-key="manuels.description" rows="2"></textarea>
+      </div>
+
+      <h3 class="admin-field-group-title">Page « Fiches Techniques »</h3>
+      <div class="admin-field-row">
+        <div class="admin-field">
+          <label for="cc-fiches-tag">Étiquette</label>
+          <input type="text" id="cc-fiches-tag" data-key="fiches.tag">
+        </div>
+        <div class="admin-field">
+          <label for="cc-fiches-title">Titre</label>
+          <input type="text" id="cc-fiches-title" data-key="fiches.title">
+        </div>
+      </div>
+      <div class="admin-field">
+        <label for="cc-fiches-desc">Description</label>
+        <textarea id="cc-fiches-desc" data-key="fiches.description" rows="2"></textarea>
       </div>
 
       <h3 class="admin-field-group-title">Section « Nous joindre »</h3>
@@ -829,6 +877,6 @@
 
 </main>
 
-<script src="assets/admin.js?v=40"></script>
+<script src="assets/admin.js?v=41"></script>
 </body>
 </html>

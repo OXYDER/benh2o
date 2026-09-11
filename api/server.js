@@ -443,7 +443,7 @@ app.get("/api/posts/all", requireAuth, async (req, res) => {
 
 app.post("/api/posts", requireAuth, async (req, res) => {
   const { type, titre, resume, contenu, imageUrl, datePublication, publie } = req.body || {};
-  if (!titre || !["nouvelle", "tutoriel"].includes(type)) {
+  if (!titre || !["nouvelle", "tutoriel", "manuel", "fiche"].includes(type)) {
     return res.status(400).json({ error: "Titre et type requis." });
   }
   try {
@@ -462,7 +462,7 @@ app.post("/api/posts", requireAuth, async (req, res) => {
 app.put("/api/posts/:id", requireAuth, async (req, res) => {
   const { id } = req.params;
   const { type, titre, resume, contenu, imageUrl, datePublication, publie } = req.body || {};
-  if (!titre || !["nouvelle", "tutoriel"].includes(type)) {
+  if (!titre || !["nouvelle", "tutoriel", "manuel", "fiche"].includes(type)) {
     return res.status(400).json({ error: "Titre et type requis." });
   }
   try {

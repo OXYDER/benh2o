@@ -271,6 +271,7 @@ p { margin: 0 0 1em; max-width: 62ch; }
 .site-nav-submenu-btn {
   display: block;
   width: 100%;
+  margin: 0;
   text-align: left;
   padding: 9px 10px;
   border-radius: 6px;
