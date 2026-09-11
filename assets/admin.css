@@ -278,7 +278,7 @@
   gap: 6px;
   background: var(--birch-100);
   border: 1px solid rgba(32,27,20,0.12);
-  border-radius: 999px;
+  border-radius: var(--radius);
   padding: 4px 6px 4px 12px;
 }
 .muni-chip input {
@@ -298,7 +298,7 @@
 .add-muni-row input {
   flex: 1;
   padding: 8px 12px;
-  border-radius: 999px;
+  border-radius: var(--radius);
   border: 1.5px dashed rgba(32,27,20,0.3);
   background: transparent;
   font-family: var(--sans);
@@ -308,7 +308,7 @@
   background: var(--amber-600);
   color: var(--spruce-950);
   border: none;
-  border-radius: 999px;
+  border-radius: var(--radius);
   padding: 8px 16px;
   font-family: var(--sans);
   font-size: 0.85rem;
@@ -473,7 +473,7 @@
 .rdv-badge {
   display: inline-block;
   padding: 2px 10px;
-  border-radius: 999px;
+  border-radius: var(--radius);
   font-size: 0.72rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -535,7 +535,7 @@
   align-items: center;
   gap: 8px;
   padding: 6px 8px 6px 12px;
-  border-radius: 999px;
+  border-radius: var(--radius);
   background: var(--birch-100);
   border: 1px solid rgba(32,27,20,0.15);
   font-size: 0.85rem;
