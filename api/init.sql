@@ -9,6 +9,27 @@ CREATE TABLE IF NOT EXISTS admin_users (
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
+CREATE TABLE IF NOT EXISTS appointments (
+  id SERIAL PRIMARY KEY,
+  nom TEXT NOT NULL,
+  erabliere TEXT,
+  nb_entailles TEXT,
+  adresse TEXT,
+  ville TEXT NOT NULL,
+  deja_client BOOLEAN DEFAULT false,
+  lieu TEXT NOT NULL DEFAULT 'bureau',      -- 'bureau' (Ham-Nord) ou 'client' (chez le client)
+  courriel TEXT,
+  telephone TEXT,
+  date_demandee DATE NOT NULL,
+  heure_demandee TEXT NOT NULL,
+  statut TEXT NOT NULL DEFAULT 'en_attente', -- en_attente, confirme, refuse
+  date_alternative DATE,
+  heure_alternative TEXT,
+  note_admin TEXT,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
 CREATE TABLE IF NOT EXISTS site_data (
   key TEXT PRIMARY KEY,           -- 'contact' ou 'zones'
   data JSONB NOT NULL,
@@ -96,7 +117,8 @@ INSERT INTO site_data (key, data) VALUES ('content', '{
     "channels": "Nous joindre",
     "about": "À propos",
     "contact": "Formulaire de contact",
-    "urgence": "URGENCE"
+    "urgence": "URGENCE",
+  "rdv": "Rendez-vous"
   },
   "hero": {
     "eyebrow": "Ton représentant régional",
@@ -125,6 +147,11 @@ INSERT INTO site_data (key, data) VALUES ('content', '{
   "searchNote": "Besoin d'aide pour choisir? Écris-moi directement — je peux te conseiller sur le bon produit pour ton érablière.",
   "categoriesLabel": "Ou accède directement à une catégorie :"
 },
+  "rdv": {
+    "tag": "Rendez-vous",
+    "title": "Prendre rendez-vous",
+    "description": "Choisis la date, l'heure et le lieu qui te conviennent. Je confirme ta demande rapidement — par courriel ou par téléphone."
+  },
   "channels": {
     "tag": "Nous joindre",
     "title": "Choisis le moyen qui te convient",

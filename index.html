@@ -9,7 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,500&family=Playfair+Display:wght@600;700&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="icon" href="assets/favicon.ico">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
-<link rel="stylesheet" href="assets/style.css?v=32">
+<link rel="stylesheet" href="assets/style.css?v=33">
 </head>
 <body>
 
@@ -62,6 +62,80 @@
   </div>
 </div>
 
+<div class="rdv-panel" id="rdv-panel" hidden>
+  <div class="rdv-panel-card">
+    <button class="rdv-panel-close" id="rdv-close" type="button" aria-label="Fermer">✕</button>
+    <span class="hero-eyebrow" data-c="rdv.tag">Rendez-vous</span>
+    <h2 data-c="rdv.title">Prendre rendez-vous</h2>
+    <p data-c="rdv.description">Choisis la date, l'heure et le lieu qui te conviennent. Je confirme ta demande rapidement — par courriel ou par téléphone.</p>
+
+    <form id="rdv-form">
+      <div class="field-row">
+        <div class="field">
+          <label for="rdv-nom">Nom</label>
+          <input type="text" id="rdv-nom" required>
+        </div>
+        <div class="field">
+          <label for="rdv-erabliere">Nom de l'érablière</label>
+          <input type="text" id="rdv-erabliere">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="rdv-entailles">Nombre d'entailles</label>
+          <input type="text" id="rdv-entailles" inputmode="numeric" placeholder="Ex. : 8000">
+        </div>
+        <div class="field">
+          <label for="rdv-ville">Ville</label>
+          <input type="text" id="rdv-ville" required>
+        </div>
+      </div>
+      <div class="field">
+        <label for="rdv-adresse">Adresse</label>
+        <input type="text" id="rdv-adresse" placeholder="Numéro et rue">
+      </div>
+      <label class="entry-gate-remember rdv-checkbox">
+        <input type="checkbox" id="rdv-deja-client">
+        Es-tu déjà client chez H2O Innovation?
+      </label>
+
+      <div class="field">
+        <label>Lieu du rendez-vous</label>
+        <div class="rdv-lieu-choice">
+          <label class="rdv-radio"><input type="radio" name="rdv-lieu" value="bureau" checked> À ton bureau (Ham-Nord)</label>
+          <label class="rdv-radio"><input type="radio" name="rdv-lieu" value="client"> Chez moi (à mon érablière)</label>
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="rdv-date">Date souhaitée</label>
+          <input type="date" id="rdv-date" required>
+        </div>
+        <div class="field">
+          <label for="rdv-heure">Heure souhaitée</label>
+          <input type="time" id="rdv-heure" required>
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="rdv-courriel">Courriel</label>
+          <input type="email" id="rdv-courriel">
+        </div>
+        <div class="field">
+          <label for="rdv-tel">Téléphone</label>
+          <input type="tel" id="rdv-tel">
+        </div>
+      </div>
+      <p class="form-note">Un des deux (courriel ou téléphone) est nécessaire pour te confirmer le rendez-vous.</p>
+
+      <button class="btn btn-primary" type="submit" id="rdv-submit" style="justify-self:start">Envoyer la demande</button>
+      <div class="form-status" id="rdv-status"></div>
+    </form>
+  </div>
+</div>
+
 <header class="site-header">
   <div class="container">
     <a href="#home" class="brand"><span class="brand-name" data-c="header.brandName">Benoît Laprise</span><span class="brand-subtitle" data-c="header.brandSubtitle">Représentant des ventes</span></a>
@@ -82,6 +156,7 @@
     <a href="#home" data-c="nav.home">Accueil</a>
     <a href="#zone" data-c="nav.zone">Territoire</a>
     <a href="#carte" data-c="nav.carte">Carte</a>
+    <button type="button" class="site-nav-rdv-trigger" data-rdv-trigger data-c="nav.rdv">Rendez-vous</button>
     <div class="site-nav-item-dropdown" id="nav-produits-dropdown">
       <button type="button" class="site-nav-dropdown-toggle" id="nav-produits-toggle" aria-expanded="false" aria-controls="nav-produits-submenu">
         <span data-c="nav.produits">Produits H2O</span> <span class="caret">▾</span>
@@ -355,7 +430,7 @@
 <button class="chat-fallback" id="chat-fallback" type="button">Clavarder avec Benoît</button>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-<script src="assets/script.js?v=32"></script>
-<script src="assets/coverage-map.js?v=32"></script>
+<script src="assets/script.js?v=33"></script>
+<script src="assets/coverage-map.js?v=33"></script>
 </body>
 </html>

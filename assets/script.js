@@ -94,6 +94,92 @@
     });
   }
 
+  /* ---------- Modal Rendez-vous ---------- */
+  function setupRendezVous() {
+    const panel = document.getElementById("rdv-panel");
+    if (!panel) return;
+    const closeBtn = document.getElementById("rdv-close");
+    const form = document.getElementById("rdv-form");
+    const submitBtn = document.getElementById("rdv-submit");
+    const status = document.getElementById("rdv-status");
+
+    function open() {
+      panel.hidden = false;
+      document.body.classList.add("gate-open");
+    }
+    function close() {
+      panel.hidden = true;
+      document.body.classList.remove("gate-open");
+    }
+
+    document.querySelectorAll("[data-rdv-trigger]").forEach((btn) => {
+      btn.addEventListener("click", open);
+    });
+    if (closeBtn) closeBtn.addEventListener("click", close);
+    panel.addEventListener("click", (e) => {
+      if (e.target === panel) close();
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && !panel.hidden) close();
+    });
+
+    if (form) {
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Envoi en cours…";
+        if (status) {
+          status.className = "form-status";
+          status.textContent = "";
+        }
+
+        const lieu = form.querySelector('input[name="rdv-lieu"]:checked')?.value || "bureau";
+        const payload = {
+          nom: document.getElementById("rdv-nom").value.trim(),
+          erabliere: document.getElementById("rdv-erabliere").value.trim(),
+          nbEntailles: document.getElementById("rdv-entailles").value.trim(),
+          adresse: document.getElementById("rdv-adresse").value.trim(),
+          ville: document.getElementById("rdv-ville").value.trim(),
+          dejaClient: document.getElementById("rdv-deja-client").checked,
+          lieu,
+          courriel: document.getElementById("rdv-courriel").value.trim(),
+          telephone: document.getElementById("rdv-tel").value.trim(),
+          dateDemandee: document.getElementById("rdv-date").value,
+          heureDemandee: document.getElementById("rdv-heure").value,
+        };
+
+        try {
+          const res = await fetch("/api/appointments", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          const data = await res.json().catch(() => ({}));
+          if (res.ok) {
+            form.reset();
+            if (status) {
+              status.textContent = "Merci! Ta demande de rendez-vous m'a été envoyée — je te confirme rapidement.";
+              status.classList.add("show", "ok");
+            }
+          } else {
+            if (status) {
+              status.textContent = data.error || "L'envoi a échoué. Réessaie plus tard ou contacte-moi directement.";
+              status.classList.add("show", "error");
+            }
+          }
+        } catch (err) {
+          if (status) {
+            status.textContent = "Impossible de contacter le serveur. Réessaie plus tard ou contacte-moi directement.";
+            status.classList.add("show", "error");
+          }
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Envoyer la demande";
+        }
+      });
+    }
+  }
+
   function wireContactLinks() {
     const mobileRaw = CFG.telephoneMobileLien;
     const smsRaw = CFG.telephoneSmsLien || CFG.telephoneMobileLien;
@@ -711,7 +797,7 @@
 
     // Un clic sur un vrai lien (destination MRC, section, sous-lien produit…) referme tout le menu.
     nav.addEventListener("click", (e) => {
-      if (e.target.closest("a") || e.target.closest(".site-nav-urgence")) close();
+      if (e.target.closest("a") || e.target.closest(".site-nav-urgence") || e.target.closest(".site-nav-rdv-trigger")) close();
     });
 
     document.addEventListener("click", (e) => {
@@ -738,6 +824,7 @@
         Object.assign(CFG, data);
         wireContactLinks();
         setupUrgence(data);
+        setupRendezVous();
         setupChat();
         setupForm();
       })

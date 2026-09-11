@@ -372,4 +372,159 @@ app.post("/api/contact-form", async (req, res) => {
 
 app.get("/api/health", (req, res) => res.json({ ok: true }));
 
+/* ---------- Rendez-vous ---------- */
+const appointmentSubmissions = new Map(); // ip -> dernier envoi
+
+async function sendMail({ smtp, contact, to, subject, text, replyTo }) {
+  if (smtp.actif && smtp.host && smtp.user && smtp.password) {
+    const transporter = nodemailer.createTransport({
+      host: smtp.host,
+      port: Number(smtp.port) || 587,
+      secure: !!smtp.secure,
+      auth: { user: smtp.user, pass: smtp.password },
+    });
+    await transporter.sendMail({
+      from: `"${smtp.fromName || contact.nom || "Site web"}" <${smtp.fromEmail || smtp.user}>`,
+      to,
+      replyTo,
+      subject,
+      text,
+    });
+    return true;
+  }
+  return false;
+}
+
+app.post("/api/appointments", async (req, res) => {
+  const ip = req.ip;
+  const last = appointmentSubmissions.get(ip);
+  if (last && Date.now() - last < FORM_RATE_LIMIT_MS) {
+    const waitSec = Math.ceil((FORM_RATE_LIMIT_MS - (Date.now() - last)) / 1000);
+    return res.status(429).json({
+      error: `Merci de patienter encore ${waitSec} seconde${waitSec > 1 ? "s" : ""} avant d'envoyer une autre demande.`,
+    });
+  }
+
+  const {
+    nom, erabliere, nbEntailles, adresse, ville, dejaClient,
+    lieu, courriel, telephone, dateDemandee, heureDemandee,
+  } = req.body || {};
+
+  if (!nom || !ville || !lieu || !dateDemandee || !heureDemandee || (!courriel && !telephone)) {
+    return res.status(400).json({ error: "Merci de remplir les champs obligatoires (dont un moyen de te joindre)." });
+  }
+  if (!["bureau", "client"].includes(lieu)) {
+    return res.status(400).json({ error: "Lieu de rendez-vous invalide." });
+  }
+
+  try {
+    const r = await pool.query(
+      `INSERT INTO appointments
+        (nom, erabliere, nb_entailles, adresse, ville, deja_client, lieu, courriel, telephone, date_demandee, heure_demandee)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
+       RETURNING id`,
+      [nom, erabliere || null, nbEntailles || null, adresse || null, ville, !!dejaClient, lieu, courriel || null, telephone || null, dateDemandee, heureDemandee]
+    );
+
+    // Avertir Benoît par courriel (best-effort — la demande reste enregistrée même si l'envoi échoue).
+    try {
+      const [smtpRes, contactRes] = await Promise.all([
+        pool.query("SELECT data FROM site_data WHERE key = 'smtp'"),
+        pool.query("SELECT data FROM site_data WHERE key = 'contact'"),
+      ]);
+      const smtp = smtpRes.rows[0]?.data || {};
+      const contact = contactRes.rows[0]?.data || {};
+      const lieuTxt = lieu === "bureau" ? "À ton bureau (Ham-Nord)" : "Chez le client";
+      const text =
+        `Nouvelle demande de rendez-vous — à confirmer dans /admin\n\n` +
+        `Nom : ${nom}\nÉrablière : ${erabliere || "—"}\nNombre d'entailles : ${nbEntailles || "—"}\n` +
+        `Adresse : ${adresse || "—"}\nVille : ${ville}\nDéjà client H2O Innovation : ${dejaClient ? "Oui" : "Non"}\n` +
+        `Lieu : ${lieuTxt}\nCourriel : ${courriel || "—"}\nTéléphone : ${telephone || "—"}\n` +
+        `Date demandée : ${dateDemandee} à ${heureDemandee}`;
+      const toEmail = smtp.toEmail || contact.formsubmitEmail || contact.courriel;
+      if (toEmail) {
+        const sent = await sendMail({ smtp, contact, to: toEmail, subject: "Nouvelle demande de rendez-vous", text, replyTo: courriel });
+        if (!sent) {
+          const fsEmail = contact.formsubmitEmail || contact.courriel;
+          if (fsEmail) {
+            await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(fsEmail)}`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ _subject: "Nouvelle demande de rendez-vous", Message: text }),
+            });
+          }
+        }
+      }
+    } catch (mailErr) {
+      console.error("Notification rendez-vous échouée:", mailErr);
+    }
+
+    appointmentSubmissions.set(ip, Date.now());
+    res.json({ ok: true, id: r.rows[0].id });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "L'envoi a échoué. Réessaie plus tard ou contacte-moi directement." });
+  }
+});
+
+app.get("/api/appointments", requireAuth, async (req, res) => {
+  try {
+    const r = await pool.query("SELECT * FROM appointments ORDER BY date_demandee ASC, heure_demandee ASC");
+    res.json(r.rows);
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "Erreur serveur." });
+  }
+});
+
+app.put("/api/appointments/:id", requireAuth, async (req, res) => {
+  const { id } = req.params;
+  const { statut, dateAlternative, heureAlternative, noteAdmin } = req.body || {};
+  if (!["confirme", "refuse", "en_attente"].includes(statut)) {
+    return res.status(400).json({ error: "Statut invalide." });
+  }
+  try {
+    const r = await pool.query(
+      `UPDATE appointments
+       SET statut = $1, date_alternative = $2, heure_alternative = $3, note_admin = $4, updated_at = now()
+       WHERE id = $5 RETURNING *`,
+      [statut, dateAlternative || null, heureAlternative || null, noteAdmin || null, id]
+    );
+    if (!r.rows.length) return res.status(404).json({ error: "Rendez-vous introuvable." });
+    const appt = r.rows[0];
+
+    let emailSent = false;
+    if (appt.courriel && statut !== "en_attente") {
+      try {
+        const [smtpRes, contactRes] = await Promise.all([
+          pool.query("SELECT data FROM site_data WHERE key = 'smtp'"),
+          pool.query("SELECT data FROM site_data WHERE key = 'contact'"),
+        ]);
+        const smtp = smtpRes.rows[0]?.data || {};
+        const contact = contactRes.rows[0]?.data || {};
+        let text;
+        let subject;
+        if (statut === "confirme") {
+          subject = "Ton rendez-vous est confirmé";
+          text = `Bonjour ${appt.nom},\n\nTon rendez-vous du ${appt.date_demandee.toISOString().slice(0,10)} à ${appt.heure_demandee} est confirmé.\n\n${noteAdmin ? "Note : " + noteAdmin + "\n\n" : ""}À bientôt,\n${contact.nom || "Benoît Laprise"}`;
+        } else {
+          subject = "Concernant ta demande de rendez-vous";
+          const altTxt = dateAlternative
+            ? `Je te propose plutôt le ${dateAlternative}${heureAlternative ? " à " + heureAlternative : ""}. Fais-moi savoir si ça te convient.`
+            : "Je ne suis malheureusement pas disponible à ce moment — contacte-moi pour trouver un autre moment.";
+          text = `Bonjour ${appt.nom},\n\nJe ne suis pas disponible pour le rendez-vous demandé (${appt.date_demandee.toISOString().slice(0,10)} à ${appt.heure_demandee}).\n\n${altTxt}\n\n${noteAdmin ? "Note : " + noteAdmin + "\n\n" : ""}Merci de ta compréhension,\n${contact.nom || "Benoît Laprise"}`;
+        }
+        emailSent = await sendMail({ smtp, contact, to: appt.courriel, subject, text });
+      } catch (mailErr) {
+        console.error("Notification client échouée:", mailErr);
+      }
+    }
+
+    res.json({ ok: true, appointment: appt, emailSent });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "Erreur serveur." });
+  }
+});
+
 app.listen(PORT, () => console.log(`benoitlaprise-api en écoute sur le port ${PORT}`));

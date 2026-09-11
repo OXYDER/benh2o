@@ -178,6 +178,23 @@ etc.) est maintenant un vrai lien vers la catégorie correspondante sur
 h2oinnovation.net, éditable individuellement dans `/admin` → Contenu de la page →
 À propos → « Badges d'équipements » (texte + lien, ajoute/retire-en librement).
 
+## 3c. Rendez-vous
+
+Un bouton **« Rendez-vous »** dans le menu principal ouvre un formulaire modal — le
+client choisit une date, une heure, le lieu (à ton bureau de Ham-Nord ou chez lui), et
+indique nom, érablière, nombre d'entailles, adresse et s'il est déjà client H2O
+Innovation. La demande est enregistrée dans la base de données (table `appointments`)
+et tu reçois un courriel de notification.
+
+**Dans `/admin` → onglet Rendez-vous :** chaque demande s'affiche avec tous les
+détails. Bouton **Confirmer**, ou **Refuser…** qui ouvre un petit formulaire pour
+proposer une nouvelle date/heure et ajouter une note avant d'envoyer le refus. Si le
+SMTP est actif (voir section 4), le client reçoit automatiquement un courriel de
+confirmation ou de refus (avec la date alternative si tu en proposes une) — sinon,
+l'admin affiche un avertissement te rappelant de le contacter toi-même.
+
+Les textes de la section (titre, description) sont éditables dans Contenu de la page.
+
 ## 4. Formulaire de contact
 
 Deux façons d'envoyer les demandes du formulaire, gérées par le serveur (`POST

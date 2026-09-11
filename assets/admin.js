@@ -158,6 +158,7 @@
     setupContentEditor();
     setupDistributeursEditor();
     setupSmtpEditor();
+    setupRendezVousAdmin();
   }
 
   /* =========================================================
@@ -858,6 +859,142 @@
     saveBtn.addEventListener("click", save);
     testBtn.addEventListener("click", test);
     registerDirtyIndicator("smtp", statusEl);
+    load();
+  }
+
+  /* =========================================================
+     ONGLET : RENDEZ-VOUS
+     ========================================================= */
+  function setupRendezVousAdmin() {
+    const listEl = document.getElementById("rdv-admin-list");
+    if (!listEl) return;
+
+    const STATUT_LABELS = {
+      en_attente: "En attente",
+      confirme: "Confirmé",
+      refuse: "Refusé",
+    };
+
+    function formatDate(d) {
+      if (!d) return "";
+      const date = new Date(d);
+      return date.toLocaleDateString("fr-CA", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
+    }
+
+    async function load() {
+      try {
+        const res = await fetch("/api/appointments");
+        const appts = await res.json();
+        render(appts);
+      } catch (e) {
+        listEl.innerHTML = '<p style="color:#B3403A">Impossible de charger les rendez-vous.</p>';
+      }
+    }
+
+    function render(appts) {
+      if (!appts.length) {
+        listEl.innerHTML = "<p>Aucune demande de rendez-vous pour l'instant.</p>";
+        return;
+      }
+      listEl.innerHTML = "";
+      appts.forEach((a) => {
+        const card = document.createElement("div");
+        card.className = "rdv-card rdv-statut-" + a.statut;
+        const lieuTxt = a.lieu === "bureau" ? "À ton bureau (Ham-Nord)" : "Chez le client";
+        card.innerHTML = `
+          <div class="rdv-card-head">
+            <div>
+              <strong>${escapeAttr(a.nom)}</strong>
+              <span class="rdv-badge rdv-badge-${a.statut}">${STATUT_LABELS[a.statut] || a.statut}</span>
+            </div>
+            <div class="rdv-card-date">${formatDate(a.date_demandee)} à ${escapeAttr(a.heure_demandee)}</div>
+          </div>
+          <div class="rdv-card-details">
+            ${a.erabliere ? `<div>Érablière : ${escapeAttr(a.erabliere)}</div>` : ""}
+            ${a.nb_entailles ? `<div>Entailles : ${escapeAttr(a.nb_entailles)}</div>` : ""}
+            <div>Adresse : ${escapeAttr(a.adresse || "—")}, ${escapeAttr(a.ville)}</div>
+            <div>Déjà client H2O Innovation : ${a.deja_client ? "Oui" : "Non"}</div>
+            <div>Lieu : ${lieuTxt}</div>
+            <div>Contact : ${a.courriel ? escapeAttr(a.courriel) : ""}${a.courriel && a.telephone ? " · " : ""}${a.telephone ? escapeAttr(a.telephone) : ""}</div>
+            ${a.date_alternative ? `<div>Date alternative proposée : ${formatDate(a.date_alternative)}${a.heure_alternative ? " à " + escapeAttr(a.heure_alternative) : ""}</div>` : ""}
+            ${a.note_admin ? `<div>Note : ${escapeAttr(a.note_admin)}</div>` : ""}
+          </div>
+          ${a.statut === "en_attente" ? `
+            <div class="rdv-card-actions">
+              <button class="btn btn-primary rdv-confirm-btn" type="button">Confirmer</button>
+              <button class="btn btn-outline rdv-refuse-toggle" type="button">Refuser…</button>
+            </div>
+            <div class="rdv-refuse-form" hidden>
+              <div class="admin-field-row">
+                <div class="admin-field">
+                  <label>Nouvelle date à proposer (optionnel)</label>
+                  <input type="date" class="rdv-alt-date">
+                </div>
+                <div class="admin-field">
+                  <label>Nouvelle heure (optionnel)</label>
+                  <input type="time" class="rdv-alt-heure">
+                </div>
+              </div>
+              <div class="admin-field">
+                <label>Note pour le client (optionnel)</label>
+                <textarea class="rdv-note" rows="2"></textarea>
+              </div>
+              <button class="btn btn-primary rdv-refuse-confirm" type="button">Envoyer le refus</button>
+            </div>
+          ` : ""}
+          <div class="rdv-card-status" hidden></div>
+        `;
+
+        const statusMsg = card.querySelector(".rdv-card-status");
+
+        async function updateStatut(statut, extra) {
+          statusMsg.hidden = false;
+          statusMsg.textContent = "Enregistrement…";
+          try {
+            const res = await fetch(`/api/appointments/${a.id}`, {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ statut, ...extra }),
+            });
+            const data = await res.json().catch(() => ({}));
+            if (res.ok) {
+              statusMsg.textContent = data.emailSent
+                ? "Enregistré — le client a été avisé par courriel ✓"
+                : "Enregistré — pense à aviser le client toi-même (SMTP non configuré ou pas de courriel).";
+              await load();
+            } else {
+              statusMsg.textContent = data.error || "Échec de l'enregistrement.";
+            }
+          } catch (e) {
+            statusMsg.textContent = "Impossible de contacter le serveur.";
+          }
+        }
+
+        const confirmBtn = card.querySelector(".rdv-confirm-btn");
+        if (confirmBtn) confirmBtn.addEventListener("click", () => updateStatut("confirme", {}));
+
+        const refuseToggle = card.querySelector(".rdv-refuse-toggle");
+        const refuseForm = card.querySelector(".rdv-refuse-form");
+        if (refuseToggle && refuseForm) {
+          refuseToggle.addEventListener("click", () => {
+            refuseForm.hidden = !refuseForm.hidden;
+          });
+        }
+        const refuseConfirmBtn = card.querySelector(".rdv-refuse-confirm");
+        if (refuseConfirmBtn) {
+          refuseConfirmBtn.addEventListener("click", () => {
+            updateStatut("refuse", {
+              dateAlternative: card.querySelector(".rdv-alt-date").value || null,
+              heureAlternative: card.querySelector(".rdv-alt-heure").value || null,
+              noteAdmin: card.querySelector(".rdv-note").value || null,
+            });
+          });
+        }
+
+        listEl.appendChild(card);
+      });
+    }
+
     load();
   }
 })();

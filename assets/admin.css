@@ -444,3 +444,56 @@
   .admin-tabs { overflow-x: auto; }
   .dist-fields { grid-template-columns: 1fr; }
 }
+
+/* ---------- Rendez-vous ---------- */
+
+.rdv-admin-list { display: flex; flex-direction: column; gap: 16px; }
+.rdv-card {
+  background: var(--birch-100);
+  border: 1px solid rgba(32,27,20,0.1);
+  border-left: 4px solid var(--ink-600);
+  border-radius: var(--radius-lg);
+  padding: 16px 20px;
+}
+.rdv-card.rdv-statut-en_attente { border-left-color: var(--amber-600); }
+.rdv-card.rdv-statut-confirme { border-left-color: #3C8A5A; }
+.rdv-card.rdv-statut-refuse { border-left-color: #B3403A; }
+
+.rdv-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.rdv-card-head strong { font-family: var(--serif); font-size: 1.05rem; margin-right: 10px; }
+.rdv-card-date { font-size: 0.88rem; color: var(--ink-600); font-weight: 600; }
+
+.rdv-badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+.rdv-badge-en_attente { background: rgba(30,155,255,0.15); color: var(--amber-700); }
+.rdv-badge-confirme { background: rgba(60,138,90,0.15); color: #2C6B44; }
+.rdv-badge-refuse { background: rgba(179,64,58,0.15); color: #B3403A; }
+
+.rdv-card-details { font-size: 0.9rem; color: var(--ink-900); line-height: 1.7; margin-bottom: 12px; }
+
+.rdv-card-actions { display: flex; gap: 10px; margin-top: 8px; }
+.rdv-refuse-form {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(32,27,20,0.1);
+}
+.rdv-card-status {
+  margin-top: 10px;
+  font-size: 0.85rem;
+  color: var(--ink-600);
+  font-style: italic;
+}
