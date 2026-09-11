@@ -186,6 +186,11 @@ INSERT INTO site_data (key, data) VALUES ('content', '{
       "title": "Courriel",
       "desc": "Pour une demande détaillée ou l''envoi de documents."
     },
+    "rdv": {
+      "title": "Prendre un rendez-vous",
+      "desc": "Choisis directement une date et une heure qui te conviennent.",
+      "bouton": "Réserver"
+    },
     "messenger": {
       "title": "Messenger",
       "desc": "Pour rester dans une conversation que tu as déjà l''habitude d''utiliser."
