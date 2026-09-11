@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nouvelles et Événements — Benoît Laprise, H2O Innovation</title>
+<meta name="description" content="Nouvelles et Événements — Benoît Laprise, H2O Innovation">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,500&family=Playfair+Display:wght@600;700&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="assets/favicon.ico">
+<link rel="stylesheet" href="assets/style.css?v=38">
+</head>
+<body>
+
+<button class="urgence-fab" type="button" data-urgence-trigger aria-label="Urgence — Service à la clientèle H2O Innovation">🚨 Urgence</button>
+
+<div class="urgence-panel" id="urgence-panel" hidden>
+  <div class="urgence-panel-card">
+    <button class="urgence-panel-close" id="urgence-close" type="button" aria-label="Fermer">✕</button>
+    <span class="urgence-tag">Période des sucres</span>
+    <h3>Service à la clientèle et service technique H2O Innovation</h3>
+    <p>Pour un problème urgent sur ton système pendant la période des sucres — rejoins directement l'équipe H2O Innovation.</p>
+    <div class="urgence-actions">
+      <a class="urgence-action" id="urgence-call" href="tel:">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        <span>Appeler <strong id="urgence-call-number"></strong></span>
+      </a>
+      <a class="urgence-action" id="urgence-sms" href="sms:">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <span>Texter <strong id="urgence-sms-number"></strong></span>
+      </a>
+      <a class="urgence-action" id="urgence-email" href="mailto:">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z" opacity="0"/><path d="M22 6l-10 7L2 6"/><path d="M2 6h20v12H2z"/></svg>
+        <span id="urgence-email-label"></span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="rdv-panel" id="rdv-panel" hidden>
+  <div class="rdv-panel-card">
+    <button class="rdv-panel-close" id="rdv-close" type="button" aria-label="Fermer">✕</button>
+    <span class="hero-eyebrow" data-c="rdv.tag">Rendez-vous</span>
+    <h2 data-c="rdv.title">Prendre rendez-vous</h2>
+    <p data-c="rdv.description">Choisis la date, l'heure et le lieu qui te conviennent. Je confirme ta demande rapidement — par courriel ou par téléphone.</p>
+
+    <form id="rdv-form">
+      <div class="field-row">
+        <div class="field">
+          <label for="rdv-nom" data-c="rdv.labelNom">Nom</label>
+          <input type="text" id="rdv-nom" required>
+        </div>
+        <div class="field">
+          <label for="rdv-erabliere" data-c="rdv.labelErabliere">Nom de l'érablière</label>
+          <input type="text" id="rdv-erabliere">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="rdv-entailles" data-c="rdv.labelEntailles">Nombre d'entailles</label>
+          <input type="text" id="rdv-entailles" inputmode="numeric" placeholder="Ex. : 8000" data-c-placeholder="rdv.placeholderEntailles">
+        </div>
+        <div class="field">
+          <label for="rdv-ville" data-c="rdv.labelVille">Ville</label>
+          <input type="text" id="rdv-ville" required>
+        </div>
+      </div>
+      <div class="field">
+        <label for="rdv-adresse" data-c="rdv.labelAdresse">Adresse</label>
+        <input type="text" id="rdv-adresse" placeholder="Numéro et rue" data-c-placeholder="rdv.placeholderAdresse">
+      </div>
+      <div class="field">
+        <label data-c="rdv.labelDejaClient">Es-tu déjà client chez H2O Innovation?</label>
+        <div class="rdv-lieu-choice">
+          <label class="rdv-radio"><input type="radio" name="rdv-deja-client" value="oui"> <span data-c="rdv.dejaClientOui">Oui</span></label>
+          <label class="rdv-radio"><input type="radio" name="rdv-deja-client" value="non" checked> <span data-c="rdv.dejaClientNon">Non</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label data-c="rdv.labelLieu">Lieu du rendez-vous</label>
+        <div class="rdv-lieu-choice">
+          <label class="rdv-radio"><input type="radio" name="rdv-lieu" value="bureau" checked> <span data-c="rdv.lieuBureau">À ton bureau (Ham-Nord)</span></label>
+          <label class="rdv-radio"><input type="radio" name="rdv-lieu" value="client"> <span data-c="rdv.lieuClient">Chez moi (à mon érablière)</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label data-c="rdv.labelDateHeure">Date et heure souhaitées</label>
+        <div class="rdv-calendar">
+          <div class="rdv-calendar-header">
+            <button type="button" id="rdv-cal-prev" aria-label="Mois précédent">‹</button>
+            <span id="rdv-cal-month"></span>
+            <button type="button" id="rdv-cal-next" aria-label="Mois suivant">›</button>
+          </div>
+          <div class="rdv-calendar-weekdays">
+            <span>D</span><span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span>S</span>
+          </div>
+          <div class="rdv-calendar-grid" id="rdv-cal-grid"></div>
+        </div>
+        <div class="rdv-slots" id="rdv-slots"></div>
+        <p class="rdv-selected-info" id="rdv-selected-info"></p>
+        <input type="hidden" id="rdv-date" required>
+        <input type="hidden" id="rdv-heure" required>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="rdv-courriel" data-c="rdv.labelCourriel">Courriel</label>
+          <input type="email" id="rdv-courriel">
+        </div>
+        <div class="field">
+          <label for="rdv-tel" data-c="rdv.labelTelephone">Téléphone</label>
+          <input type="tel" id="rdv-tel">
+        </div>
+      </div>
+      <p class="form-note" data-c="rdv.note">Un des deux (courriel ou téléphone) est nécessaire pour te confirmer le rendez-vous.</p>
+
+      <button class="btn btn-primary" type="submit" id="rdv-submit" style="justify-self:start" data-c="rdv.submitButton">Envoyer la demande</button>
+      <div class="form-status" id="rdv-status"></div>
+    </form>
+  </div>
+</div>
+
+<header class="site-header">
+  <div class="container">
+    <a href="index.html#home" class="brand"><span class="brand-name" data-c="header.brandName">Benoît Laprise</span><span class="brand-subtitle" data-c="header.brandSubtitle">Représentant des ventes</span></a>
+    <a href="https://h2oinnovation.net" target="_blank" rel="noopener" class="header-logo">
+      <img src="assets/images/h2o-innovation-logo.png" alt="H2O Innovation" width="605" height="240">
+    </a>
+    <div class="header-actions">
+      <a id="header-call" class="header-call" href="tel:">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        <span id="header-call-label">Appeler</span>
+      </a>
+      <button class="nav-toggle" id="nav-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="site-nav">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+  <nav class="site-nav" id="site-nav" hidden>
+    <a href="index.html#home" data-c="nav.home">Accueil</a>
+    <a href="index.html#zone" data-c="nav.zone">Territoire</a>
+    <a href="index.html#carte" data-c="nav.carte">Carte</a>
+    <div class="site-nav-item-dropdown" id="nav-produits-dropdown">
+      <button type="button" class="site-nav-dropdown-toggle" id="nav-produits-toggle" aria-expanded="false" aria-controls="nav-produits-submenu">
+        <span data-c="nav.produits">Produits H2O</span> <span class="caret">▾</span>
+      </button>
+      <div class="site-nav-submenu" id="nav-produits-submenu">
+        <form class="site-nav-search" id="nav-product-search-form">
+          <input type="text" id="nav-product-search-input" placeholder="Rechercher un produit…" autocomplete="off">
+          <button type="submit" aria-label="Rechercher">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </button>
+        </form>
+        <div class="site-nav-submenu-links" data-c-links="about.equipmentItems"></div>
+      </div>
+    </div>
+    <a href="nouvelles.html" data-c="nav.nouvelles">Nouvelles</a>
+    <a href="index.html#about" data-c="nav.about">À propos</a>
+    <div class="site-nav-item-dropdown" id="nav-support-dropdown">
+      <button type="button" class="site-nav-dropdown-toggle" id="nav-support-toggle" aria-expanded="false" aria-controls="nav-support-submenu">
+        <span data-c="nav.support">Support &amp; Contact</span> <span class="caret">▾</span>
+      </button>
+      <div class="site-nav-submenu" id="nav-support-submenu">
+        <div class="site-nav-submenu-links site-nav-submenu-links-stack">
+          <a href="index.html#channels" data-c="nav.channels">Nous joindre</a>
+          <a href="tutoriels.html" data-c="nav.tutoriels">Tutoriels</a>
+          <button type="button" class="site-nav-submenu-btn" data-rdv-trigger data-c="nav.rdv">Rendez-vous</button>
+          <a href="index.html#contact" data-c="nav.contact">Formulaire de contact</a>
+          <button type="button" class="site-nav-submenu-btn site-nav-submenu-btn-urgence" data-urgence-trigger data-c="nav.urgence">URGENCE</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<section class="posts-section posts-section-page">
+  <div class="container">
+    <div class="section-head">
+      <span class="section-tag" data-c="nouvelles.tag"></span>
+      <h2 data-c="nouvelles.title"></h2>
+      <p data-c="nouvelles.description"></p>
+    </div>
+    <div class="posts-grid" id="nouvelles-full-grid"></div>
+    <p class="posts-empty" id="nouvelles-full-empty" hidden></p>
+  </div>
+</section>
+
+<div class="post-modal" id="post-modal" hidden>
+  <div class="post-modal-card">
+    <button class="post-modal-close" id="post-modal-close" type="button" aria-label="Fermer">✕</button>
+    <img class="post-modal-img" id="post-modal-img" src="" alt="" hidden>
+    <span class="post-modal-date" id="post-modal-date"></span>
+    <h2 id="post-modal-title"></h2>
+    <div class="post-modal-body" id="post-modal-body"></div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-photo">
+    <img src="assets/images/benoit-h2o-plaque.jpg" alt="Benoît Laprise, représentant H2O Innovation" width="1400" height="560" loading="lazy">
+  </div>
+  <div class="container">
+    <div class="footer-top">
+      <div>
+        <strong style="font-family:var(--serif); font-size:1.1rem; color:var(--birch-100)">Benoît Laprise</strong><br>
+        <span data-c="footer.line1"></span><br>
+        <span data-c="footer.line2"></span>
+      </div>
+      <div>
+        <div id="footer-phone"></div>
+        <div id="footer-email"></div>
+        <a href="https://h2oinnovation.net" target="_blank" rel="noopener">h2oinnovation.net</a>
+      </div>
+    </div>
+    <div>© <span id="year"></span> <span data-c="footer.copyrightSuffix"></span> · <a href="/admin" class="footer-admin-link">Administration</a></div>
+  </div>
+</footer>
+
+<script src="assets/script.js?v=38"></script>
+</body>
+</html>

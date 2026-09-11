@@ -225,17 +225,35 @@ image optionnelle (colle un lien direct — héberge la photo où tu veux, Googl
 Facebook, etc.), une date, et un statut publié/brouillon. Une publication non publiée
 reste enregistrée mais invisible sur le site — pratique pour préparer à l'avance.
 
-## 3e. Menu principal allégé
+## 3e. Nouvelles et Tutoriels — pages séparées
 
-Avec toutes ces sections, le menu du haut aurait été surchargé — deux liens
-utilitaires ont été regroupés en menus déroulants pour rester lisible :
+Pour garder la page d'accueil légère, « Nouvelles et Événements » et « Tutoriels »
+sont maintenant des **pages séparées** (`nouvelles.html` et `tutoriels.html`), pas des
+sections sur la page principale.
 
-- **Produits H2O ▾** — recherche + catégories (existant)
-- **Support & Contact ▾** — Nous joindre, Rendez-vous, Formulaire de contact, URGENCE
+Sur la page d'accueil, chaque section ne montre que la **publication la plus récente**
+en aperçu, avec un bouton « Voir toutes les nouvelles » / « Voir tous les tutoriels »
+qui mène à la page complète. Les pages `nouvelles.html`/`tutoriels.html` ont le même
+en-tête, menu et pied de page que le reste du site, et affichent la liste complète des
+publications de leur type.
 
-Le reste (Accueil, Territoire, Carte, Nouvelles, Tutoriels, À propos) reste en liens
-directs. Tous les libellés — y compris ceux des deux menus déroulants — sont éditables
-dans Contenu de la page → Menu principal.
+**Important pour les futurs changements de ces deux pages :** comme le site n'a pas de
+système de gabarits, l'en-tête et le pied de page sont dupliqués dans `index.html`,
+`nouvelles.html`, `tutoriels.html` et `admin.html`. Un changement au menu ou au pied de
+page doit être répété dans les quatre fichiers — dis-le-moi si tu veux que je m'en
+charge, je sais où chercher.
+
+## 3f. Menu principal allégé
+
+Avec toutes ces sections, le menu du haut aurait été surchargé — les liens utilitaires
+ont été regroupés en menus déroulants pour rester lisible :
+
+- **Produits H2O ▾** — recherche + catégories
+- **Support & Contact ▾** — Nous joindre, Tutoriels, Rendez-vous, Formulaire de contact, URGENCE
+
+Le reste (Accueil, Territoire, Carte, Nouvelles, À propos) reste en liens directs. Tous
+les libellés — y compris ceux des deux menus déroulants — sont éditables dans Contenu
+de la page → Menu principal.
 
 ## 4. Formulaire de contact
 

@@ -189,12 +189,14 @@ INSERT INTO site_data (key, data) VALUES ('content', '{
   "nouvelles": {
     "tag": "Actualités",
     "title": "Nouvelles et Événements",
-    "description": "Les nouveautés H2O Innovation, les événements auxquels je participe, et les beaux moments vécus avec mes clients."
+    "description": "Les nouveautés H2O Innovation, les événements auxquels je participe, et les beaux moments vécus avec mes clients.",
+    "voirTout": "Voir toutes les nouvelles"
   },
   "tutoriels": {
     "tag": "Ressources",
     "title": "Tutoriels, informations et modes d'emploi",
-    "description": "Des guides et conseils pratiques pour bien utiliser et entretenir ton équipement."
+    "description": "Des guides et conseils pratiques pour bien utiliser et entretenir ton équipement.",
+    "voirTout": "Voir tous les tutoriels"
   },
   "channels": {
     "tag": "Nous joindre",

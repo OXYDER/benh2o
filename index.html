@@ -9,7 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,500&family=Playfair+Display:wght@600;700&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="icon" href="assets/favicon.ico">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
-<link rel="stylesheet" href="assets/style.css?v=37">
+<link rel="stylesheet" href="assets/style.css?v=38">
 </head>
 <body>
 
@@ -181,8 +181,7 @@
         <div class="site-nav-submenu-links" data-c-links="about.equipmentItems"></div>
       </div>
     </div>
-    <a href="#nouvelles" data-c="nav.nouvelles">Nouvelles</a>
-    <a href="#tutoriels" data-c="nav.tutoriels">Tutoriels</a>
+    <a href="nouvelles.html" data-c="nav.nouvelles">Nouvelles</a>
     <a href="#about" data-c="nav.about">À propos</a>
     <div class="site-nav-item-dropdown" id="nav-support-dropdown">
       <button type="button" class="site-nav-dropdown-toggle" id="nav-support-toggle" aria-expanded="false" aria-controls="nav-support-submenu">
@@ -191,6 +190,7 @@
       <div class="site-nav-submenu" id="nav-support-submenu">
         <div class="site-nav-submenu-links site-nav-submenu-links-stack">
           <a href="#channels" data-c="nav.channels">Nous joindre</a>
+          <a href="tutoriels.html" data-c="nav.tutoriels">Tutoriels</a>
           <button type="button" class="site-nav-submenu-btn" data-rdv-trigger data-c="nav.rdv">Rendez-vous</button>
           <a href="#contact" data-c="nav.contact">Formulaire de contact</a>
           <button type="button" class="site-nav-submenu-btn site-nav-submenu-btn-urgence" data-urgence-trigger data-c="nav.urgence">URGENCE</button>
@@ -271,27 +271,27 @@
   </div>
 </section>
 
-<section class="posts-section" id="nouvelles">
+<section class="posts-teaser" id="nouvelles">
   <div class="container">
     <div class="section-head">
       <span class="section-tag" data-c="nouvelles.tag"></span>
       <h2 data-c="nouvelles.title"></h2>
       <p data-c="nouvelles.description"></p>
     </div>
-    <div class="posts-grid" id="nouvelles-grid"></div>
-    <p class="posts-empty" id="nouvelles-empty" hidden></p>
+    <div class="posts-teaser-featured" id="nouvelles-featured"></div>
+    <a href="nouvelles.html" class="btn btn-outline" data-c="nouvelles.voirTout">Voir toutes les nouvelles</a>
   </div>
 </section>
 
-<section class="posts-section posts-section-alt" id="tutoriels">
+<section class="posts-teaser posts-teaser-alt" id="tutoriels">
   <div class="container">
     <div class="section-head">
       <span class="section-tag" data-c="tutoriels.tag"></span>
       <h2 data-c="tutoriels.title"></h2>
       <p data-c="tutoriels.description"></p>
     </div>
-    <div class="posts-grid" id="tutoriels-grid"></div>
-    <p class="posts-empty" id="tutoriels-empty" hidden></p>
+    <div class="posts-teaser-featured" id="tutoriels-featured"></div>
+    <a href="tutoriels.html" class="btn btn-outline" data-c="tutoriels.voirTout">Voir tous les tutoriels</a>
   </div>
 </section>
 
@@ -495,7 +495,7 @@
 <button class="chat-fallback" id="chat-fallback" type="button">Clavarder avec Benoît</button>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-<script src="assets/script.js?v=37"></script>
-<script src="assets/coverage-map.js?v=37"></script>
+<script src="assets/script.js?v=38"></script>
+<script src="assets/coverage-map.js?v=38"></script>
 </body>
 </html>

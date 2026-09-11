@@ -954,15 +954,40 @@
       });
     }
 
-    function loadType(type, gridId, emptyId) {
+    function renderFeatured(containerEl, posts) {
+      if (!containerEl) return;
+      if (!posts.length) {
+        containerEl.innerHTML = "";
+        return;
+      }
+      const p = posts[0];
+      containerEl.innerHTML = `
+        <article class="post-card post-card-featured">
+          ${p.image_url ? `<img class="post-card-img" src="${p.image_url}" alt="" loading="lazy">` : ""}
+          <div class="post-card-body">
+            <span class="post-card-date">${formatPostDate(p.date_publication)}</span>
+            <h3 class="post-card-title">${p.titre}</h3>
+            ${p.resume ? `<p class="post-card-resume">${p.resume}</p>` : ""}
+            <button class="post-card-more" type="button">Lire plus</button>
+          </div>
+        </article>
+      `;
+      containerEl.querySelector(".post-card-more").addEventListener("click", () => openModal(p));
+    }
+
+    function loadType(type, gridId, emptyId, featuredId) {
       fetch("/api/posts?type=" + encodeURIComponent(type))
         .then((r) => r.json())
-        .then((posts) => renderGrid(document.getElementById(gridId), document.getElementById(emptyId), posts || []))
+        .then((posts) => {
+          posts = posts || [];
+          renderGrid(document.getElementById(gridId), document.getElementById(emptyId), posts);
+          renderFeatured(document.getElementById(featuredId), posts);
+        })
         .catch(() => {});
     }
 
-    loadType("nouvelle", "nouvelles-grid", "nouvelles-empty");
-    loadType("tutoriel", "tutoriels-grid", "tutoriels-empty");
+    loadType("nouvelle", "nouvelles-full-grid", "nouvelles-full-empty", "nouvelles-featured");
+    loadType("tutoriel", "tutoriels-full-grid", "tutoriels-full-empty", "tutoriels-featured");
   }
 
   function setupProductSearch() {

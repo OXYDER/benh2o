@@ -555,6 +555,31 @@ section { padding: 76px 0; }
 
 .posts-section { background: var(--birch-050); }
 .posts-section-alt { background: var(--birch-100); }
+.posts-section-page { padding-top: 90px; }
+
+.posts-teaser { background: var(--birch-050); }
+.posts-teaser-alt { background: var(--birch-100); }
+.posts-teaser-alt .post-card { background: var(--birch-050); }
+.posts-teaser .btn { margin-top: 24px; }
+.posts-teaser-featured { margin-top: 8px; }
+
+.post-card-featured {
+  flex-direction: row;
+  align-items: stretch;
+}
+.post-card-featured .post-card-img {
+  width: 42%;
+  aspect-ratio: auto;
+  flex-shrink: 0;
+}
+.post-card-featured .post-card-body { padding: 26px 28px; }
+.post-card-featured .post-card-title { font-size: 1.4rem; }
+.post-card-featured .post-card-resume { font-size: 0.96rem; }
+
+@media (max-width: 640px) {
+  .post-card-featured { flex-direction: column; }
+  .post-card-featured .post-card-img { width: 100%; aspect-ratio: 16/10; }
+}
 
 .posts-grid {
   display: grid;
