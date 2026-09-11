@@ -300,7 +300,7 @@
           nbEntailles: document.getElementById("rdv-entailles").value.trim(),
           adresse: document.getElementById("rdv-adresse").value.trim(),
           ville: document.getElementById("rdv-ville").value.trim(),
-          dejaClient: document.getElementById("rdv-deja-client").checked,
+          dejaClient: form.querySelector('input[name="rdv-deja-client"]:checked')?.value === "oui",
           lieu,
           courriel: document.getElementById("rdv-courriel").value.trim(),
           telephone: document.getElementById("rdv-tel").value.trim(),

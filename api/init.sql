@@ -159,6 +159,8 @@ INSERT INTO site_data (key, data) VALUES ('content', '{
     "labelAdresse": "Adresse",
     "placeholderAdresse": "Numéro et rue",
     "labelDejaClient": "Es-tu déjà client chez H2O Innovation?",
+    "dejaClientOui": "Oui",
+    "dejaClientNon": "Non",
     "labelLieu": "Lieu du rendez-vous",
     "lieuBureau": "À ton bureau (Ham-Nord)",
     "lieuClient": "Chez moi (à mon érablière)",
