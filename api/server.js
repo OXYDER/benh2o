@@ -370,6 +370,48 @@ app.post("/api/contact-form", async (req, res) => {
   }
 });
 
+app.get("/api/horaire", async (req, res) => {
+  try {
+    const r = await pool.query("SELECT data FROM site_data WHERE key = 'horaire'");
+    res.json(r.rows[0]?.data || {});
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "Erreur serveur." });
+  }
+});
+
+app.put("/api/horaire", requireAuth, async (req, res) => {
+  const data = req.body;
+  if (!data || typeof data !== "object" || Array.isArray(data)) {
+    return res.status(400).json({ error: "Format invalide." });
+  }
+  try {
+    await pool.query(
+      `INSERT INTO site_data (key, data, updated_at) VALUES ('horaire', $1, now())
+       ON CONFLICT (key) DO UPDATE SET data = $1, updated_at = now()`,
+      [JSON.stringify(data)]
+    );
+    res.json({ ok: true });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "Erreur serveur." });
+  }
+});
+
+// Créneaux déjà pris (en attente ou confirmés) — pour que le calendrier public évite les doublons.
+// Ne renvoie ni nom ni coordonnées, seulement date + heure.
+app.get("/api/appointments/busy", async (req, res) => {
+  try {
+    const r = await pool.query(
+      "SELECT date_demandee, heure_demandee FROM appointments WHERE statut IN ('en_attente', 'confirme')"
+    );
+    res.json(r.rows.map((row) => ({ date: row.date_demandee.toISOString().slice(0, 10), heure: row.heure_demandee })));
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "Erreur serveur." });
+  }
+});
+
 app.get("/api/health", (req, res) => res.json({ ok: true }));
 
 /* ---------- Rendez-vous ---------- */
@@ -415,6 +457,38 @@ app.post("/api/appointments", async (req, res) => {
   }
   if (!["bureau", "client"].includes(lieu)) {
     return res.status(400).json({ error: "Lieu de rendez-vous invalide." });
+  }
+
+  try {
+    const horaireRes = await pool.query("SELECT data FROM site_data WHERE key = 'horaire'");
+    const horaire = horaireRes.rows[0]?.data || {};
+    const JOURS = ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"];
+    const dateObj = new Date(dateDemandee + "T00:00:00");
+    const jourNom = JOURS[dateObj.getDay()];
+    const jourConfig = (horaire.joursTravail || {})[jourNom];
+
+    if (!jourConfig || !jourConfig.actif) {
+      return res.status(400).json({ error: "Je ne travaille pas ce jour-là. Choisis une autre date." });
+    }
+    if (heureDemandee < jourConfig.debut || heureDemandee >= jourConfig.fin) {
+      return res.status(400).json({ error: "Cette heure est en dehors de mes heures de travail ce jour-là." });
+    }
+    if ((horaire.datesBloquees || []).includes(dateDemandee)) {
+      return res.status(400).json({ error: "Cette date n'est pas disponible. Choisis une autre date." });
+    }
+    if ((horaire.creneauxBloques || []).some((c) => c.date === dateDemandee && c.heure === heureDemandee)) {
+      return res.status(400).json({ error: "Ce créneau n'est plus disponible. Choisis une autre heure." });
+    }
+    const busyRes = await pool.query(
+      "SELECT 1 FROM appointments WHERE date_demandee = $1 AND heure_demandee = $2 AND statut IN ('en_attente','confirme')",
+      [dateDemandee, heureDemandee]
+    );
+    if (busyRes.rows.length) {
+      return res.status(409).json({ error: "Ce créneau vient d'être pris. Choisis une autre heure." });
+    }
+  } catch (e) {
+    console.error(e);
+    return res.status(500).json({ error: "Erreur serveur." });
   }
 
   try {

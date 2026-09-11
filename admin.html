@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,500&family=Playfair+Display:wght@600;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="icon" href="assets/favicon.ico">
-<link rel="stylesheet" href="assets/style.css?v=33">
-<link rel="stylesheet" href="assets/admin.css?v=33">
+<link rel="stylesheet" href="assets/style.css?v=34">
+<link rel="stylesheet" href="assets/admin.css?v=34">
 </head>
 <body class="admin-body">
 
@@ -404,6 +404,96 @@
         <input type="text" id="cc-products-catlabel" data-key="products.categoriesLabel">
       </div>
 
+      <h3 class="admin-field-group-title">Modal « Rendez-vous »</h3>
+      <div class="admin-field-row">
+        <div class="admin-field">
+          <label for="cc-rdv-tag">Étiquette</label>
+          <input type="text" id="cc-rdv-tag" data-key="rdv.tag">
+        </div>
+        <div class="admin-field">
+          <label for="cc-rdv-title">Titre</label>
+          <input type="text" id="cc-rdv-title" data-key="rdv.title">
+        </div>
+      </div>
+      <div class="admin-field">
+        <label for="cc-rdv-desc">Description</label>
+        <textarea id="cc-rdv-desc" data-key="rdv.description" rows="2"></textarea>
+      </div>
+      <div class="admin-field-row">
+        <div class="admin-field">
+          <label for="cc-rdv-label-nom">Libellé — Nom</label>
+          <input type="text" id="cc-rdv-label-nom" data-key="rdv.labelNom">
+        </div>
+        <div class="admin-field">
+          <label for="cc-rdv-label-erabliere">Libellé — Érablière</label>
+          <input type="text" id="cc-rdv-label-erabliere" data-key="rdv.labelErabliere">
+        </div>
+      </div>
+      <div class="admin-field-row">
+        <div class="admin-field">
+          <label for="cc-rdv-label-entailles">Libellé — Entailles</label>
+          <input type="text" id="cc-rdv-label-entailles" data-key="rdv.labelEntailles">
+        </div>
+        <div class="admin-field">
+          <label for="cc-rdv-placeholder-entailles">Exemple — Entailles</label>
+          <input type="text" id="cc-rdv-placeholder-entailles" data-key="rdv.placeholderEntailles">
+        </div>
+      </div>
+      <div class="admin-field-row">
+        <div class="admin-field">
+          <label for="cc-rdv-label-ville">Libellé — Ville</label>
+          <input type="text" id="cc-rdv-label-ville" data-key="rdv.labelVille">
+        </div>
+        <div class="admin-field">
+          <label for="cc-rdv-label-adresse">Libellé — Adresse</label>
+          <input type="text" id="cc-rdv-label-adresse" data-key="rdv.labelAdresse">
+        </div>
+      </div>
+      <div class="admin-field">
+        <label for="cc-rdv-placeholder-adresse">Exemple — Adresse</label>
+        <input type="text" id="cc-rdv-placeholder-adresse" data-key="rdv.placeholderAdresse">
+      </div>
+      <div class="admin-field">
+        <label for="cc-rdv-label-dejaclient">Question — Déjà client</label>
+        <input type="text" id="cc-rdv-label-dejaclient" data-key="rdv.labelDejaClient">
+      </div>
+      <div class="admin-field">
+        <label for="cc-rdv-label-lieu">Libellé — Lieu du rendez-vous</label>
+        <input type="text" id="cc-rdv-label-lieu" data-key="rdv.labelLieu">
+      </div>
+      <div class="admin-field-row">
+        <div class="admin-field">
+          <label for="cc-rdv-lieu-bureau">Choix — Bureau</label>
+          <input type="text" id="cc-rdv-lieu-bureau" data-key="rdv.lieuBureau">
+        </div>
+        <div class="admin-field">
+          <label for="cc-rdv-lieu-client">Choix — Chez le client</label>
+          <input type="text" id="cc-rdv-lieu-client" data-key="rdv.lieuClient">
+        </div>
+      </div>
+      <div class="admin-field">
+        <label for="cc-rdv-label-dateheure">Libellé — Date et heure</label>
+        <input type="text" id="cc-rdv-label-dateheure" data-key="rdv.labelDateHeure">
+      </div>
+      <div class="admin-field-row">
+        <div class="admin-field">
+          <label for="cc-rdv-label-courriel">Libellé — Courriel</label>
+          <input type="text" id="cc-rdv-label-courriel" data-key="rdv.labelCourriel">
+        </div>
+        <div class="admin-field">
+          <label for="cc-rdv-label-tel">Libellé — Téléphone</label>
+          <input type="text" id="cc-rdv-label-tel" data-key="rdv.labelTelephone">
+        </div>
+      </div>
+      <div class="admin-field">
+        <label for="cc-rdv-note">Note (courriel ou téléphone requis)</label>
+        <input type="text" id="cc-rdv-note" data-key="rdv.note">
+      </div>
+      <div class="admin-field">
+        <label for="cc-rdv-submit">Texte du bouton d'envoi</label>
+        <input type="text" id="cc-rdv-submit" data-key="rdv.submitButton">
+      </div>
+
       <h3 class="admin-field-group-title">Section « Nous joindre »</h3>
       <div class="admin-field-row">
         <div class="admin-field">
@@ -612,7 +702,38 @@
 
     <!-- ===== Onglet : Rendez-vous ===== -->
     <div class="admin-panel" data-panel="rendezvous" hidden>
-      <p class="admin-section-desc">Les demandes de rendez-vous reçues depuis le site. Confirme ou refuse chaque demande — si le SMTP est actif (onglet Mes informations), le client reçoit un courriel automatique ; sinon, contacte-le directement avec les coordonnées affichées.</p>
+      <h3 class="admin-field-group-title">Horaire de travail</h3>
+      <p class="admin-field-hint">Détermine les jours et heures où le calendrier public accepte des demandes de rendez-vous.</p>
+      <div id="horaire-jours" class="horaire-jours"></div>
+      <div class="admin-field" style="max-width:220px">
+        <label for="horaire-duree">Durée d'un rendez-vous (minutes)</label>
+        <input type="number" id="horaire-duree" min="15" step="15" value="60">
+      </div>
+
+      <h3 class="admin-field-group-title">Dates complètement bloquées</h3>
+      <p class="admin-field-hint">Vacances, jours fériés, etc. — ces journées n'apparaîtront pas comme disponibles, même si c'est normalement un jour travaillé.</p>
+      <div class="horaire-add-row">
+        <input type="date" id="horaire-nouvelle-date">
+        <button class="btn btn-outline" id="horaire-add-date" type="button">+ Bloquer cette date</button>
+      </div>
+      <div id="horaire-dates-list" class="horaire-chip-list"></div>
+
+      <h3 class="admin-field-group-title">Créneaux précis bloqués</h3>
+      <p class="admin-field-hint">Bloque une heure précise à une date donnée (le reste de la journée reste disponible).</p>
+      <div class="horaire-add-row">
+        <input type="date" id="horaire-nouveau-creneau-date">
+        <input type="time" id="horaire-nouveau-creneau-heure">
+        <button class="btn btn-outline" id="horaire-add-creneau" type="button">+ Bloquer ce créneau</button>
+      </div>
+      <div id="horaire-creneaux-list" class="horaire-chip-list"></div>
+
+      <div class="admin-save-row">
+        <span class="admin-save-status" id="horaire-save-status"></span>
+        <button class="btn btn-primary" id="horaire-save" type="button">Enregistrer l'horaire</button>
+      </div>
+
+      <h3 class="admin-field-group-title" style="margin-top:44px">Demandes de rendez-vous</h3>
+      <p class="admin-section-desc">Confirme ou refuse chaque demande — si le SMTP est actif (onglet Mes informations), le client reçoit un courriel automatique ; sinon, contacte-le directement avec les coordonnées affichées.</p>
       <div id="rdv-admin-list" class="rdv-admin-list"></div>
     </div>
 
@@ -620,6 +741,6 @@
 
 </main>
 
-<script src="assets/admin.js?v=33"></script>
+<script src="assets/admin.js?v=34"></script>
 </body>
 </html>

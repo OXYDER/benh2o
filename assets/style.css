@@ -1096,6 +1096,80 @@ footer a:hover { text-decoration: underline; }
 .rdv-radio input { width: 16px; height: 16px; }
 .rdv-radio:has(input:checked) { border-color: var(--amber-600); background: rgba(30,155,255,0.08); }
 
+.rdv-calendar {
+  background: var(--birch-100);
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-top: 6px;
+}
+.rdv-calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  font-weight: 700;
+  font-family: var(--serif);
+  text-transform: capitalize;
+}
+.rdv-calendar-header button {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(32,27,20,0.18);
+  background: var(--birch-050);
+  cursor: pointer;
+  font-size: 1.1rem;
+  line-height: 1;
+}
+.rdv-calendar-header button:hover { background: var(--amber-600); }
+.rdv-calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--ink-600);
+  margin-bottom: 4px;
+}
+.rdv-calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+.rdv-cal-day {
+  aspect-ratio: 1;
+  border: none;
+  border-radius: 6px;
+  background: var(--birch-050);
+  font-family: var(--sans);
+  font-size: 0.86rem;
+  cursor: pointer;
+}
+.rdv-cal-day:hover:not(:disabled) { background: rgba(30,155,255,0.2); }
+.rdv-cal-day-empty { background: transparent; cursor: default; }
+.rdv-cal-day-disabled { background: transparent; color: rgba(32,27,20,0.25); cursor: not-allowed; }
+.rdv-cal-day-selected { background: var(--amber-600) !important; color: var(--ink-900); font-weight: 700; }
+
+.rdv-slots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+.rdv-slot-btn {
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1.5px solid rgba(32,27,20,0.18);
+  background: var(--birch-050);
+  font-family: var(--sans);
+  font-size: 0.86rem;
+  cursor: pointer;
+}
+.rdv-slot-btn:hover { border-color: var(--amber-600); }
+.rdv-slot-btn.selected { background: var(--amber-600); border-color: var(--amber-600); color: var(--ink-900); font-weight: 700; }
+
+.rdv-selected-info { font-size: 0.85rem; color: var(--ink-600); margin-top: 10px; min-height: 1.2em; }
+
 .site-nav-rdv-trigger {
   display: block;
   width: 100%;

@@ -150,7 +150,23 @@ INSERT INTO site_data (key, data) VALUES ('content', '{
   "rdv": {
     "tag": "Rendez-vous",
     "title": "Prendre rendez-vous",
-    "description": "Choisis la date, l'heure et le lieu qui te conviennent. Je confirme ta demande rapidement — par courriel ou par téléphone."
+    "description": "Choisis la date, l'heure et le lieu qui te conviennent. Je confirme ta demande rapidement — par courriel ou par téléphone.",
+  "labelNom": "Nom",
+    "labelErabliere": "Nom de l'érablière",
+    "labelEntailles": "Nombre d'entailles",
+    "placeholderEntailles": "Ex. : 8000",
+    "labelVille": "Ville",
+    "labelAdresse": "Adresse",
+    "placeholderAdresse": "Numéro et rue",
+    "labelDejaClient": "Es-tu déjà client chez H2O Innovation?",
+    "labelLieu": "Lieu du rendez-vous",
+    "lieuBureau": "À ton bureau (Ham-Nord)",
+    "lieuClient": "Chez moi (à mon érablière)",
+    "labelDateHeure": "Date et heure souhaitées",
+    "labelCourriel": "Courriel",
+    "labelTelephone": "Téléphone",
+    "note": "Un des deux (courriel ou téléphone) est nécessaire pour te confirmer le rendez-vous.",
+    "submitButton": "Envoyer la demande"
   },
   "channels": {
     "tag": "Nous joindre",
@@ -363,5 +379,49 @@ INSERT INTO site_data (key, data) VALUES ('smtp', '{
   "fromName": "Benoît Laprise",
   "fromEmail": "",
   "toEmail": ""
+}'::jsonb)
+ON CONFLICT (key) DO NOTHING;
+
+INSERT INTO site_data (key, data) VALUES ('horaire', '{
+  "joursTravail": {
+    "lundi": {
+      "actif": true,
+      "debut": "08:00",
+      "fin": "17:00"
+    },
+    "mardi": {
+      "actif": true,
+      "debut": "08:00",
+      "fin": "17:00"
+    },
+    "mercredi": {
+      "actif": true,
+      "debut": "08:00",
+      "fin": "17:00"
+    },
+    "jeudi": {
+      "actif": true,
+      "debut": "08:00",
+      "fin": "17:00"
+    },
+    "vendredi": {
+      "actif": true,
+      "debut": "08:00",
+      "fin": "17:00"
+    },
+    "samedi": {
+      "actif": false,
+      "debut": "08:00",
+      "fin": "12:00"
+    },
+    "dimanche": {
+      "actif": false,
+      "debut": "08:00",
+      "fin": "12:00"
+    }
+  },
+  "dureeCreneauMinutes": 60,
+  "datesBloquees": [],
+  "creneauxBloques": []
 }'::jsonb)
 ON CONFLICT (key) DO NOTHING;

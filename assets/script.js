@@ -103,9 +103,160 @@
     const submitBtn = document.getElementById("rdv-submit");
     const status = document.getElementById("rdv-status");
 
+    const JOURS = ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"];
+    const MOIS = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
+
+    let horaire = null;
+    let busy = [];
+    let dataLoaded = false;
+    let viewMonth = new Date();
+    viewMonth.setDate(1);
+    let selectedDate = null;
+
+    const monthLabel = document.getElementById("rdv-cal-month");
+    const gridEl = document.getElementById("rdv-cal-grid");
+    const slotsEl = document.getElementById("rdv-slots");
+    const infoEl = document.getElementById("rdv-selected-info");
+    const dateInput = document.getElementById("rdv-date");
+    const heureInput = document.getElementById("rdv-heure");
+    const prevBtn = document.getElementById("rdv-cal-prev");
+    const nextBtn = document.getElementById("rdv-cal-next");
+
+    function toIso(d) {
+      return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+    }
+
+    function dayConfig(date) {
+      if (!horaire || !horaire.joursTravail) return null;
+      return horaire.joursTravail[JOURS[date.getDay()]] || null;
+    }
+
+    function isDateAvailable(date, iso) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      if (date < today) return false;
+      const cfg = dayConfig(date);
+      if (!cfg || !cfg.actif) return false;
+      if ((horaire.datesBloquees || []).includes(iso)) return false;
+      return true;
+    }
+
+    function renderCalendar() {
+      if (!gridEl || !monthLabel) return;
+      monthLabel.textContent = MOIS[viewMonth.getMonth()] + " " + viewMonth.getFullYear();
+
+      const firstDay = new Date(viewMonth.getFullYear(), viewMonth.getMonth(), 1);
+      const startOffset = firstDay.getDay(); // 0=dimanche
+      const daysInMonth = new Date(viewMonth.getFullYear(), viewMonth.getMonth() + 1, 0).getDate();
+
+      gridEl.innerHTML = "";
+      for (let i = 0; i < startOffset; i++) {
+        const empty = document.createElement("span");
+        empty.className = "rdv-cal-day rdv-cal-day-empty";
+        gridEl.appendChild(empty);
+      }
+      for (let day = 1; day <= daysInMonth; day++) {
+        const date = new Date(viewMonth.getFullYear(), viewMonth.getMonth(), day);
+        const iso = toIso(date);
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "rdv-cal-day";
+        btn.textContent = String(day);
+
+        if (!horaire || !dataLoaded) {
+          btn.disabled = true;
+        } else if (!isDateAvailable(date, iso)) {
+          btn.classList.add("rdv-cal-day-disabled");
+          btn.disabled = true;
+        } else {
+          btn.addEventListener("click", () => selectDate(iso, btn));
+        }
+        if (iso === selectedDate) btn.classList.add("rdv-cal-day-selected");
+        gridEl.appendChild(btn);
+      }
+    }
+
+    function selectDate(iso, btnEl) {
+      selectedDate = iso;
+      dateInput.value = iso;
+      heureInput.value = "";
+      gridEl.querySelectorAll(".rdv-cal-day-selected").forEach((el) => el.classList.remove("rdv-cal-day-selected"));
+      if (btnEl) btnEl.classList.add("rdv-cal-day-selected");
+      renderSlots(iso);
+    }
+
+    function renderSlots(iso) {
+      if (!slotsEl) return;
+      const date = new Date(iso + "T00:00:00");
+      const cfg = dayConfig(date);
+      slotsEl.innerHTML = "";
+      if (!cfg || !cfg.actif) return;
+
+      const dureeMin = Number(horaire.dureeCreneauMinutes) || 60;
+      const [hDeb, mDeb] = cfg.debut.split(":").map(Number);
+      const [hFin, mFin] = cfg.fin.split(":").map(Number);
+      let cursor = hDeb * 60 + mDeb;
+      const fin = hFin * 60 + mFin;
+
+      const blocked = new Set(
+        (horaire.creneauxBloques || []).filter((c) => c.date === iso).map((c) => c.heure)
+      );
+      const busySet = new Set(busy.filter((b) => b.date === iso).map((b) => b.heure));
+
+      let any = false;
+      while (cursor + dureeMin <= fin) {
+        const h = String(Math.floor(cursor / 60)).padStart(2, "0");
+        const m = String(cursor % 60).padStart(2, "0");
+        const heureStr = `${h}:${m}`;
+        if (!blocked.has(heureStr) && !busySet.has(heureStr)) {
+          any = true;
+          const b = document.createElement("button");
+          b.type = "button";
+          b.className = "rdv-slot-btn";
+          b.textContent = heureStr;
+          b.addEventListener("click", () => {
+            heureInput.value = heureStr;
+            slotsEl.querySelectorAll(".rdv-slot-btn").forEach((el) => el.classList.remove("selected"));
+            b.classList.add("selected");
+            if (infoEl) infoEl.textContent = `Rendez-vous demandé : ${iso} à ${heureStr}`;
+          });
+          slotsEl.appendChild(b);
+        }
+        cursor += dureeMin;
+      }
+      if (!any && infoEl) infoEl.textContent = "Aucun créneau disponible ce jour-là — choisis une autre date.";
+    }
+
+    async function loadScheduleData() {
+      try {
+        const [hRes, bRes] = await Promise.all([
+          fetch("/api/horaire").then((r) => r.json()),
+          fetch("/api/appointments/busy").then((r) => r.json()),
+        ]);
+        horaire = hRes && hRes.joursTravail ? hRes : { joursTravail: {}, dureeCreneauMinutes: 60, datesBloquees: [], creneauxBloques: [] };
+        busy = bRes || [];
+        dataLoaded = true;
+      } catch (e) {
+        horaire = { joursTravail: {}, dureeCreneauMinutes: 60, datesBloquees: [], creneauxBloques: [] };
+        busy = [];
+        dataLoaded = true;
+      }
+      renderCalendar();
+    }
+
+    if (prevBtn) prevBtn.addEventListener("click", () => {
+      viewMonth.setMonth(viewMonth.getMonth() - 1);
+      renderCalendar();
+    });
+    if (nextBtn) nextBtn.addEventListener("click", () => {
+      viewMonth.setMonth(viewMonth.getMonth() + 1);
+      renderCalendar();
+    });
+
     function open() {
       panel.hidden = false;
       document.body.classList.add("gate-open");
+      if (!dataLoaded) loadScheduleData();
     }
     function close() {
       panel.hidden = true;
@@ -126,6 +277,15 @@
     if (form) {
       form.addEventListener("submit", async (e) => {
         e.preventDefault();
+
+        if (!dateInput.value || !heureInput.value) {
+          if (status) {
+            status.className = "form-status show error";
+            status.textContent = "Choisis une date et une heure dans le calendrier avant d'envoyer.";
+          }
+          return;
+        }
+
         submitBtn.disabled = true;
         submitBtn.textContent = "Envoi en cours…";
         if (status) {
@@ -144,8 +304,8 @@
           lieu,
           courriel: document.getElementById("rdv-courriel").value.trim(),
           telephone: document.getElementById("rdv-tel").value.trim(),
-          dateDemandee: document.getElementById("rdv-date").value,
-          heureDemandee: document.getElementById("rdv-heure").value,
+          dateDemandee: dateInput.value,
+          heureDemandee: heureInput.value,
         };
 
         try {
@@ -157,6 +317,12 @@
           const data = await res.json().catch(() => ({}));
           if (res.ok) {
             form.reset();
+            selectedDate = null;
+            dateInput.value = "";
+            heureInput.value = "";
+            slotsEl.innerHTML = "";
+            if (infoEl) infoEl.textContent = "";
+            renderCalendar();
             if (status) {
               status.textContent = "Merci! Ta demande de rendez-vous m'a été envoyée — je te confirme rapidement.";
               status.classList.add("show", "ok");
@@ -657,6 +823,12 @@
       } else {
         el.textContent = val;
       }
+    });
+
+    // Texte de substitution (placeholder) éditable pour les champs de saisie.
+    document.querySelectorAll("[data-c-placeholder]").forEach((el) => {
+      const val = getPath(data, el.dataset.cPlaceholder);
+      if (val !== undefined && val !== null) el.setAttribute("placeholder", val);
     });
 
     // Liste de badges cliquables (ex. équipements -> catégories du site h2oinnovation.net).

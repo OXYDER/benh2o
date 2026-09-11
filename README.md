@@ -195,6 +195,25 @@ l'admin affiche un avertissement te rappelant de le contacter toi-même.
 
 Les textes de la section (titre, description) sont éditables dans Contenu de la page.
 
+**Horaire et blocages (`/admin` → onglet Rendez-vous, en haut) :**
+- **Jours et heures de travail** — active/désactive chaque jour de la semaine, avec une
+  heure de début et de fin propre à chacun. Le calendrier public ne montre que les
+  jours actifs, et seulement les créneaux compris dans ces heures.
+- **Durée d'un rendez-vous** — détermine l'espacement des créneaux proposés (par
+  défaut 60 minutes).
+- **Dates complètement bloquées** — vacances, congés : la date entière disparaît du
+  calendrier, même si c'est normalement un jour travaillé.
+- **Créneaux précis bloqués** — bloque une heure donnée à une date donnée, sans
+  bloquer le reste de la journée.
+
+Le calendrier public (dans le modal Rendez-vous) ne peut pas techniquement afficher un
+jour ou une heure qui ne respecte pas ces règles — les jours non travaillés sont grisés
+et non cliquables, et seules les heures libres apparaissent comme créneaux. Le serveur
+revalide aussi tout ça à la réception d'une demande, au cas où.
+
+**Textes du formulaire** — tous les libellés, textes d'exemple et le bouton d'envoi du
+modal Rendez-vous sont éditables dans Contenu de la page → « Modal Rendez-vous ».
+
 ## 4. Formulaire de contact
 
 Deux façons d'envoyer les demandes du formulaire, gérées par le serveur (`POST

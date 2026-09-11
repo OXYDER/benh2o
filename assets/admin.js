@@ -67,7 +67,7 @@
   });
 
   document.getElementById("logout-btn").addEventListener("click", async () => {
-    if (dirty.contact || dirty.zones || dirty.content || dirty.distributeurs || dirty.smtp) {
+    if (dirty.contact || dirty.zones || dirty.content || dirty.distributeurs || dirty.smtp || dirty.horaire) {
       if (!confirm("Tu as des changements non enregistrés. Te déconnecter quand même ?")) return;
     }
     await fetch("/api/logout", { method: "POST" });
@@ -124,8 +124,8 @@
   }
 
   /* ---------- Avertit avant de quitter s'il y a des changements non enregistrés ---------- */
-  const dirty = { contact: false, zones: false, content: false, distributeurs: false, smtp: false };
-  const dirtyEls = { contact: null, zones: null, content: null, distributeurs: null, smtp: null };
+  const dirty = { contact: false, zones: false, content: false, distributeurs: false, smtp: false, horaire: false };
+  const dirtyEls = { contact: null, zones: null, content: null, distributeurs: null, smtp: null, horaire: null };
   function registerDirtyIndicator(key, el) {
     dirtyEls[key] = el;
   }
@@ -142,7 +142,7 @@
     dirty[key] = false;
   }
   window.addEventListener("beforeunload", (e) => {
-    if (dirty.contact || dirty.zones || dirty.content || dirty.distributeurs || dirty.smtp) {
+    if (dirty.contact || dirty.zones || dirty.content || dirty.distributeurs || dirty.smtp || dirty.horaire) {
       e.preventDefault();
       e.returnValue = "";
     }
@@ -159,6 +159,7 @@
     setupDistributeursEditor();
     setupSmtpEditor();
     setupRendezVousAdmin();
+    setupHoraireEditor();
   }
 
   /* =========================================================
@@ -995,6 +996,164 @@
       });
     }
 
+    load();
+  }
+
+  /* =========================================================
+     ONGLET : Rendez-vous — horaire de travail et blocages
+     ========================================================= */
+  function setupHoraireEditor() {
+    const joursEl = document.getElementById("horaire-jours");
+    if (!joursEl) return;
+
+    const JOURS = [
+      ["lundi", "Lundi"], ["mardi", "Mardi"], ["mercredi", "Mercredi"], ["jeudi", "Jeudi"],
+      ["vendredi", "Vendredi"], ["samedi", "Samedi"], ["dimanche", "Dimanche"],
+    ];
+
+    const dureeInput = document.getElementById("horaire-duree");
+    const datesListEl = document.getElementById("horaire-dates-list");
+    const creneauxListEl = document.getElementById("horaire-creneaux-list");
+    const saveBtn = document.getElementById("horaire-save");
+    const statusEl = document.getElementById("horaire-save-status");
+
+    let horaire = { joursTravail: {}, dureeCreneauMinutes: 60, datesBloquees: [], creneauxBloques: [] };
+
+    function renderJours() {
+      joursEl.innerHTML = JOURS.map(([key, label]) => {
+        const cfg = horaire.joursTravail[key] || { actif: false, debut: "08:00", fin: "17:00" };
+        return `
+          <div class="horaire-jour-row ${cfg.actif ? "" : "inactif"}" data-jour="${key}">
+            <label class="horaire-jour-name">
+              <input type="checkbox" class="jour-actif" ${cfg.actif ? "checked" : ""}> ${label}
+            </label>
+            <span></span>
+            <input type="time" class="jour-debut" value="${cfg.debut || "08:00"}" ${cfg.actif ? "" : "disabled"}>
+            <input type="time" class="jour-fin" value="${cfg.fin || "17:00"}" ${cfg.actif ? "" : "disabled"}>
+          </div>
+        `;
+      }).join("");
+
+      joursEl.querySelectorAll(".horaire-jour-row").forEach((row) => {
+        const key = row.dataset.jour;
+        const actifEl = row.querySelector(".jour-actif");
+        const debutEl = row.querySelector(".jour-debut");
+        const finEl = row.querySelector(".jour-fin");
+        function sync() {
+          horaire.joursTravail[key] = { actif: actifEl.checked, debut: debutEl.value, fin: finEl.value };
+          row.classList.toggle("inactif", !actifEl.checked);
+          debutEl.disabled = !actifEl.checked;
+          finEl.disabled = !actifEl.checked;
+          markDirty("horaire");
+        }
+        actifEl.addEventListener("change", sync);
+        debutEl.addEventListener("input", sync);
+        finEl.addEventListener("input", sync);
+      });
+    }
+
+    function renderDates() {
+      const dates = (horaire.datesBloquees || []).slice().sort();
+      datesListEl.innerHTML = dates.map((d) => `
+        <span class="horaire-chip" data-date="${d}">${d} <button type="button" title="Retirer">✕</button></span>
+      `).join("") || '<span style="color:var(--ink-600); font-size:0.85rem;">Aucune date bloquée.</span>';
+      datesListEl.querySelectorAll(".horaire-chip button").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const d = btn.parentElement.dataset.date;
+          horaire.datesBloquees = horaire.datesBloquees.filter((x) => x !== d);
+          markDirty("horaire");
+          renderDates();
+        });
+      });
+    }
+
+    function renderCreneaux() {
+      const list = (horaire.creneauxBloques || []).slice().sort((a, b) => (a.date + a.heure).localeCompare(b.date + b.heure));
+      creneauxListEl.innerHTML = list.map((c, i) => `
+        <span class="horaire-chip" data-idx="${i}">${c.date} à ${c.heure} <button type="button" title="Retirer">✕</button></span>
+      `).join("") || '<span style="color:var(--ink-600); font-size:0.85rem;">Aucun créneau bloqué.</span>';
+      creneauxListEl.querySelectorAll(".horaire-chip button").forEach((btn, i) => {
+        btn.addEventListener("click", () => {
+          const item = list[i];
+          horaire.creneauxBloques = horaire.creneauxBloques.filter((c) => !(c.date === item.date && c.heure === item.heure));
+          markDirty("horaire");
+          renderCreneaux();
+        });
+      });
+    }
+
+    document.getElementById("horaire-add-date").addEventListener("click", () => {
+      const input = document.getElementById("horaire-nouvelle-date");
+      if (!input.value) return;
+      if (!horaire.datesBloquees.includes(input.value)) {
+        horaire.datesBloquees.push(input.value);
+        markDirty("horaire");
+        renderDates();
+      }
+      input.value = "";
+    });
+
+    document.getElementById("horaire-add-creneau").addEventListener("click", () => {
+      const dateInput = document.getElementById("horaire-nouveau-creneau-date");
+      const heureInput = document.getElementById("horaire-nouveau-creneau-heure");
+      if (!dateInput.value || !heureInput.value) return;
+      horaire.creneauxBloques.push({ date: dateInput.value, heure: heureInput.value });
+      markDirty("horaire");
+      renderCreneaux();
+      dateInput.value = "";
+      heureInput.value = "";
+    });
+
+    dureeInput.addEventListener("input", () => {
+      horaire.dureeCreneauMinutes = Number(dureeInput.value) || 60;
+      markDirty("horaire");
+    });
+
+    async function load() {
+      try {
+        const res = await fetch("/api/horaire");
+        const data = await res.json();
+        horaire = {
+          joursTravail: data.joursTravail || {},
+          dureeCreneauMinutes: data.dureeCreneauMinutes || 60,
+          datesBloquees: data.datesBloquees || [],
+          creneauxBloques: data.creneauxBloques || [],
+        };
+        dureeInput.value = horaire.dureeCreneauMinutes;
+        renderJours();
+        renderDates();
+        renderCreneaux();
+      } catch (e) {
+        flashStatus(statusEl, "Impossible de charger l'horaire.", true);
+      }
+    }
+
+    async function save() {
+      saveBtn.disabled = true;
+      saveBtn.textContent = "Enregistrement…";
+      try {
+        const res = await fetch("/api/horaire", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(horaire),
+        });
+        if (res.ok) {
+          flashStatus(statusEl, "Enregistré ✓", false);
+          clearDirty("horaire");
+        } else {
+          const data = await res.json().catch(() => ({}));
+          flashStatus(statusEl, data.error || "Échec de l'enregistrement.", true);
+        }
+      } catch (e) {
+        flashStatus(statusEl, "Impossible de contacter le serveur.", true);
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = "Enregistrer l'horaire";
+      }
+    }
+
+    saveBtn.addEventListener("click", save);
+    registerDirtyIndicator("horaire", statusEl);
     load();
   }
 })();
