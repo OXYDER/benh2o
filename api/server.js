@@ -412,6 +412,84 @@ app.get("/api/appointments/busy", async (req, res) => {
   }
 });
 
+/* ---------- Publications (Nouvelles et Événements / Tutoriels) ---------- */
+app.get("/api/posts", async (req, res) => {
+  const type = req.query.type;
+  try {
+    const r = type
+      ? await pool.query(
+          "SELECT * FROM posts WHERE publie = true AND type = $1 ORDER BY date_publication DESC, id DESC",
+          [type]
+        )
+      : await pool.query(
+          "SELECT * FROM posts WHERE publie = true ORDER BY date_publication DESC, id DESC"
+        );
+    res.json(r.rows);
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "Erreur serveur." });
+  }
+});
+
+app.get("/api/posts/all", requireAuth, async (req, res) => {
+  try {
+    const r = await pool.query("SELECT * FROM posts ORDER BY date_publication DESC, id DESC");
+    res.json(r.rows);
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "Erreur serveur." });
+  }
+});
+
+app.post("/api/posts", requireAuth, async (req, res) => {
+  const { type, titre, resume, contenu, imageUrl, datePublication, publie } = req.body || {};
+  if (!titre || !["nouvelle", "tutoriel"].includes(type)) {
+    return res.status(400).json({ error: "Titre et type requis." });
+  }
+  try {
+    const r = await pool.query(
+      `INSERT INTO posts (type, titre, resume, contenu, image_url, date_publication, publie)
+       VALUES ($1,$2,$3,$4,$5,COALESCE($6, CURRENT_DATE),$7) RETURNING *`,
+      [type, titre, resume || null, contenu || null, imageUrl || null, datePublication || null, publie !== false]
+    );
+    res.json(r.rows[0]);
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "Erreur serveur." });
+  }
+});
+
+app.put("/api/posts/:id", requireAuth, async (req, res) => {
+  const { id } = req.params;
+  const { type, titre, resume, contenu, imageUrl, datePublication, publie } = req.body || {};
+  if (!titre || !["nouvelle", "tutoriel"].includes(type)) {
+    return res.status(400).json({ error: "Titre et type requis." });
+  }
+  try {
+    const r = await pool.query(
+      `UPDATE posts SET type=$1, titre=$2, resume=$3, contenu=$4, image_url=$5,
+        date_publication=COALESCE($6, date_publication), publie=$7, updated_at=now()
+       WHERE id=$8 RETURNING *`,
+      [type, titre, resume || null, contenu || null, imageUrl || null, datePublication || null, publie !== false, id]
+    );
+    if (!r.rows.length) return res.status(404).json({ error: "Publication introuvable." });
+    res.json(r.rows[0]);
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "Erreur serveur." });
+  }
+});
+
+app.delete("/api/posts/:id", requireAuth, async (req, res) => {
+  try {
+    await pool.query("DELETE FROM posts WHERE id = $1", [req.params.id]);
+    res.json({ ok: true });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "Erreur serveur." });
+  }
+});
+
 app.get("/api/health", (req, res) => res.json({ ok: true }));
 
 /* ---------- Rendez-vous ---------- */

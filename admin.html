@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,500&family=Playfair+Display:wght@600;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="icon" href="assets/favicon.ico">
-<link rel="stylesheet" href="assets/style.css?v=36">
-<link rel="stylesheet" href="assets/admin.css?v=36">
+<link rel="stylesheet" href="assets/style.css?v=37">
+<link rel="stylesheet" href="assets/admin.css?v=37">
 </head>
 <body class="admin-body">
 
@@ -54,6 +54,7 @@
       <button class="admin-tab" data-tab="content" role="tab" aria-selected="false">Contenu de la page</button>
       <button class="admin-tab" data-tab="distributeurs" role="tab" aria-selected="false">Distributeurs</button>
       <button class="admin-tab" data-tab="rendezvous" role="tab" aria-selected="false">Rendez-vous</button>
+      <button class="admin-tab" data-tab="publications" role="tab" aria-selected="false">Publications</button>
     </div>
 
     <!-- ===== Onglet : Mes informations de contact ===== -->
@@ -308,6 +309,20 @@
           <input type="text" id="cc-nav-urgence" data-key="nav.urgence">
         </div>
       </div>
+      <div class="admin-field-row">
+        <div class="admin-field">
+          <label for="cc-nav-nouvelles">Lien « Nouvelles »</label>
+          <input type="text" id="cc-nav-nouvelles" data-key="nav.nouvelles">
+        </div>
+        <div class="admin-field">
+          <label for="cc-nav-tutoriels">Lien « Tutoriels »</label>
+          <input type="text" id="cc-nav-tutoriels" data-key="nav.tutoriels">
+        </div>
+      </div>
+      <div class="admin-field">
+        <label for="cc-nav-support">Menu déroulant « Support & Contact »</label>
+        <input type="text" id="cc-nav-support" data-key="nav.support">
+      </div>
 
       <h3 class="admin-field-group-title">Section « En-tête » (Hero)</h3>
       <div class="admin-field">
@@ -502,6 +517,38 @@
       <div class="admin-field">
         <label for="cc-rdv-submit">Texte du bouton d'envoi</label>
         <input type="text" id="cc-rdv-submit" data-key="rdv.submitButton">
+      </div>
+
+      <h3 class="admin-field-group-title">Section « Nouvelles et Événements »</h3>
+      <div class="admin-field-row">
+        <div class="admin-field">
+          <label for="cc-nouvelles-tag">Étiquette</label>
+          <input type="text" id="cc-nouvelles-tag" data-key="nouvelles.tag">
+        </div>
+        <div class="admin-field">
+          <label for="cc-nouvelles-title">Titre</label>
+          <input type="text" id="cc-nouvelles-title" data-key="nouvelles.title">
+        </div>
+      </div>
+      <div class="admin-field">
+        <label for="cc-nouvelles-desc">Description</label>
+        <textarea id="cc-nouvelles-desc" data-key="nouvelles.description" rows="2"></textarea>
+      </div>
+
+      <h3 class="admin-field-group-title">Section « Tutoriels »</h3>
+      <div class="admin-field-row">
+        <div class="admin-field">
+          <label for="cc-tutoriels-tag">Étiquette</label>
+          <input type="text" id="cc-tutoriels-tag" data-key="tutoriels.tag">
+        </div>
+        <div class="admin-field">
+          <label for="cc-tutoriels-title">Titre</label>
+          <input type="text" id="cc-tutoriels-title" data-key="tutoriels.title">
+        </div>
+      </div>
+      <div class="admin-field">
+        <label for="cc-tutoriels-desc">Description</label>
+        <textarea id="cc-tutoriels-desc" data-key="tutoriels.description" rows="2"></textarea>
       </div>
 
       <h3 class="admin-field-group-title">Section « Nous joindre »</h3>
@@ -761,10 +808,19 @@
       <div id="rdv-admin-list" class="rdv-admin-list"></div>
     </div>
 
+    <!-- ===== Onglet : Publications (Nouvelles et Événements / Tutoriels) ===== -->
+    <div class="admin-panel" data-panel="publications" hidden>
+      <p class="admin-section-desc">Gère les publications affichées dans « Nouvelles et Événements » et « Tutoriels, informations et modes d'emploi ». L'image se colle comme un lien (héberge-la où tu veux — Google Photos, Facebook, etc. — et colle le lien direct de l'image).</p>
+
+      <button class="btn btn-primary admin-add-region" id="post-add" type="button">+ Nouvelle publication</button>
+
+      <div id="posts-admin-list" class="posts-admin-list"></div>
+    </div>
+
   </section>
 
 </main>
 
-<script src="assets/admin.js?v=36"></script>
+<script src="assets/admin.js?v=37"></script>
 </body>
 </html>

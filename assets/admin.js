@@ -160,6 +160,7 @@
     setupSmtpEditor();
     setupRendezVousAdmin();
     setupHoraireEditor();
+    setupPostsAdmin();
   }
 
   /* =========================================================
@@ -1154,6 +1155,149 @@
 
     saveBtn.addEventListener("click", save);
     registerDirtyIndicator("horaire", statusEl);
+    load();
+  }
+
+  /* =========================================================
+     ONGLET : PUBLICATIONS (Nouvelles / Tutoriels)
+     ========================================================= */
+  function setupPostsAdmin() {
+    const listEl = document.getElementById("posts-admin-list");
+    if (!listEl) return;
+    const addBtn = document.getElementById("post-add");
+
+    let posts = [];
+
+    function todayIso() {
+      return new Date().toISOString().slice(0, 10);
+    }
+
+    async function load() {
+      try {
+        const res = await fetch("/api/posts/all");
+        posts = await res.json();
+        render();
+      } catch (e) {
+        listEl.innerHTML = '<p style="color:#B3403A">Impossible de charger les publications.</p>';
+      }
+    }
+
+    function render() {
+      if (!posts.length) {
+        listEl.innerHTML = "<p>Aucune publication pour l'instant.</p>";
+        return;
+      }
+      listEl.innerHTML = "";
+      posts.forEach((p) => {
+        const card = document.createElement("div");
+        card.className = "post-admin-card";
+        card.innerHTML = `
+          <div class="admin-field-row">
+            <div class="admin-field">
+              <label>Type</label>
+              <select class="p-type">
+                <option value="nouvelle" ${p.type === "nouvelle" ? "selected" : ""}>Nouvelle / Événement</option>
+                <option value="tutoriel" ${p.type === "tutoriel" ? "selected" : ""}>Tutoriel</option>
+              </select>
+            </div>
+            <div class="admin-field">
+              <label>Date de publication</label>
+              <input type="date" class="p-date" value="${(p.date_publication || todayIso()).toString().slice(0, 10)}">
+            </div>
+          </div>
+          <div class="admin-field">
+            <label>Titre</label>
+            <input type="text" class="p-titre" value="${escapeAttr(p.titre || "")}">
+          </div>
+          <div class="admin-field">
+            <label>Résumé (affiché sur la carte)</label>
+            <textarea class="p-resume" rows="2">${escapeAttr(p.resume || "")}</textarea>
+          </div>
+          <div class="admin-field">
+            <label>Contenu complet (affiché en cliquant « Lire plus »)</label>
+            <textarea class="p-contenu" rows="5">${escapeAttr(p.contenu || "")}</textarea>
+          </div>
+          <div class="admin-field">
+            <label>Lien de l'image (optionnel)</label>
+            <input type="text" class="p-image" value="${escapeAttr(p.image_url || "")}" placeholder="https://...">
+          </div>
+          <label class="admin-checkbox">
+            <input type="checkbox" class="p-publie" ${p.publie ? "checked" : ""}>
+            Publié (visible sur le site)
+          </label>
+          <div class="admin-save-row">
+            <span class="admin-save-status post-status"></span>
+            <button class="btn btn-outline post-delete" type="button">Supprimer</button>
+            <button class="btn btn-primary post-save" type="button">Enregistrer</button>
+          </div>
+        `;
+
+        const statusEl = card.querySelector(".post-status");
+
+        card.querySelector(".post-save").addEventListener("click", async () => {
+          const payload = {
+            type: card.querySelector(".p-type").value,
+            titre: card.querySelector(".p-titre").value.trim(),
+            resume: card.querySelector(".p-resume").value.trim(),
+            contenu: card.querySelector(".p-contenu").value.trim(),
+            imageUrl: card.querySelector(".p-image").value.trim(),
+            datePublication: card.querySelector(".p-date").value,
+            publie: card.querySelector(".p-publie").checked,
+          };
+          statusEl.textContent = "Enregistrement…";
+          try {
+            const res = await fetch(`/api/posts/${p.id}`, {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
+            });
+            if (res.ok) {
+              statusEl.textContent = "Enregistré ✓";
+              await load();
+            } else {
+              const data = await res.json().catch(() => ({}));
+              statusEl.textContent = data.error || "Échec.";
+            }
+          } catch (e) {
+            statusEl.textContent = "Impossible de contacter le serveur.";
+          }
+        });
+
+        card.querySelector(".post-delete").addEventListener("click", async () => {
+          if (!confirm(`Supprimer « ${p.titre} » définitivement?`)) return;
+          try {
+            await fetch(`/api/posts/${p.id}`, { method: "DELETE" });
+            await load();
+          } catch (e) {
+            statusEl.textContent = "Échec de la suppression.";
+          }
+        });
+
+        listEl.appendChild(card);
+      });
+    }
+
+    addBtn.addEventListener("click", async () => {
+      try {
+        const res = await fetch("/api/posts", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            type: "nouvelle",
+            titre: "Nouvelle publication",
+            resume: "",
+            contenu: "",
+            imageUrl: "",
+            datePublication: todayIso(),
+            publie: false,
+          }),
+        });
+        if (res.ok) await load();
+      } catch (e) {
+        listEl.innerHTML = '<p style="color:#B3403A">Impossible de créer la publication.</p>';
+      }
+    });
+
     load();
   }
 })();

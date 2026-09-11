@@ -9,6 +9,19 @@ CREATE TABLE IF NOT EXISTS admin_users (
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
+CREATE TABLE IF NOT EXISTS posts (
+  id SERIAL PRIMARY KEY,
+  type TEXT NOT NULL DEFAULT 'nouvelle',   -- 'nouvelle' (Nouvelles et Événements) ou 'tutoriel'
+  titre TEXT NOT NULL,
+  resume TEXT,
+  contenu TEXT,
+  image_url TEXT,
+  date_publication DATE NOT NULL DEFAULT CURRENT_DATE,
+  publie BOOLEAN NOT NULL DEFAULT true,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
 CREATE TABLE IF NOT EXISTS appointments (
   id SERIAL PRIMARY KEY,
   nom TEXT NOT NULL,
@@ -118,7 +131,10 @@ INSERT INTO site_data (key, data) VALUES ('content', '{
     "about": "À propos",
     "contact": "Formulaire de contact",
     "urgence": "URGENCE",
-  "rdv": "Rendez-vous"
+  "rdv": "Rendez-vous",
+  "nouvelles": "Nouvelles",
+  "tutoriels": "Tutoriels",
+  "support": "Support & Contact"
   },
   "hero": {
     "eyebrow": "Ton représentant régional",
@@ -169,6 +185,16 @@ INSERT INTO site_data (key, data) VALUES ('content', '{
     "labelTelephone": "Téléphone",
     "note": "Un des deux (courriel ou téléphone) est nécessaire pour te confirmer le rendez-vous.",
     "submitButton": "Envoyer la demande"
+  },
+  "nouvelles": {
+    "tag": "Actualités",
+    "title": "Nouvelles et Événements",
+    "description": "Les nouveautés H2O Innovation, les événements auxquels je participe, et les beaux moments vécus avec mes clients."
+  },
+  "tutoriels": {
+    "tag": "Ressources",
+    "title": "Tutoriels, informations et modes d'emploi",
+    "description": "Des guides et conseils pratiques pour bien utiliser et entretenir ton équipement."
   },
   "channels": {
     "tag": "Nous joindre",

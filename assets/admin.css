@@ -551,3 +551,13 @@
   font-size: 0.75rem;
   line-height: 1;
 }
+
+/* ---------- Publications ---------- */
+
+.posts-admin-list { display: flex; flex-direction: column; gap: 20px; margin-top: 16px; }
+.post-admin-card {
+  background: var(--birch-100);
+  border: 1px solid rgba(32,27,20,0.1);
+  border-radius: var(--radius-lg);
+  padding: 18px 20px;
+}

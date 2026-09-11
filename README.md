@@ -214,6 +214,29 @@ revalide aussi tout ça à la réception d'une demande, au cas où.
 **Textes du formulaire** — tous les libellés, textes d'exemple et le bouton d'envoi du
 modal Rendez-vous sont éditables dans Contenu de la page → « Modal Rendez-vous ».
 
+## 3d. Nouvelles et Événements / Tutoriels
+
+Deux sections de publications (nouveautés H2O, événements, moments clients pour l'une;
+guides et modes d'emploi pour l'autre), gérées dans `/admin` → onglet **Publications**.
+
+Chaque publication a : un type (Nouvelle/Événement ou Tutoriel), un titre, un résumé
+(affiché sur la carte), un contenu complet (affiché en cliquant « Lire plus »), une
+image optionnelle (colle un lien direct — héberge la photo où tu veux, Google Photos,
+Facebook, etc.), une date, et un statut publié/brouillon. Une publication non publiée
+reste enregistrée mais invisible sur le site — pratique pour préparer à l'avance.
+
+## 3e. Menu principal allégé
+
+Avec toutes ces sections, le menu du haut aurait été surchargé — deux liens
+utilitaires ont été regroupés en menus déroulants pour rester lisible :
+
+- **Produits H2O ▾** — recherche + catégories (existant)
+- **Support & Contact ▾** — Nous joindre, Rendez-vous, Formulaire de contact, URGENCE
+
+Le reste (Accueil, Territoire, Carte, Nouvelles, Tutoriels, À propos) reste en liens
+directs. Tous les libellés — y compris ceux des deux menus déroulants — sont éditables
+dans Contenu de la page → Menu principal.
+
 ## 4. Formulaire de contact
 
 Deux façons d'envoyer les demandes du formulaire, gérées par le serveur (`POST

@@ -885,6 +885,86 @@
     window.open(url, "_blank", "noopener");
   }
 
+  /* ---------- Nouvelles et Événements / Tutoriels ---------- */
+  function setupPosts() {
+    const modal = document.getElementById("post-modal");
+    if (!modal) return;
+    const closeBtn = document.getElementById("post-modal-close");
+    const modalImg = document.getElementById("post-modal-img");
+    const modalDate = document.getElementById("post-modal-date");
+    const modalTitle = document.getElementById("post-modal-title");
+    const modalBody = document.getElementById("post-modal-body");
+
+    function openModal(post) {
+      if (post.image_url) {
+        modalImg.src = post.image_url;
+        modalImg.hidden = false;
+      } else {
+        modalImg.hidden = true;
+      }
+      modalDate.textContent = formatPostDate(post.date_publication);
+      modalTitle.textContent = post.titre;
+      modalBody.textContent = post.contenu || post.resume || "";
+      modal.hidden = false;
+      document.body.classList.add("gate-open");
+    }
+    function closeModal() {
+      modal.hidden = true;
+      document.body.classList.remove("gate-open");
+    }
+    if (closeBtn) closeBtn.addEventListener("click", closeModal);
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) closeModal();
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && !modal.hidden) closeModal();
+    });
+
+    function formatPostDate(d) {
+      if (!d) return "";
+      const date = new Date(d);
+      return date.toLocaleDateString("fr-CA", { year: "numeric", month: "long", day: "numeric" });
+    }
+
+    function renderGrid(gridEl, emptyEl, posts) {
+      if (!gridEl) return;
+      if (!posts.length) {
+        gridEl.innerHTML = "";
+        if (emptyEl) emptyEl.hidden = false;
+        return;
+      }
+      if (emptyEl) emptyEl.hidden = true;
+      gridEl.innerHTML = posts
+        .map(
+          (p, i) => `
+        <article class="post-card">
+          ${p.image_url ? `<img class="post-card-img" src="${p.image_url}" alt="" loading="lazy">` : ""}
+          <div class="post-card-body">
+            <span class="post-card-date">${formatPostDate(p.date_publication)}</span>
+            <h3 class="post-card-title">${p.titre}</h3>
+            ${p.resume ? `<p class="post-card-resume">${p.resume}</p>` : ""}
+            <button class="post-card-more" type="button" data-idx="${i}">Lire plus</button>
+          </div>
+        </article>
+      `
+        )
+        .join("");
+      gridEl.querySelectorAll(".post-card-more").forEach((btn) => {
+        btn.addEventListener("click", () => openModal(posts[Number(btn.dataset.idx)]));
+      });
+    }
+
+    function loadType(type, gridId, emptyId) {
+      fetch("/api/posts?type=" + encodeURIComponent(type))
+        .then((r) => r.json())
+        .then((posts) => renderGrid(document.getElementById(gridId), document.getElementById(emptyId), posts || []))
+        .catch(() => {});
+    }
+
+    loadType("nouvelle", "nouvelles-grid", "nouvelles-empty");
+    loadType("tutoriel", "tutoriels-grid", "tutoriels-empty");
+  }
+
   function setupProductSearch() {
     [
       ["product-search-form", "product-search-input"],
@@ -933,12 +1013,14 @@
     const nav = document.getElementById("site-nav");
     if (!toggle || !nav) return;
 
-    const prodDropdown = document.getElementById("nav-produits-dropdown");
-    const prodToggle = document.getElementById("nav-produits-toggle");
+    const dropdowns = Array.from(document.querySelectorAll(".site-nav-item-dropdown"));
 
-    function closeProductsDropdown() {
-      if (prodDropdown) prodDropdown.classList.remove("open");
-      if (prodToggle) prodToggle.setAttribute("aria-expanded", "false");
+    function closeAllDropdowns() {
+      dropdowns.forEach((d) => {
+        d.classList.remove("open");
+        const t = d.querySelector(".site-nav-dropdown-toggle");
+        if (t) t.setAttribute("aria-expanded", "false");
+      });
     }
 
     function open() {
@@ -948,7 +1030,7 @@
     function close() {
       nav.hidden = true;
       toggle.setAttribute("aria-expanded", "false");
-      closeProductsDropdown();
+      closeAllDropdowns();
     }
 
     toggle.addEventListener("click", () => {
@@ -956,25 +1038,47 @@
       else close();
     });
 
-    // Le bouton "Produits H2O" ouvre/ferme seulement son sous-menu — il ne ferme
-    // jamais tout le menu (c'est un <button>, pas un <a>, donc la délégation
-    // ci-dessous ne le referme pas non plus).
-    if (prodDropdown && prodToggle) {
-      prodToggle.addEventListener("click", (e) => {
+    // Chaque bouton "▾" ouvre/ferme seulement son propre sous-menu — il ne ferme
+    // jamais tout le menu (ce sont des <button>, pas des <a>, donc la délégation
+    // ci-dessous ne les referme pas non plus).
+    dropdowns.forEach((dropdown) => {
+      const dToggle = dropdown.querySelector(".site-nav-dropdown-toggle");
+      if (!dToggle) return;
+      dToggle.addEventListener("click", (e) => {
         e.stopPropagation();
-        const isOpen = prodDropdown.classList.toggle("open");
-        prodToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+        const willOpen = !dropdown.classList.contains("open");
+        closeAllDropdowns();
+        if (willOpen) {
+          dropdown.classList.add("open");
+          dToggle.setAttribute("aria-expanded", "true");
+        }
       });
-    }
+    });
 
-    // Un clic sur un vrai lien (destination MRC, section, sous-lien produit…) referme tout le menu.
+    // Un clic sur un vrai lien ou une action (rendez-vous, urgence, sous-lien produit…) referme tout le menu.
     nav.addEventListener("click", (e) => {
-      if (e.target.closest("a") || e.target.closest(".site-nav-urgence") || e.target.closest(".site-nav-rdv-trigger")) close();
+      if (
+        e.target.closest("a") ||
+        e.target.closest(".site-nav-submenu-btn") ||
+        e.target.closest(".site-nav-urgence") ||
+        e.target.closest(".site-nav-rdv-trigger")
+      ) {
+        close();
+      }
     });
 
     document.addEventListener("click", (e) => {
-      if (!nav.hidden && !nav.contains(e.target) && !toggle.contains(e.target)) close();
-      else if (prodDropdown && !prodDropdown.contains(e.target)) closeProductsDropdown();
+      if (!nav.hidden && !nav.contains(e.target) && !toggle.contains(e.target)) {
+        close();
+      } else {
+        dropdowns.forEach((d) => {
+          if (!d.contains(e.target)) {
+            d.classList.remove("open");
+            const t = d.querySelector(".site-nav-dropdown-toggle");
+            if (t) t.setAttribute("aria-expanded", "false");
+          }
+        });
+      }
     });
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape" && !nav.hidden) close();
@@ -988,6 +1092,7 @@
     showVisitorBadge();
     setupNav();
     setupLeafParticles();
+    setupPosts();
     setupProductSearch();
 
     fetch("/api/contact")
