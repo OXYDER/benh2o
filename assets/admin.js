@@ -161,6 +161,7 @@
     setupRendezVousAdmin();
     setupHoraireEditor();
     setupPostsAdmin();
+    setupCategoriesAdmin();
   }
 
   /* =========================================================
@@ -1167,15 +1168,42 @@
     const addBtn = document.getElementById("post-add");
 
     let posts = [];
+    let categoriesByType = {};
 
     function todayIso() {
       return new Date().toISOString().slice(0, 10);
     }
 
+    function categoryOptions(type, selected) {
+      const cats = categoriesByType[type] || [];
+      return (
+        `<option value="">Aucune</option>` +
+        cats.map((c) => `<option value="${escapeAttr(c.nom)}" ${c.nom === selected ? "selected" : ""}>${escapeAttr(c.nom)}</option>`).join("")
+      );
+    }
+
+    async function uploadFile(file) {
+      const formData = new FormData();
+      formData.append("file", file);
+      const res = await fetch("/api/upload", { method: "POST", body: formData });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || "Échec du téléversement.");
+      return data;
+    }
+
     async function load() {
       try {
-        const res = await fetch("/api/posts/all");
-        posts = await res.json();
+        const [postsRes, catsRes] = await Promise.all([
+          fetch("/api/posts/all"),
+          fetch("/api/categories"),
+        ]);
+        posts = await postsRes.json();
+        const allCats = await catsRes.json();
+        categoriesByType = {};
+        (allCats || []).forEach((c) => {
+          if (!categoriesByType[c.type]) categoriesByType[c.type] = [];
+          categoriesByType[c.type].push(c);
+        });
         render();
       } catch (e) {
         listEl.innerHTML = '<p style="color:#B3403A">Impossible de charger les publications.</p>';
@@ -1203,9 +1231,13 @@
               </select>
             </div>
             <div class="admin-field">
-              <label>Date de publication</label>
-              <input type="date" class="p-date" value="${(p.date_publication || todayIso()).toString().slice(0, 10)}">
+              <label>Catégorie</label>
+              <select class="p-categorie">${categoryOptions(p.type, p.categorie)}</select>
             </div>
+          </div>
+          <div class="admin-field">
+            <label>Date de publication</label>
+            <input type="date" class="p-date" value="${(p.date_publication || todayIso()).toString().slice(0, 10)}">
           </div>
           <div class="admin-field">
             <label>Titre</label>
@@ -1220,8 +1252,23 @@
             <textarea class="p-contenu" rows="5">${escapeAttr(p.contenu || "")}</textarea>
           </div>
           <div class="admin-field">
-            <label>Lien de l'image (optionnel)</label>
-            <input type="text" class="p-image" value="${escapeAttr(p.image_url || "")}" placeholder="https://...">
+            <label>Image (optionnel)</label>
+            <div class="post-upload-row">
+              <input type="text" class="p-image" value="${escapeAttr(p.image_url || "")}" placeholder="https://... ou téléverse une image">
+              <button class="btn btn-outline p-image-upload-btn" type="button">Téléverser…</button>
+              <input type="file" class="p-image-file-input" accept="image/*" hidden>
+            </div>
+          </div>
+          <div class="admin-field">
+            <label>Fichier téléchargeable (optionnel) — PDF, Word, Excel</label>
+            <div class="post-upload-row">
+              <span class="p-fichier-label">${p.fichier_nom ? escapeAttr(p.fichier_nom) : "Aucun fichier"}</span>
+              <button class="btn btn-outline p-fichier-upload-btn" type="button">Téléverser…</button>
+              <button class="btn btn-outline p-fichier-remove-btn" type="button" ${p.fichier_url ? "" : "hidden"}>Retirer</button>
+              <input type="file" class="p-fichier-file-input" accept=".pdf,.doc,.docx,.xls,.xlsx" hidden>
+            </div>
+            <input type="hidden" class="p-fichier-url" value="${escapeAttr(p.fichier_url || "")}">
+            <input type="hidden" class="p-fichier-nom" value="${escapeAttr(p.fichier_nom || "")}">
           </div>
           <label class="admin-checkbox">
             <input type="checkbox" class="p-publie" ${p.publie ? "checked" : ""}>
@@ -1235,14 +1282,73 @@
         `;
 
         const statusEl = card.querySelector(".post-status");
+        const typeSelect = card.querySelector(".p-type");
+        const catSelect = card.querySelector(".p-categorie");
+
+        typeSelect.addEventListener("change", () => {
+          catSelect.innerHTML = categoryOptions(typeSelect.value, "");
+        });
+
+        const imageInput = card.querySelector(".p-image");
+        const imageUploadBtn = card.querySelector(".p-image-upload-btn");
+        const imageFileInput = card.querySelector(".p-image-file-input");
+        imageUploadBtn.addEventListener("click", () => imageFileInput.click());
+        imageFileInput.addEventListener("change", async () => {
+          const file = imageFileInput.files[0];
+          if (!file) return;
+          imageUploadBtn.textContent = "Envoi…";
+          try {
+            const data = await uploadFile(file);
+            imageInput.value = data.url;
+          } catch (e) {
+            statusEl.textContent = e.message;
+          } finally {
+            imageUploadBtn.textContent = "Téléverser…";
+            imageFileInput.value = "";
+          }
+        });
+
+        const fichierUrlInput = card.querySelector(".p-fichier-url");
+        const fichierNomInput = card.querySelector(".p-fichier-nom");
+        const fichierLabel = card.querySelector(".p-fichier-label");
+        const fichierUploadBtn = card.querySelector(".p-fichier-upload-btn");
+        const fichierRemoveBtn = card.querySelector(".p-fichier-remove-btn");
+        const fichierFileInput = card.querySelector(".p-fichier-file-input");
+        fichierUploadBtn.addEventListener("click", () => fichierFileInput.click());
+        fichierFileInput.addEventListener("change", async () => {
+          const file = fichierFileInput.files[0];
+          if (!file) return;
+          fichierUploadBtn.textContent = "Envoi…";
+          try {
+            const data = await uploadFile(file);
+            fichierUrlInput.value = data.url;
+            fichierNomInput.value = data.originalName;
+            fichierLabel.textContent = data.originalName;
+            fichierRemoveBtn.hidden = false;
+          } catch (e) {
+            statusEl.textContent = e.message;
+          } finally {
+            fichierUploadBtn.textContent = "Téléverser…";
+            fichierFileInput.value = "";
+          }
+        });
+        fichierRemoveBtn.addEventListener("click", () => {
+          fichierUrlInput.value = "";
+          fichierNomInput.value = "";
+          fichierLabel.textContent = "Aucun fichier";
+          fichierRemoveBtn.hidden = true;
+        });
 
         card.querySelector(".post-save").addEventListener("click", async () => {
           const payload = {
-            type: card.querySelector(".p-type").value,
+            type: typeSelect.value,
+            categorie: catSelect.value,
             titre: card.querySelector(".p-titre").value.trim(),
             resume: card.querySelector(".p-resume").value.trim(),
             contenu: card.querySelector(".p-contenu").value.trim(),
-            imageUrl: card.querySelector(".p-image").value.trim(),
+            imageUrl: imageInput.value.trim(),
+            fichierUrl: fichierUrlInput.value.trim(),
+            fichierNom: fichierNomInput.value.trim(),
             datePublication: card.querySelector(".p-date").value,
             publie: card.querySelector(".p-publie").checked,
           };
@@ -1297,6 +1403,70 @@
         if (res.ok) await load();
       } catch (e) {
         listEl.innerHTML = '<p style="color:#B3403A">Impossible de créer la publication.</p>';
+      }
+    });
+
+    load();
+  }
+
+  /* =========================================================
+     ONGLET : Publications — gestion des catégories
+     ========================================================= */
+  function setupCategoriesAdmin() {
+    const typeSelect = document.getElementById("cat-type-select");
+    if (!typeSelect) return;
+    const nameInput = document.getElementById("cat-new-name");
+    const addBtn = document.getElementById("cat-add");
+    const listEl = document.getElementById("categories-list");
+
+    async function load() {
+      try {
+        const res = await fetch("/api/categories?type=" + encodeURIComponent(typeSelect.value));
+        const cats = await res.json();
+        render(cats || []);
+      } catch (e) {
+        listEl.innerHTML = '<p style="color:#B3403A">Impossible de charger les catégories.</p>';
+      }
+    }
+
+    function render(cats) {
+      listEl.innerHTML =
+        cats
+          .map(
+            (c) => `<span class="horaire-chip" data-id="${c.id}">${escapeAttr(c.nom)} <button type="button" title="Retirer">✕</button></span>`
+          )
+          .join("") || '<span style="color:var(--ink-600); font-size:0.85rem;">Aucune catégorie pour cette section.</span>';
+      listEl.querySelectorAll(".horaire-chip button").forEach((btn) => {
+        btn.addEventListener("click", async () => {
+          const id = btn.parentElement.dataset.id;
+          try {
+            await fetch(`/api/categories/${id}`, { method: "DELETE" });
+            await load();
+          } catch (e) {}
+        });
+      });
+    }
+
+    typeSelect.addEventListener("change", load);
+
+    addBtn.addEventListener("click", async () => {
+      const nom = nameInput.value.trim();
+      if (!nom) return;
+      try {
+        const res = await fetch("/api/categories", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ type: typeSelect.value, nom }),
+        });
+        if (res.ok) {
+          nameInput.value = "";
+          await load();
+        } else {
+          const data = await res.json().catch(() => ({}));
+          alert(data.error || "Échec de l'ajout.");
+        }
+      } catch (e) {
+        alert("Impossible de contacter le serveur.");
       }
     });
 

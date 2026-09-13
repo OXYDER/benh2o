@@ -270,6 +270,26 @@ lien de menu y mène.
 Les textes (étiquette, titre, description) de chaque page sont éditables dans Contenu
 de la page.
 
+## 3h. Catégories et fichiers téléchargeables
+
+**Catégories** — dans `/admin` → Publications → section « Catégories » : choisis une
+section (Nouvelles, Tutoriels, Manuels, Fiches Techniques), tape un nom, clique
+Ajouter. Chaque section a ses propres catégories, indépendantes des autres. Une fois
+créées, elles apparaissent dans le menu déroulant « Catégorie » de chaque publication,
+et automatiquement comme filtres cliquables sur la page publique correspondante — pas
+besoin de les ajouter ailleurs.
+
+**Fichiers téléchargeables** — chaque publication a maintenant un champ « Fichier
+téléchargeable » (en plus de l'image) : clique **Téléverser…**, choisis un PDF, un
+Word ou un Excel directement depuis ton ordinateur (jusqu'à 20 Mo). Un bouton
+« ⬇ Télécharger » apparaît alors automatiquement sur la carte et dans la fenêtre de
+lecture complète. Les images aussi peuvent maintenant être téléversées directement,
+en plus de coller un lien.
+
+Techniquement, ces fichiers sont stockés dans un volume Docker partagé
+(`benoitlaprise-uploads`) entre le site et l'API, servi directement par nginx — pas de
+service externe requis.
+
 ## 4. Formulaire de contact
 
 Deux façons d'envoyer les demandes du formulaire, gérées par le serveur (`POST

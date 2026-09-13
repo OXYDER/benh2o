@@ -561,3 +561,16 @@
   border-radius: var(--radius-lg);
   padding: 18px 20px;
 }
+
+.post-upload-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.post-upload-row input[type="text"] { flex: 1; min-width: 180px; }
+.p-fichier-label {
+  font-size: 0.85rem;
+  color: var(--ink-600);
+  font-style: italic;
+}
