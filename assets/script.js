@@ -955,14 +955,60 @@
           modalFile.hidden = true;
         }
       }
+      setupShareButtons(post);
+      const url = new URL(location.href);
+      url.searchParams.set("post", post.id);
+      history.pushState({ postId: post.id }, "", url);
       modal.hidden = false;
       document.body.classList.add("gate-open");
     }
-    function closeModal() {
+    function closeModal(skipHistory) {
       modal.hidden = true;
       document.body.classList.remove("gate-open");
+      if (!skipHistory) {
+        const url = new URL(location.href);
+        if (url.searchParams.has("post")) {
+          url.searchParams.delete("post");
+          history.pushState({}, "", url);
+        }
+      }
     }
-    if (closeBtn) closeBtn.addEventListener("click", closeModal);
+    window.addEventListener("popstate", () => {
+      if (!modal.hidden) closeModal(true);
+    });
+
+    function setupShareButtons(post) {
+      const shareEl = document.getElementById("post-share");
+      if (!shareEl) return;
+      const shareUrl = new URL(location.href);
+      shareUrl.searchParams.set("post", post.id);
+      const url = shareUrl.toString();
+      const title = post.titre;
+      shareEl.querySelectorAll(".post-share-btn").forEach((btn) => {
+        btn.onclick = () => {
+          const type = btn.dataset.share;
+          if (type === "facebook") {
+            window.open("https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(url), "_blank", "noopener,width=600,height=500");
+          } else if (type === "twitter") {
+            window.open("https://twitter.com/intent/tweet?url=" + encodeURIComponent(url) + "&text=" + encodeURIComponent(title), "_blank", "noopener,width=600,height=500");
+          } else if (type === "linkedin") {
+            window.open("https://www.linkedin.com/sharing/share-offsite/?url=" + encodeURIComponent(url), "_blank", "noopener,width=600,height=500");
+          } else if (type === "email") {
+            window.location.href = "mailto:?subject=" + encodeURIComponent(title) + "&body=" + encodeURIComponent(url);
+          } else if (type === "copy") {
+            const done = () => {
+              const original = btn.textContent;
+              btn.textContent = "✓";
+              setTimeout(() => { btn.textContent = original; }, 1500);
+            };
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+              navigator.clipboard.writeText(url).then(done).catch(() => {});
+            }
+          }
+        };
+      });
+    }
+    if (closeBtn) closeBtn.addEventListener("click", () => closeModal());
     modal.addEventListener("click", (e) => {
       if (e.target === modal) closeModal();
     });
@@ -1208,6 +1254,13 @@
           renderPostsList(gridEl, emptyEl, allPosts, mode, false);
           renderPostsList(featuredEl, null, allPosts.slice(0, 3), mode, true);
           renderFilters(categories || []);
+
+          const params = new URLSearchParams(location.search);
+          const wantedId = params.get("post");
+          if (wantedId) {
+            const wanted = allPosts.find((p) => String(p.id) === wantedId);
+            if (wanted) openModal(wanted);
+          }
         })
         .catch(() => {});
     }

@@ -883,6 +883,33 @@ section { padding: 76px 0; }
 }
 .post-modal-file[hidden] { display: none; }
 
+.post-share {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 32px 28px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(32,27,20,0.1);
+}
+.post-share-label { font-size: 0.82rem; color: var(--ink-600); font-weight: 600; margin-right: 4px; }
+.post-share-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(32,27,20,0.18);
+  background: var(--birch-050);
+  color: var(--ink-900);
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  padding: 0;
+}
+.post-share-btn:hover { background: var(--amber-600); border-color: var(--amber-600); }
+
 .post-modal-gallery {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));

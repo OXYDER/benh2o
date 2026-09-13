@@ -376,6 +376,27 @@ grand **directement sur le site** (pas dans un nouvel onglet), avec des flèches
 gauche/droite pour passer d'une image à l'autre et un bouton pour fermer et revenir à
 l'article. Fonctionne aussi au clavier (flèches et Échap).
 
+## 3o. Partage sur réseaux sociaux + lien direct par publication
+
+Chaque publication (Nouvelles, Tutoriels, Manuels, Fiches Techniques) a maintenant une
+petite barre de partage en bas de sa fenêtre « Lire plus » : Facebook, X (Twitter),
+LinkedIn, courriel, et un bouton pour copier le lien directement.
+
+**Important — ce ne sont pas des liens génériques vers la page** : chaque bouton
+partage un lien qui pointe **directement vers cette publication précise**. Quelqu'un
+qui clique sur un lien partagé arrive automatiquement avec la bonne fenêtre déjà
+ouverte, peu importe combien d'autres publications existent sur la page.
+
+**Limite technique à connaître** : quand quelqu'un colle ce lien sur Facebook ou X,
+l'aperçu généré (image, titre) affichera les informations générales du site plutôt
+que celles de la publication précise — les robots de ces réseaux ne lisent que le
+contenu déjà présent au premier chargement de la page, avant que le JavaScript ait
+choisi quelle publication afficher. Le lien fonctionne parfaitement pour la personne
+qui clique, seul l'aperçu visuel avant le clic reste générique. Corriger ça
+demanderait de faire générer les pages différemment par le serveur pour chaque
+publication — un changement d'architecture plus important, à envisager si l'aperçu
+devient important pour toi.
+
 ## 4. Formulaire de contact
 
 Deux façons d'envoyer les demandes du formulaire, gérées par le serveur (`POST
