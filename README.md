@@ -321,6 +321,18 @@ largeur — avec toujours un bouton vers la page complète.
 Le format choisi s'applique à la fois à la page complète et à l'aperçu condensé sur
 l'accueil (quand la section en a un).
 
+## 3k. Couleur par catégorie
+
+Chaque catégorie s'affiche maintenant avec un badge de couleur — la même couleur
+partout où cette catégorie apparaît (grille, tableau, affiche, page d'accueil, fenêtre
+de lecture complète), peu importe la section (Nouvelles, Tutoriels, Manuels, Fiches
+Techniques).
+
+La couleur est calculée automatiquement à partir du nom de la catégorie (parmi une
+dizaine de couleurs prévues) — pas besoin de choisir une couleur toi-même en créant
+une catégorie, et le nom garde toujours la même couleur tant qu'il reste écrit
+pareil.
+
 ## 4. Formulaire de contact
 
 Deux façons d'envoyer les demandes du formulaire, gérées par le serveur (`POST

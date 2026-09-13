@@ -904,6 +904,8 @@
         modalImg.hidden = true;
       }
       modalDate.textContent = formatPostDate(post.date_publication);
+      const modalCategory = document.getElementById("post-modal-category");
+      if (modalCategory) modalCategory.innerHTML = categoryBadgeHtml(post);
       modalTitle.textContent = post.titre;
       if (post.contenu) {
         modalBody.innerHTML = post.contenu;
@@ -940,6 +942,22 @@
       return date.toLocaleDateString("fr-CA", { year: "numeric", month: "long", day: "numeric" });
     }
 
+    const CATEGORY_PALETTE = [
+      "#1E9BFF", "#E8792E", "#2E9E5B", "#8B4FD1", "#D64550",
+      "#0E9AA7", "#C9962C", "#B0479A", "#4A7FBF", "#5A9E2F",
+    ];
+
+    function categoryColor(nom) {
+      let hash = 0;
+      for (let i = 0; i < nom.length; i++) hash = nom.charCodeAt(i) + ((hash << 5) - hash);
+      return CATEGORY_PALETTE[Math.abs(hash) % CATEGORY_PALETTE.length];
+    }
+
+    function categoryBadgeHtml(p) {
+      if (!p.categorie) return "";
+      return `<span class="post-category-badge" style="background:${categoryColor(p.categorie)}">${p.categorie}</span>`;
+    }
+
     function fileButtonHtml(p) {
       if (!p.fichier_url) return "";
       return `<a class="post-card-file" href="${p.fichier_url}" target="_blank" rel="noopener" onclick="event.stopPropagation()">⬇ Télécharger${p.fichier_nom ? " — " + p.fichier_nom : ""}</a>`;
@@ -950,7 +968,10 @@
         <article class="post-card">
           ${p.image_url ? `<img class="post-card-img" src="${p.image_url}" alt="" loading="lazy">` : ""}
           <div class="post-card-body">
-            <span class="post-card-date">${formatPostDate(p.date_publication)}</span>
+            <div class="post-card-meta">
+              <span class="post-card-date">${formatPostDate(p.date_publication)}</span>
+              ${categoryBadgeHtml(p)}
+            </div>
             <h3 class="post-card-title">${p.titre}</h3>
             ${p.resume ? `<p class="post-card-resume">${p.resume}</p>` : ""}
             ${fileButtonHtml(p)}
@@ -971,7 +992,7 @@
               <tr class="posts-table-row" data-idx="${i}">
                 <td>${formatPostDate(p.date_publication)}</td>
                 <td>${p.titre}</td>
-                <td>${p.categorie || "—"}</td>
+                <td>${categoryBadgeHtml(p) || "—"}</td>
                 <td>${p.fichier_url ? fileButtonHtml(p) : ""}<button class="post-card-more" type="button" data-idx="${i}">Lire plus</button></td>
               </tr>
             `
@@ -989,7 +1010,10 @@
         <article class="post-poster">
           ${p.image_url ? `<img class="post-poster-img" src="${p.image_url}" alt="" loading="lazy">` : ""}
           <div class="post-poster-overlay">
-            <span class="post-card-date">${formatPostDate(p.date_publication)}</span>
+            <div class="post-card-meta">
+              <span class="post-card-date">${formatPostDate(p.date_publication)}</span>
+              ${categoryBadgeHtml(p)}
+            </div>
             <h3 class="post-poster-title">${p.titre}</h3>
             <button class="post-card-more post-poster-btn" type="button" data-idx="${i}">Lire plus</button>
           </div>
