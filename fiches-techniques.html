@@ -8,7 +8,21 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,500&family=Playfair+Display:wght@600;700&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="icon" href="assets/favicon.ico">
-<link rel="stylesheet" href="assets/style.css?v=59">
+<link rel="stylesheet" href="assets/style.css?v=60">
+<script>
+(function() {
+  try {
+    var t = JSON.parse(localStorage.getItem("bl_cached_theme"));
+    if (t && t.vars) {
+      var root = document.documentElement.style;
+      for (var k in t.vars) root.setProperty(k, t.vars[k]);
+      if (t.serif) root.setProperty("--serif", t.serif);
+      if (t.sans) root.setProperty("--sans", t.sans);
+      if (t.id === "neon-cyberacericole") document.documentElement.classList.add("theme-neon");
+    }
+  } catch (e) {}
+})();
+</script>
 </head>
 <body>
 
@@ -248,6 +262,6 @@
   </div>
 </footer>
 
-<script src="assets/script.js?v=59"></script>
+<script src="assets/script.js?v=60"></script>
 </body>
 </html>

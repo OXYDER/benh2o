@@ -853,6 +853,9 @@
     if (theme.serif) root.setProperty("--serif", theme.serif);
     if (theme.sans) root.setProperty("--sans", theme.sans);
     document.documentElement.classList.toggle("theme-neon", theme.id === "neon-cyberacericole");
+    try {
+      localStorage.setItem("bl_cached_theme", JSON.stringify(theme));
+    } catch (e) {}
   }
 
   function setupContent() {
