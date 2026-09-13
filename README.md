@@ -361,6 +361,21 @@ Ces images supplémentaires apparaissent sous forme de petite galerie cliquable 
 public — l'image principale et les cartes/tableaux/affiches, eux, continuent de
 n'utiliser que l'image principale.
 
+## 3n. Corrections et améliorations de la fenêtre de lecture
+
+**Sections encadrées corrigées** — certains contenus collés dans l'éditeur (ex.
+copié depuis Facebook) amenaient avec eux des boîtes/cadres blancs autour de chaque
+paragraphe. Une règle a été ajoutée pour neutraliser ce genre de mise en forme
+importée, peu importe la source du texte collé.
+
+**Image principale cliquable** — dans la vue Grille, cliquer directement sur l'image
+d'une publication l'ouvre maintenant, sans obliger à viser le bouton « Lire plus ».
+
+**Visionneuse d'images intégrée** — les images de la galerie s'ouvrent maintenant en
+grand **directement sur le site** (pas dans un nouvel onglet), avec des flèches
+gauche/droite pour passer d'une image à l'autre et un bouton pour fermer et revenir à
+l'article. Fonctionne aussi au clavier (flèches et Échap).
+
 ## 4. Formulaire de contact
 
 Deux façons d'envoyer les demandes du formulaire, gérées par le serveur (`POST

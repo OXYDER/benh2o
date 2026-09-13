@@ -916,9 +916,12 @@
       if (modalGallery) {
         const images = Array.isArray(post.images) ? post.images : [];
         modalGallery.innerHTML = images
-          .map((url) => `<a href="${url}" target="_blank" rel="noopener"><img src="${url}" alt="" loading="lazy"></a>`)
+          .map((url, i) => `<button type="button" class="post-gallery-open" data-idx="${i}"><img src="${url}" alt="" loading="lazy"></button>`)
           .join("");
         modalGallery.hidden = images.length === 0;
+        modalGallery.querySelectorAll(".post-gallery-open").forEach((btn) => {
+          btn.addEventListener("click", () => openLightbox(images, Number(btn.dataset.idx)));
+        });
       }
       if (modalFile) {
         if (post.fichier_url) {
@@ -942,6 +945,50 @@
     });
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape" && !modal.hidden) closeModal();
+    });
+
+    const lightbox = document.getElementById("post-lightbox");
+    const lightboxImg = document.getElementById("post-lightbox-img");
+    const lightboxClose = document.getElementById("post-lightbox-close");
+    const lightboxPrev = document.getElementById("post-lightbox-prev");
+    const lightboxNext = document.getElementById("post-lightbox-next");
+    let lightboxImages = [];
+    let lightboxIndex = 0;
+
+    function showLightboxImage() {
+      if (lightboxImg) lightboxImg.src = lightboxImages[lightboxIndex];
+      const multiple = lightboxImages.length > 1;
+      if (lightboxPrev) lightboxPrev.hidden = !multiple;
+      if (lightboxNext) lightboxNext.hidden = !multiple;
+    }
+    function openLightbox(images, index) {
+      if (!lightbox || !images.length) return;
+      lightboxImages = images;
+      lightboxIndex = index;
+      showLightboxImage();
+      lightbox.hidden = false;
+    }
+    function closeLightbox() {
+      if (lightbox) lightbox.hidden = true;
+    }
+    function lightboxStep(delta) {
+      if (!lightboxImages.length) return;
+      lightboxIndex = (lightboxIndex + delta + lightboxImages.length) % lightboxImages.length;
+      showLightboxImage();
+    }
+    if (lightboxClose) lightboxClose.addEventListener("click", closeLightbox);
+    if (lightboxPrev) lightboxPrev.addEventListener("click", () => lightboxStep(-1));
+    if (lightboxNext) lightboxNext.addEventListener("click", () => lightboxStep(1));
+    if (lightbox) {
+      lightbox.addEventListener("click", (e) => {
+        if (e.target === lightbox) closeLightbox();
+      });
+    }
+    document.addEventListener("keydown", (e) => {
+      if (!lightbox || lightbox.hidden) return;
+      if (e.key === "Escape") closeLightbox();
+      else if (e.key === "ArrowLeft") lightboxStep(-1);
+      else if (e.key === "ArrowRight") lightboxStep(1);
     });
 
     function formatPostDate(d) {
@@ -974,7 +1021,7 @@
     function cardHtml(p, i) {
       return `
         <article class="post-card">
-          ${p.image_url ? `<img class="post-card-img" src="${p.image_url}" alt="" loading="lazy">` : ""}
+          ${p.image_url ? `<img class="post-card-img post-card-img-clickable" src="${p.image_url}" alt="" loading="lazy" data-idx="${i}">` : ""}
           <div class="post-card-body">
             <div class="post-card-meta">
               <span class="post-card-date">${formatPostDate(p.date_publication)}</span>
@@ -1063,8 +1110,8 @@
       } else {
         containerEl.classList.add("posts-grid");
         containerEl.innerHTML = posts.map((p, i) => cardHtml(p, i)).join("");
-        containerEl.querySelectorAll(".post-card-more").forEach((btn) => {
-          btn.addEventListener("click", () => openModal(posts[Number(btn.dataset.idx)]));
+        containerEl.querySelectorAll(".post-card-more, .post-card-img-clickable").forEach((el) => {
+          el.addEventListener("click", () => openModal(posts[Number(el.dataset.idx)]));
         });
       }
     }
