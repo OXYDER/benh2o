@@ -3,6 +3,9 @@ const cookieParser = require("cookie-parser");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
+const multer = require("multer");
+const path = require("path");
+const fs = require("fs");
 const pool = require("./db");
 
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -60,6 +63,49 @@ function requireAuth(req, res, next) {
     res.status(401).json({ error: "Session invalide ou expirée" });
   }
 }
+
+/* ---------- Téléversement de fichiers (images et documents téléchargeables) ---------- */
+const UPLOADS_DIR = "/app/uploads";
+if (!fs.existsSync(UPLOADS_DIR)) fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+
+const ALLOWED_UPLOAD_EXT = [".jpg", ".jpeg", ".png", ".webp", ".gif", ".pdf", ".doc", ".docx", ".xls", ".xlsx"];
+
+const uploadStorage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, UPLOADS_DIR),
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname).toLowerCase();
+    const safeBase = path
+      .basename(file.originalname, ext)
+      .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-zA-Z0-9-_]/g, "-")
+      .slice(0, 60);
+    const unique = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(null, `${safeBase}-${unique}${ext}`);
+  },
+});
+
+const upload = multer({
+  storage: uploadStorage,
+  limits: { fileSize: 20 * 1024 * 1024 }, // 20 Mo
+  fileFilter: (req, file, cb) => {
+    const ext = path.extname(file.originalname).toLowerCase();
+    if (!ALLOWED_UPLOAD_EXT.includes(ext)) {
+      return cb(new Error("Type de fichier non autorisé."));
+    }
+    cb(null, true);
+  },
+});
+
+app.post("/api/upload", requireAuth, (req, res) => {
+  upload.single("file")(req, res, (err) => {
+    if (err) return res.status(400).json({ error: err.message || "Échec du téléversement." });
+    if (!req.file) return res.status(400).json({ error: "Aucun fichier reçu." });
+    res.json({
+      url: "/uploads/" + req.file.filename,
+      originalName: req.file.originalname,
+    });
+  });
+});
 
 /* ---------- Auth ---------- */
 app.post("/api/login", async (req, res) => {
@@ -412,18 +458,24 @@ app.get("/api/appointments/busy", async (req, res) => {
   }
 });
 
-/* ---------- Publications (Nouvelles et Événements / Tutoriels) ---------- */
+/* ---------- Publications (Nouvelles et Événements / Tutoriels / Manuels / Fiches) ---------- */
 app.get("/api/posts", async (req, res) => {
-  const type = req.query.type;
+  const { type, categorie } = req.query;
   try {
-    const r = type
-      ? await pool.query(
-          "SELECT * FROM posts WHERE publie = true AND type = $1 ORDER BY date_publication DESC, id DESC",
-          [type]
-        )
-      : await pool.query(
-          "SELECT * FROM posts WHERE publie = true ORDER BY date_publication DESC, id DESC"
-        );
+    const conditions = ["publie = true"];
+    const params = [];
+    if (type) {
+      params.push(type);
+      conditions.push(`type = $${params.length}`);
+    }
+    if (categorie) {
+      params.push(categorie);
+      conditions.push(`categorie = $${params.length}`);
+    }
+    const r = await pool.query(
+      `SELECT * FROM posts WHERE ${conditions.join(" AND ")} ORDER BY date_publication DESC, id DESC`,
+      params
+    );
     res.json(r.rows);
   } catch (e) {
     console.error(e);
@@ -442,15 +494,15 @@ app.get("/api/posts/all", requireAuth, async (req, res) => {
 });
 
 app.post("/api/posts", requireAuth, async (req, res) => {
-  const { type, titre, resume, contenu, imageUrl, datePublication, publie } = req.body || {};
+  const { type, categorie, titre, resume, contenu, imageUrl, fichierUrl, fichierNom, datePublication, publie } = req.body || {};
   if (!titre || !["nouvelle", "tutoriel", "manuel", "fiche"].includes(type)) {
     return res.status(400).json({ error: "Titre et type requis." });
   }
   try {
     const r = await pool.query(
-      `INSERT INTO posts (type, titre, resume, contenu, image_url, date_publication, publie)
-       VALUES ($1,$2,$3,$4,$5,COALESCE($6, CURRENT_DATE),$7) RETURNING *`,
-      [type, titre, resume || null, contenu || null, imageUrl || null, datePublication || null, publie !== false]
+      `INSERT INTO posts (type, categorie, titre, resume, contenu, image_url, fichier_url, fichier_nom, date_publication, publie)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,COALESCE($9, CURRENT_DATE),$10) RETURNING *`,
+      [type, categorie || null, titre, resume || null, contenu || null, imageUrl || null, fichierUrl || null, fichierNom || null, datePublication || null, publie !== false]
     );
     res.json(r.rows[0]);
   } catch (e) {
@@ -461,16 +513,16 @@ app.post("/api/posts", requireAuth, async (req, res) => {
 
 app.put("/api/posts/:id", requireAuth, async (req, res) => {
   const { id } = req.params;
-  const { type, titre, resume, contenu, imageUrl, datePublication, publie } = req.body || {};
+  const { type, categorie, titre, resume, contenu, imageUrl, fichierUrl, fichierNom, datePublication, publie } = req.body || {};
   if (!titre || !["nouvelle", "tutoriel", "manuel", "fiche"].includes(type)) {
     return res.status(400).json({ error: "Titre et type requis." });
   }
   try {
     const r = await pool.query(
-      `UPDATE posts SET type=$1, titre=$2, resume=$3, contenu=$4, image_url=$5,
-        date_publication=COALESCE($6, date_publication), publie=$7, updated_at=now()
-       WHERE id=$8 RETURNING *`,
-      [type, titre, resume || null, contenu || null, imageUrl || null, datePublication || null, publie !== false, id]
+      `UPDATE posts SET type=$1, categorie=$2, titre=$3, resume=$4, contenu=$5, image_url=$6,
+        fichier_url=$7, fichier_nom=$8, date_publication=COALESCE($9, date_publication), publie=$10, updated_at=now()
+       WHERE id=$11 RETURNING *`,
+      [type, categorie || null, titre, resume || null, contenu || null, imageUrl || null, fichierUrl || null, fichierNom || null, datePublication || null, publie !== false, id]
     );
     if (!r.rows.length) return res.status(404).json({ error: "Publication introuvable." });
     res.json(r.rows[0]);
@@ -483,6 +535,48 @@ app.put("/api/posts/:id", requireAuth, async (req, res) => {
 app.delete("/api/posts/:id", requireAuth, async (req, res) => {
   try {
     await pool.query("DELETE FROM posts WHERE id = $1", [req.params.id]);
+    res.json({ ok: true });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "Erreur serveur." });
+  }
+});
+
+/* ---------- Catégories de publications ---------- */
+app.get("/api/categories", async (req, res) => {
+  const { type } = req.query;
+  try {
+    const r = type
+      ? await pool.query("SELECT * FROM post_categories WHERE type = $1 ORDER BY nom ASC", [type])
+      : await pool.query("SELECT * FROM post_categories ORDER BY type ASC, nom ASC");
+    res.json(r.rows);
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "Erreur serveur." });
+  }
+});
+
+app.post("/api/categories", requireAuth, async (req, res) => {
+  const { type, nom } = req.body || {};
+  if (!nom || !["nouvelle", "tutoriel", "manuel", "fiche"].includes(type)) {
+    return res.status(400).json({ error: "Nom et type requis." });
+  }
+  try {
+    const r = await pool.query(
+      "INSERT INTO post_categories (type, nom) VALUES ($1,$2) ON CONFLICT (type, nom) DO NOTHING RETURNING *",
+      [type, nom.trim()]
+    );
+    if (!r.rows.length) return res.status(409).json({ error: "Cette catégorie existe déjà pour ce type." });
+    res.json(r.rows[0]);
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "Erreur serveur." });
+  }
+});
+
+app.delete("/api/categories/:id", requireAuth, async (req, res) => {
+  try {
+    await pool.query("DELETE FROM post_categories WHERE id = $1", [req.params.id]);
     res.json({ ok: true });
   } catch (e) {
     console.error(e);

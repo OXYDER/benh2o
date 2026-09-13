@@ -894,6 +894,7 @@
     const modalDate = document.getElementById("post-modal-date");
     const modalTitle = document.getElementById("post-modal-title");
     const modalBody = document.getElementById("post-modal-body");
+    const modalFile = document.getElementById("post-modal-file");
 
     function openModal(post) {
       if (post.image_url) {
@@ -905,6 +906,15 @@
       modalDate.textContent = formatPostDate(post.date_publication);
       modalTitle.textContent = post.titre;
       modalBody.textContent = post.contenu || post.resume || "";
+      if (modalFile) {
+        if (post.fichier_url) {
+          modalFile.href = post.fichier_url;
+          modalFile.textContent = "Télécharger" + (post.fichier_nom ? " — " + post.fichier_nom : "");
+          modalFile.hidden = false;
+        } else {
+          modalFile.hidden = true;
+        }
+      }
       modal.hidden = false;
       document.body.classList.add("gate-open");
     }
@@ -926,6 +936,11 @@
       return date.toLocaleDateString("fr-CA", { year: "numeric", month: "long", day: "numeric" });
     }
 
+    function fileButtonHtml(p) {
+      if (!p.fichier_url) return "";
+      return `<a class="post-card-file" href="${p.fichier_url}" target="_blank" rel="noopener" onclick="event.stopPropagation()">⬇ Télécharger${p.fichier_nom ? " — " + p.fichier_nom : ""}</a>`;
+    }
+
     function renderGrid(gridEl, emptyEl, posts) {
       if (!gridEl) return;
       if (!posts.length) {
@@ -943,6 +958,7 @@
             <span class="post-card-date">${formatPostDate(p.date_publication)}</span>
             <h3 class="post-card-title">${p.titre}</h3>
             ${p.resume ? `<p class="post-card-resume">${p.resume}</p>` : ""}
+            ${fileButtonHtml(p)}
             <button class="post-card-more" type="button" data-idx="${i}">Lire plus</button>
           </div>
         </article>
@@ -968,6 +984,7 @@
             <span class="post-card-date">${formatPostDate(p.date_publication)}</span>
             <h3 class="post-card-title">${p.titre}</h3>
             ${p.resume ? `<p class="post-card-resume">${p.resume}</p>` : ""}
+            ${fileButtonHtml(p)}
             <button class="post-card-more" type="button">Lire plus</button>
           </div>
         </article>
@@ -975,21 +992,50 @@
       containerEl.querySelector(".post-card-more").addEventListener("click", () => openModal(p));
     }
 
-    function loadType(type, gridId, emptyId, featuredId) {
-      fetch("/api/posts?type=" + encodeURIComponent(type))
-        .then((r) => r.json())
-        .then((posts) => {
-          posts = posts || [];
-          renderGrid(document.getElementById(gridId), document.getElementById(emptyId), posts);
-          renderFeatured(document.getElementById(featuredId), posts);
+    function loadType(type, gridId, emptyId, featuredId, filterId) {
+      const gridEl = document.getElementById(gridId);
+      const emptyEl = document.getElementById(emptyId);
+      const featuredEl = document.getElementById(featuredId);
+      const filterEl = document.getElementById(filterId);
+      let allPosts = [];
+
+      function applyFilter(categorie) {
+        const filtered = categorie ? allPosts.filter((p) => p.categorie === categorie) : allPosts;
+        renderGrid(gridEl, emptyEl, filtered);
+      }
+
+      function renderFilters(categories) {
+        if (!filterEl || !categories.length) return;
+        filterEl.hidden = false;
+        filterEl.innerHTML =
+          `<button type="button" class="posts-filter-pill active" data-cat="">Toutes</button>` +
+          categories.map((c) => `<button type="button" class="posts-filter-pill" data-cat="${c.nom}">${c.nom}</button>`).join("");
+        filterEl.querySelectorAll(".posts-filter-pill").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            filterEl.querySelectorAll(".posts-filter-pill").forEach((b) => b.classList.remove("active"));
+            btn.classList.add("active");
+            applyFilter(btn.dataset.cat);
+          });
+        });
+      }
+
+      Promise.all([
+        fetch("/api/posts?type=" + encodeURIComponent(type)).then((r) => r.json()),
+        fetch("/api/categories?type=" + encodeURIComponent(type)).then((r) => r.json()),
+      ])
+        .then(([posts, categories]) => {
+          allPosts = posts || [];
+          renderGrid(gridEl, emptyEl, allPosts);
+          renderFeatured(featuredEl, allPosts);
+          renderFilters(categories || []);
         })
         .catch(() => {});
     }
 
-    loadType("nouvelle", "nouvelles-full-grid", "nouvelles-full-empty", "nouvelles-featured");
-    loadType("tutoriel", "tutoriels-full-grid", "tutoriels-full-empty", "tutoriels-featured");
-    loadType("manuel", "manuels-full-grid", "manuels-full-empty", "manuels-featured");
-    loadType("fiche", "fiches-full-grid", "fiches-full-empty", "fiches-featured");
+    loadType("nouvelle", "nouvelles-full-grid", "nouvelles-full-empty", "nouvelles-featured", "nouvelles-filter");
+    loadType("tutoriel", "tutoriels-full-grid", "tutoriels-full-empty", "tutoriels-featured", "tutoriels-filter");
+    loadType("manuel", "manuels-full-grid", "manuels-full-empty", "manuels-featured", "manuels-filter");
+    loadType("fiche", "fiches-full-grid", "fiches-full-empty", "fiches-featured", "fiches-filter");
   }
 
   function setupProductSearch() {
@@ -1033,6 +1079,76 @@
       p.style.setProperty("--tail", tail + "px");
       container.appendChild(p);
     }
+  }
+
+  /* ---------- Surligne le lien du menu correspondant à la page/section actuelle ---------- */
+  function setupNavActiveState() {
+    const nav = document.getElementById("site-nav");
+    if (!nav) return;
+
+    const navLinks = Array.from(nav.querySelectorAll("a[href]"));
+    const dropdownToggles = Array.from(nav.querySelectorAll(".site-nav-dropdown-toggle"));
+
+    function clearActive() {
+      navLinks.forEach((a) => a.classList.remove("active"));
+      dropdownToggles.forEach((t) => t.classList.remove("active"));
+    }
+
+    function setActiveLink(link) {
+      if (!link) return;
+      clearActive();
+      link.classList.add("active");
+      const dropdown = link.closest(".site-nav-item-dropdown");
+      if (dropdown) {
+        const toggle = dropdown.querySelector(".site-nav-dropdown-toggle");
+        if (toggle) toggle.classList.add("active");
+      }
+    }
+
+    const currentPage = (location.pathname.split("/").pop() || "index.html").toLowerCase();
+    const isHome = currentPage === "" || currentPage === "index.html";
+
+    // Sur les pages secondaires (nouvelles.html, tutoriels.html, etc.) : simple
+    // correspondance par nom de fichier, pas de suivi au défilement.
+    if (!isHome) {
+      const match = navLinks.find((a) => {
+        const href = a.getAttribute("href") || "";
+        if (!href || href.startsWith("#")) return false;
+        const hrefPage = href.split("#")[0].split("/").pop().toLowerCase();
+        return hrefPage === currentPage;
+      });
+      if (match) setActiveLink(match);
+      return;
+    }
+
+    // Sur la page d'accueil : suit la section visible au défilement.
+    const sectionLinkMap = {};
+    navLinks.forEach((a) => {
+      const href = a.getAttribute("href") || "";
+      if (href.startsWith("#") && href.length > 1) sectionLinkMap[href.slice(1)] = a;
+    });
+
+    const sections = Object.keys(sectionLinkMap)
+      .map((id) => document.getElementById(id))
+      .filter(Boolean);
+    if (!sections.length) return;
+
+    // Défaut : "Accueil" actif tant qu'on n'a pas défilé vers une autre section.
+    setActiveLink(sectionLinkMap["home"]);
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        let best = null;
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && (!best || entry.intersectionRatio > best.intersectionRatio)) {
+            best = entry;
+          }
+        });
+        if (best) setActiveLink(sectionLinkMap[best.target.id]);
+      },
+      { rootMargin: "-45% 0px -50% 0px", threshold: [0, 0.25, 0.5, 0.75, 1] }
+    );
+    sections.forEach((s) => observer.observe(s));
   }
 
   function setupNav() {
@@ -1118,6 +1234,7 @@
     setupContent();
     showVisitorBadge();
     setupNav();
+    setupNavActiveState();
     setupLeafParticles();
     setupPosts();
     setupProductSearch();

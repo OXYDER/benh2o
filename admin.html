@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,500&family=Playfair+Display:wght@600;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="icon" href="assets/favicon.ico">
-<link rel="stylesheet" href="assets/style.css?v=41">
-<link rel="stylesheet" href="assets/admin.css?v=41">
+<link rel="stylesheet" href="assets/style.css?v=42">
+<link rel="stylesheet" href="assets/admin.css?v=42">
 </head>
 <body class="admin-body">
 
@@ -331,6 +331,16 @@
         <div class="admin-field">
           <label for="cc-nav-fiches">Lien « Fiches Techniques »</label>
           <input type="text" id="cc-nav-fiches" data-key="nav.fiches">
+        </div>
+      </div>
+      <div class="admin-field-row">
+        <div class="admin-field">
+          <label for="cc-nav-groupe-contact">Étiquette de section — Contact</label>
+          <input type="text" id="cc-nav-groupe-contact" data-key="nav.groupeContact">
+        </div>
+        <div class="admin-field">
+          <label for="cc-nav-groupe-infos">Étiquette de section — Informations</label>
+          <input type="text" id="cc-nav-groupe-infos" data-key="nav.groupeInfos">
         </div>
       </div>
 
@@ -866,8 +876,31 @@
 
     <!-- ===== Onglet : Publications (Nouvelles et Événements / Tutoriels) ===== -->
     <div class="admin-panel" data-panel="publications" hidden>
-      <p class="admin-section-desc">Gère les publications affichées dans « Nouvelles et Événements » et « Tutoriels, informations et modes d'emploi ». L'image se colle comme un lien (héberge-la où tu veux — Google Photos, Facebook, etc. — et colle le lien direct de l'image).</p>
+      <p class="admin-section-desc">Gère les publications affichées dans Nouvelles, Tutoriels, Manuels de l'utilisateur et Fiches Techniques. Tu peux téléverser une image et un fichier téléchargeable (PDF, Word, Excel) directement depuis ton ordinateur.</p>
 
+      <h3 class="admin-field-group-title">Catégories</h3>
+      <p class="admin-field-hint">Gère les catégories propres à chaque section — utilisées pour classer les publications et filtrer sur les pages publiques.</p>
+      <div class="admin-field-row">
+        <div class="admin-field">
+          <label for="cat-type-select">Section</label>
+          <select id="cat-type-select">
+            <option value="nouvelle">Nouvelles et Événements</option>
+            <option value="tutoriel">Tutoriels</option>
+            <option value="manuel">Manuels de l'utilisateur</option>
+            <option value="fiche">Fiches Techniques</option>
+          </select>
+        </div>
+        <div class="admin-field">
+          <label for="cat-new-name">Nouvelle catégorie</label>
+          <div style="display:flex; gap:8px;">
+            <input type="text" id="cat-new-name" placeholder="Ex. : Évaporation">
+            <button class="btn btn-outline" id="cat-add" type="button" style="white-space:nowrap">+ Ajouter</button>
+          </div>
+        </div>
+      </div>
+      <div id="categories-list" class="horaire-chip-list"></div>
+
+      <h3 class="admin-field-group-title" style="margin-top:36px">Publications</h3>
       <button class="btn btn-primary admin-add-region" id="post-add" type="button">+ Nouvelle publication</button>
 
       <div id="posts-admin-list" class="posts-admin-list"></div>
@@ -877,6 +910,6 @@
 
 </main>
 
-<script src="assets/admin.js?v=41"></script>
+<script src="assets/admin.js?v=42"></script>
 </body>
 </html>

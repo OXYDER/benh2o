@@ -9,13 +9,24 @@ CREATE TABLE IF NOT EXISTS admin_users (
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
+CREATE TABLE IF NOT EXISTS post_categories (
+  id SERIAL PRIMARY KEY,
+  type TEXT NOT NULL,   -- 'nouvelle', 'tutoriel', 'manuel' ou 'fiche'
+  nom TEXT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  UNIQUE(type, nom)
+);
+
 CREATE TABLE IF NOT EXISTS posts (
   id SERIAL PRIMARY KEY,
   type TEXT NOT NULL DEFAULT 'nouvelle',   -- 'nouvelle' (Nouvelles et Événements) ou 'tutoriel'
+  categorie TEXT,
   titre TEXT NOT NULL,
   resume TEXT,
   contenu TEXT,
   image_url TEXT,
+  fichier_url TEXT,
+  fichier_nom TEXT,
   date_publication DATE NOT NULL DEFAULT CURRENT_DATE,
   publie BOOLEAN NOT NULL DEFAULT true,
   created_at TIMESTAMPTZ DEFAULT now(),
@@ -136,7 +147,9 @@ INSERT INTO site_data (key, data) VALUES ('content', '{
   "tutoriels": "Tutoriels",
   "support": "Support & Contact",
   "manuels": "Manuels de l'utilisateur",
-  "fiches": "Fiches Techniques"
+  "fiches": "Fiches Techniques",
+  "groupeContact": "Contact",
+  "groupeInfos": "Informations"
   },
   "hero": {
     "eyebrow": "Ton représentant régional",
