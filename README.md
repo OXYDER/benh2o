@@ -290,6 +290,18 @@ Techniquement, ces fichiers sont stockés dans un volume Docker partagé
 (`benoitlaprise-uploads`) entre le site et l'API, servi directement par nginx — pas de
 service externe requis.
 
+## 3i. Éditeur de texte enrichi (WYSIWYG)
+
+Le champ « Contenu complet » de chaque publication (Nouvelles, Tutoriels, Manuels,
+Fiches Techniques) utilise maintenant un vrai éditeur de texte visuel (TinyMCE,
+gratuit, chargé depuis un CDN — aucun compte requis) : gras, italique, souligné,
+couleurs de texte et de fond, alignement, listes à puces et numérotées, liens,
+images (par lien ou téléversées directement, via le même système que les images de
+publication), et tableaux.
+
+Le champ « Résumé » reste un texte simple (affiché tel quel sur les cartes, sans mise
+en forme) — c'est voulu, pour garder les aperçus courts et sobres.
+
 ## 4. Formulaire de contact
 
 Deux façons d'envoyer les demandes du formulaire, gérées par le serveur (`POST

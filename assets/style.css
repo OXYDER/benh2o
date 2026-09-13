@@ -685,7 +685,13 @@ section { padding: 76px 0; }
   color: var(--amber-700);
 }
 .post-modal-card h2 { margin: 6px 0 16px; }
-.post-modal-body { color: var(--ink-900); line-height: 1.7; white-space: pre-wrap; padding-bottom: 32px; }
+.post-modal-body { color: var(--ink-900); line-height: 1.7; padding-bottom: 32px; }
+.post-modal-body p { margin: 0 0 14px; }
+.post-modal-body img { max-width: 100%; height: auto; border-radius: 6px; margin: 10px 0; }
+.post-modal-body a { color: var(--amber-700); }
+.post-modal-body ul, .post-modal-body ol { margin: 0 0 14px; padding-left: 22px; }
+.post-modal-body table { border-collapse: collapse; width: 100%; margin: 0 0 14px; font-size: 0.92rem; }
+.post-modal-body table td, .post-modal-body table th { border: 1px solid rgba(32,27,20,0.15); padding: 8px 10px; }
 .post-modal-close {
   position: fixed;
   top: 20px;

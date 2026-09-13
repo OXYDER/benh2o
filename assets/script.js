@@ -905,7 +905,11 @@
       }
       modalDate.textContent = formatPostDate(post.date_publication);
       modalTitle.textContent = post.titre;
-      modalBody.textContent = post.contenu || post.resume || "";
+      if (post.contenu) {
+        modalBody.innerHTML = post.contenu;
+      } else {
+        modalBody.textContent = post.resume || "";
+      }
       if (modalFile) {
         if (post.fichier_url) {
           modalFile.href = post.fichier_url;

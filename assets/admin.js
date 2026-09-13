@@ -1211,6 +1211,7 @@
     }
 
     function render() {
+      if (window.tinymce) tinymce.remove(".p-contenu");
       if (!posts.length) {
         listEl.innerHTML = "<p>Aucune publication pour l'instant.</p>";
         return;
@@ -1249,7 +1250,7 @@
           </div>
           <div class="admin-field">
             <label>Contenu complet (affiché en cliquant « Lire plus »)</label>
-            <textarea class="p-contenu" rows="5">${escapeAttr(p.contenu || "")}</textarea>
+            <textarea class="p-contenu" id="p-contenu-${p.id}">${p.contenu || ""}</textarea>
           </div>
           <div class="admin-field">
             <label>Image (optionnel)</label>
@@ -1340,12 +1341,14 @@
         });
 
         card.querySelector(".post-save").addEventListener("click", async () => {
+          const contenuEditor = window.tinymce ? tinymce.get("p-contenu-" + p.id) : null;
+          const contenuValue = contenuEditor ? contenuEditor.getContent() : card.querySelector(".p-contenu").value.trim();
           const payload = {
             type: typeSelect.value,
             categorie: catSelect.value,
             titre: card.querySelector(".p-titre").value.trim(),
             resume: card.querySelector(".p-resume").value.trim(),
-            contenu: card.querySelector(".p-contenu").value.trim(),
+            contenu: contenuValue,
             imageUrl: imageInput.value.trim(),
             fichierUrl: fichierUrlInput.value.trim(),
             fichierNom: fichierNomInput.value.trim(),
@@ -1382,6 +1385,33 @@
         });
 
         listEl.appendChild(card);
+
+        if (window.tinymce) {
+          tinymce.init({
+            selector: "#p-contenu-" + p.id,
+            height: 320,
+            menubar: false,
+            plugins: "link image lists table",
+            toolbar:
+              "undo redo | bold italic underline | forecolor backcolor | " +
+              "alignleft aligncenter alignright | bullist numlist | link image table | removeformat",
+            branding: false,
+            promotion: false,
+            license_key: "gpl",
+            images_upload_handler: (blobInfo) =>
+              new Promise((resolve, reject) => {
+                const formData = new FormData();
+                formData.append("file", blobInfo.blob(), blobInfo.filename());
+                fetch("/api/upload", { method: "POST", body: formData })
+                  .then((r) => r.json())
+                  .then((data) => {
+                    if (data.url) resolve(data.url);
+                    else reject(data.error || "Échec du téléversement.");
+                  })
+                  .catch(() => reject("Échec du téléversement."));
+              }),
+          });
+        }
       });
     }
 
