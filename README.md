@@ -311,6 +311,22 @@ tape-en un nouveau pour le remplacer.
 **Anti-spam :** peu importe la méthode choisie, un même visiteur ne peut pas envoyer
 plus d'un message aux **2 minutes** (limite appliquée par le serveur, par adresse IP).
 
+## 4b. URL propres (sans .html)
+
+Le site n'affiche plus l'extension `.html` dans les adresses : `benoitlaprise.com/nouvelles`
+au lieu de `.../nouvelles.html`, et ainsi de suite pour `/tutoriels`, `/manuels`,
+`/fiches-techniques` et `/admin`. La page d'accueil répond à `benoitlaprise.com/`
+directement.
+
+Les anciennes adresses avec `.html` fonctionnent toujours, mais redirigent
+automatiquement (redirection 301) vers la version propre — aucun lien déjà partagé ou
+indexé par Google ne se retrouve cassé.
+
+C'est géré entièrement dans `nginx.conf` (pas de changement à faire dans `/admin` ou
+dans le contenu). Si tu ajoutes une nouvelle page HTML au site plus tard, il faudra
+ajouter le même genre de règle dans `nginx.conf` pour qu'elle profite aussi d'une
+adresse sans extension.
+
 ## 5. GitHub (repo OXYDER/benh2o)
 
 ```bash
