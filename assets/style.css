@@ -772,6 +772,7 @@ section { padding: 76px 0; }
   border-radius: 0 !important;
 }
 .post-modal-body p { margin: 0 0 8px; }
+.post-modal-body > div { margin: 0 0 8px; }
 .post-modal-body p:empty,
 .post-modal-body p:has(> br:only-child) { margin: 0; height: 8px; }
 .post-modal-body img { max-width: 100%; height: auto; border-radius: 6px; margin: 10px 0; }

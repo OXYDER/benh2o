@@ -909,7 +909,21 @@
       modalTitle.textContent = post.titre;
       if (post.contenu) {
         modalBody.innerHTML = post.contenu;
-        modalBody.querySelectorAll("p, div").forEach((el) => {
+        // Le contenu collé depuis Facebook (et d'autres sites) traîne avec lui des
+        // classes et des propriétés de style (ex. height:16px sur un span vide) qui
+        // forcent de l'espace — on retire seulement celles qui causent l'espacement
+        // forcé, en gardant les couleurs/alignement choisis volontairement dans l'éditeur.
+        const spacingProps = [
+          "height", "min-height", "max-height",
+          "padding", "padding-top", "padding-bottom", "padding-left", "padding-right",
+          "margin", "margin-top", "margin-bottom", "margin-inline",
+          "line-height", "white-space",
+        ];
+        modalBody.querySelectorAll("*").forEach((el) => {
+          spacingProps.forEach((prop) => el.style.removeProperty(prop));
+          el.removeAttribute("class");
+        });
+        modalBody.querySelectorAll("div, p, span").forEach((el) => {
           const text = el.textContent.replace(/\u00a0/g, "").trim();
           if (!text && !el.querySelector("img, table")) el.remove();
         });
