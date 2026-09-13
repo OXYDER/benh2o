@@ -927,6 +927,10 @@
           const text = el.textContent.replace(/\u00a0/g, "").trim();
           if (!text && !el.querySelector("img, table")) el.remove();
         });
+        modalBody.querySelectorAll("a[href]").forEach((a) => {
+          a.setAttribute("target", "_blank");
+          a.setAttribute("rel", "noopener");
+        });
       } else {
         modalBody.textContent = post.resume || "";
       }
