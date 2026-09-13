@@ -993,7 +993,8 @@
 
     function formatPostDate(d) {
       if (!d) return "";
-      const date = new Date(d);
+      const [y, m, day] = d.toString().slice(0, 10).split("-").map(Number);
+      const date = new Date(y, m - 1, day);
       return date.toLocaleDateString("fr-CA", { year: "numeric", month: "long", day: "numeric" });
     }
 
