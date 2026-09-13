@@ -909,6 +909,10 @@
       modalTitle.textContent = post.titre;
       if (post.contenu) {
         modalBody.innerHTML = post.contenu;
+        modalBody.querySelectorAll("p, div").forEach((el) => {
+          const text = el.textContent.replace(/\u00a0/g, "").trim();
+          if (!text && !el.querySelector("img, table")) el.remove();
+        });
       } else {
         modalBody.textContent = post.resume || "";
       }
