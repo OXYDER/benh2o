@@ -852,6 +852,7 @@
     Object.entries(theme.vars || {}).forEach(([name, value]) => root.setProperty(name, value));
     if (theme.serif) root.setProperty("--serif", theme.serif);
     if (theme.sans) root.setProperty("--sans", theme.sans);
+    document.documentElement.classList.toggle("theme-neon", theme.id === "neon-cyberacericole");
   }
 
   function setupContent() {

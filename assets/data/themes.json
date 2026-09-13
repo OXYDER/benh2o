@@ -83,6 +83,27 @@
       },
       "serif": "'Libre Caslon Text', Georgia, serif",
       "sans": "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+    },
+    {
+      "id": "neon-cyberacericole",
+      "name": "Néon Cyberacéricole 🔥",
+      "description": "Une version poussée à fond du thème actuel — noir profond, cyan et magenta électriques, lueurs et verre dépoli. Pour se démarquer clairement.",
+      "vars": {
+        "--spruce-950": "#04060C",
+        "--spruce-900": "#0A0F1C",
+        "--spruce-800": "#131B30",
+        "--birch-100": "#E4FBFF",
+        "--birch-050": "#F2FEFF",
+        "--amber-600": "#00E5FF",
+        "--amber-700": "#00A8BF",
+        "--amber-300": "#7BFBFF",
+        "--water-500": "#FF3EC9",
+        "--water-300": "#FF9FE3",
+        "--ink-900": "#060A14",
+        "--ink-600": "#3D4A63"
+      },
+      "serif": "'Playfair Display', Georgia, serif",
+      "sans": "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
     }
   ]
 }

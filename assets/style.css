@@ -1733,3 +1733,63 @@ body.gate-open { overflow: hidden; }
 @media (max-width: 480px) {
   .entry-gate-card { padding: 30px 22px; }
 }
+
+/* ---------- Thème « Néon Cyberacéricole » — effets spéciaux additionnels ---------- */
+
+.theme-neon .site-header {
+  background: rgba(4, 6, 12, 0.55) !important;
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  border-bottom: 1px solid rgba(0, 229, 255, 0.25);
+}
+.theme-neon .brand,
+.theme-neon .brand .brand-subtitle,
+.theme-neon .site-nav a,
+.theme-neon .site-nav-dropdown-toggle {
+  color: var(--birch-100);
+}
+.theme-neon .site-nav a:hover,
+.theme-neon .site-nav-dropdown-toggle:hover { color: var(--amber-600); background: rgba(0,229,255,0.08); }
+.theme-neon .site-nav {
+  background: rgba(6, 10, 20, 0.92);
+  backdrop-filter: blur(14px);
+}
+
+.theme-neon .btn-primary {
+  box-shadow: 0 0 16px 2px rgba(0, 229, 255, 0.55), 0 0 2px rgba(0, 229, 255, 0.8);
+  border: 1px solid rgba(0, 229, 255, 0.6);
+}
+.theme-neon .btn-primary:hover { box-shadow: 0 0 26px 4px rgba(0, 229, 255, 0.75); }
+
+.theme-neon .header-call { box-shadow: 0 0 14px 1px rgba(0, 229, 255, 0.45); }
+
+.theme-neon .hero { background: radial-gradient(ellipse at 30% -10%, rgba(0,229,255,0.14), transparent 55%), var(--spruce-950); }
+
+.theme-neon .about,
+.theme-neon .about-tagline { background: var(--spruce-950); }
+.theme-neon .about-quote { border-left-color: var(--water-500); text-shadow: 0 0 18px rgba(255,62,201,0.35); }
+.theme-neon .about-photo img { filter: grayscale(1) contrast(1.1) saturate(1); box-shadow: 0 0 40px rgba(0,229,255,0.25); }
+
+.theme-neon .post-category-badge { box-shadow: 0 0 10px 0 rgba(0,0,0,0.35); }
+
+.theme-neon .urgence-fab,
+.theme-neon .site-nav-urgence { text-shadow: 0 0 10px rgba(255, 62, 201, 0.6); }
+
+.theme-neon .post-card,
+.theme-neon .rdv-panel-card,
+.theme-neon .urgence-panel-card,
+.theme-neon .entry-gate-card {
+  border: 1px solid rgba(0, 229, 255, 0.18);
+}
+
+.theme-neon input:focus,
+.theme-neon textarea:focus,
+.theme-neon select:focus {
+  box-shadow: 0 0 0 3px rgba(255, 62, 201, 0.25) !important;
+  border-color: var(--water-500) !important;
+}
+
+.theme-neon .site-header,
+.theme-neon .site-nav {
+  transition: background 0.2s ease;
+}
