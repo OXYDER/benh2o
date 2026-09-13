@@ -1061,17 +1061,40 @@
       }
     }
 
-    function loadType(type, gridId, emptyId, featuredId, filterId, contentKey) {
+    const VIEW_MODE_KEY = "bl_posts_view_mode";
+
+    function loadType(type, gridId, emptyId, featuredId, filterId, contentKey, toggleId) {
       const gridEl = document.getElementById(gridId);
       const emptyEl = document.getElementById(emptyId);
       const featuredEl = document.getElementById(featuredId);
       const filterEl = document.getElementById(filterId);
+      const toggleEl = document.getElementById(toggleId);
       let allPosts = [];
       let mode = "grille";
+      let defaultMode = "grille";
+      let currentCategory = "";
 
       function applyFilter(categorie) {
+        currentCategory = categorie;
         const filtered = categorie ? allPosts.filter((p) => p.categorie === categorie) : allPosts;
         renderPostsList(gridEl, emptyEl, filtered, mode, false);
+      }
+
+      function setMode(newMode, save) {
+        mode = newMode;
+        if (save) {
+          try { localStorage.setItem(VIEW_MODE_KEY, newMode); } catch (e) {}
+        }
+        if (toggleEl) {
+          toggleEl.querySelectorAll("button").forEach((b) => b.classList.toggle("active", b.dataset.mode === newMode));
+        }
+        applyFilter(currentCategory);
+      }
+
+      if (toggleEl) {
+        toggleEl.querySelectorAll("button").forEach((btn) => {
+          btn.addEventListener("click", () => setMode(btn.dataset.mode, true));
+        });
       }
 
       function renderFilters(categories) {
@@ -1096,7 +1119,13 @@
       ])
         .then(([posts, categories, content]) => {
           allPosts = posts || [];
-          mode = (content && content[contentKey] && content[contentKey].affichage) || "grille";
+          defaultMode = (content && content[contentKey] && content[contentKey].affichage) || "grille";
+          let savedMode = null;
+          try { savedMode = localStorage.getItem(VIEW_MODE_KEY); } catch (e) {}
+          mode = savedMode || defaultMode;
+          if (toggleEl) {
+            toggleEl.querySelectorAll("button").forEach((b) => b.classList.toggle("active", b.dataset.mode === mode));
+          }
           renderPostsList(gridEl, emptyEl, allPosts, mode, false);
           renderPostsList(featuredEl, null, allPosts.slice(0, 3), mode, true);
           renderFilters(categories || []);
@@ -1104,10 +1133,10 @@
         .catch(() => {});
     }
 
-    loadType("nouvelle", "nouvelles-full-grid", "nouvelles-full-empty", "nouvelles-featured", "nouvelles-filter", "nouvelles");
-    loadType("tutoriel", "tutoriels-full-grid", "tutoriels-full-empty", "tutoriels-featured", "tutoriels-filter", "tutoriels");
-    loadType("manuel", "manuels-full-grid", "manuels-full-empty", "manuels-featured", "manuels-filter", "manuels");
-    loadType("fiche", "fiches-full-grid", "fiches-full-empty", "fiches-featured", "fiches-filter", "fiches");
+    loadType("nouvelle", "nouvelles-full-grid", "nouvelles-full-empty", "nouvelles-featured", "nouvelles-filter", "nouvelles", "nouvelles-view-toggle");
+    loadType("tutoriel", "tutoriels-full-grid", "tutoriels-full-empty", "tutoriels-featured", "tutoriels-filter", "tutoriels", "tutoriels-view-toggle");
+    loadType("manuel", "manuels-full-grid", "manuels-full-empty", "manuels-featured", "manuels-filter", "manuels", "manuels-view-toggle");
+    loadType("fiche", "fiches-full-grid", "fiches-full-empty", "fiches-featured", "fiches-filter", "fiches", "fiches-view-toggle");
   }
 
   function setupProductSearch() {

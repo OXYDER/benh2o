@@ -333,6 +333,21 @@ dizaine de couleurs prévues) — pas besoin de choisir une couleur toi-même en
 une catégorie, et le nom garde toujours la même couleur tant qu'il reste écrit
 pareil.
 
+## 3l. Le visiteur choisit aussi son format d'affichage
+
+En plus du réglage par défaut dans `/admin`, chaque visiteur peut maintenant changer
+lui-même la façon dont les publications s'affichent — trois petits boutons
+(Grille / Tableau / Affiche) apparaissent en haut de chacune des 4 pages complètes.
+
+Le choix du visiteur est mémorisé dans son navigateur (`localStorage`) et **partagé
+entre les 4 sections** — s'il choisit « Tableau » sur la page Nouvelles, ce sera aussi
+la vue par défaut s'il visite Tutoriels, Manuels ou Fiches Techniques ensuite, tant
+qu'il ne change pas d'appareil ou ne vide pas les données de son navigateur.
+
+Le format que tu choisis dans `/admin` reste la valeur par défaut pour tout nouveau
+visiteur qui n'a jamais fait de choix — ton réglage n'est jamais écrasé, seule
+l'affichage dans le navigateur du visiteur change.
+
 ## 4. Formulaire de contact
 
 Deux façons d'envoyer les demandes du formulaire, gérées par le serveur (`POST

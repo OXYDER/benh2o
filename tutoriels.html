@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,500&family=Playfair+Display:wght@600;700&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="icon" href="assets/favicon.ico">
-<link rel="stylesheet" href="assets/style.css?v=47">
+<link rel="stylesheet" href="assets/style.css?v=48">
 </head>
 <body>
 
@@ -186,7 +186,14 @@
       <h2 data-c="tutoriels.title"></h2>
       <p data-c="tutoriels.description"></p>
     </div>
-    <div class="posts-filter" id="tutoriels-filter"></div>
+    <div class="posts-toolbar">
+      <div class="posts-filter" id="tutoriels-filter"></div>
+      <div class="posts-view-toggle" id="tutoriels-view-toggle">
+        <button type="button" data-mode="grille" title="Vue en grille" aria-label="Vue en grille">▦</button>
+        <button type="button" data-mode="tableau" title="Vue en tableau" aria-label="Vue en tableau">☰</button>
+        <button type="button" data-mode="affiche" title="Vue en affiche" aria-label="Vue en affiche">▭</button>
+      </div>
+    </div>
     <div class="posts-grid" id="tutoriels-full-grid"></div>
     <p class="posts-empty" id="tutoriels-full-empty" hidden></p>
   </div>
@@ -225,6 +232,6 @@
   </div>
 </footer>
 
-<script src="assets/script.js?v=47"></script>
+<script src="assets/script.js?v=48"></script>
 </body>
 </html>
