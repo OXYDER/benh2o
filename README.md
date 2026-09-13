@@ -348,6 +348,19 @@ Le format que tu choisis dans `/admin` reste la valeur par défaut pour tout nou
 visiteur qui n'a jamais fait de choix — ton réglage n'est jamais écrasé, seule
 l'affichage dans le navigateur du visiteur change.
 
+## 3m. Galerie d'images supplémentaires
+
+Chaque publication peut maintenant avoir, en plus de son image principale, une
+**galerie d'images supplémentaires** — dans `/admin` → Publications, le bouton
+« + Ajouter des images » permet de sélectionner **plusieurs photos à la fois** depuis
+ton ordinateur. Chaque image ajoutée s'affiche en vignette avec un bouton pour la
+retirer individuellement.
+
+Ces images supplémentaires apparaissent sous forme de petite galerie cliquable (clic
+= ouvre l'image en grand dans un nouvel onglet) dans la fenêtre « Lire plus » du site
+public — l'image principale et les cartes/tableaux/affiches, eux, continuent de
+n'utiliser que l'image principale.
+
 ## 4. Formulaire de contact
 
 Deux façons d'envoyer les demandes du formulaire, gérées par le serveur (`POST

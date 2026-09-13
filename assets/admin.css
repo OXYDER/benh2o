@@ -584,3 +584,34 @@
   color: var(--ink-900);
 }
 .btn-outline:hover { border-color: var(--ink-900); background: rgba(32,27,20,0.04); }
+
+.post-gallery-thumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.post-gallery-thumb {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid rgba(32,27,20,0.15);
+}
+.post-gallery-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.post-gallery-thumb-remove {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  font-size: 0.7rem;
+  cursor: pointer;
+  line-height: 1;
+}
+.post-gallery-thumb-remove:hover { background: #B3403A; }

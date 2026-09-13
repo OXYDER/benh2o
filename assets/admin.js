@@ -1261,6 +1261,12 @@
             </div>
           </div>
           <div class="admin-field">
+            <label>Images supplémentaires (galerie, optionnel) — plusieurs à la fois</label>
+            <div class="post-gallery-thumbs"></div>
+            <button class="btn btn-outline p-gallery-upload-btn" type="button">+ Ajouter des images</button>
+            <input type="file" class="p-gallery-file-input" accept="image/*" multiple hidden>
+          </div>
+          <div class="admin-field">
             <label>Fichier téléchargeable (optionnel) — PDF, Word, Excel</label>
             <div class="post-upload-row">
               <span class="p-fichier-label">${p.fichier_nom ? escapeAttr(p.fichier_nom) : "Aucun fichier"}</span>
@@ -1309,6 +1315,49 @@
           }
         });
 
+        let galleryImages = Array.isArray(p.images) ? p.images.slice() : [];
+        const galleryThumbsEl = card.querySelector(".post-gallery-thumbs");
+        const galleryUploadBtn = card.querySelector(".p-gallery-upload-btn");
+        const galleryFileInput = card.querySelector(".p-gallery-file-input");
+
+        function renderGalleryThumbs() {
+          galleryThumbsEl.innerHTML = galleryImages
+            .map(
+              (url, i) => `
+              <div class="post-gallery-thumb" data-idx="${i}">
+                <img src="${url}" alt="">
+                <button type="button" class="post-gallery-thumb-remove" title="Retirer">✕</button>
+              </div>
+            `
+            )
+            .join("");
+          galleryThumbsEl.querySelectorAll(".post-gallery-thumb-remove").forEach((btn) => {
+            btn.addEventListener("click", () => {
+              const idx = Number(btn.parentElement.dataset.idx);
+              galleryImages.splice(idx, 1);
+              renderGalleryThumbs();
+            });
+          });
+        }
+        renderGalleryThumbs();
+
+        galleryUploadBtn.addEventListener("click", () => galleryFileInput.click());
+        galleryFileInput.addEventListener("change", async () => {
+          const files = Array.from(galleryFileInput.files || []);
+          if (!files.length) return;
+          galleryUploadBtn.textContent = `Envoi de ${files.length} image(s)…`;
+          try {
+            const results = await Promise.all(files.map((f) => uploadFile(f)));
+            results.forEach((r) => galleryImages.push(r.url));
+            renderGalleryThumbs();
+          } catch (e) {
+            statusEl.textContent = e.message;
+          } finally {
+            galleryUploadBtn.textContent = "+ Ajouter des images";
+            galleryFileInput.value = "";
+          }
+        });
+
         const fichierUrlInput = card.querySelector(".p-fichier-url");
         const fichierNomInput = card.querySelector(".p-fichier-nom");
         const fichierLabel = card.querySelector(".p-fichier-label");
@@ -1350,6 +1399,7 @@
             resume: card.querySelector(".p-resume").value.trim(),
             contenu: contenuValue,
             imageUrl: imageInput.value.trim(),
+            images: galleryImages,
             fichierUrl: fichierUrlInput.value.trim(),
             fichierNom: fichierNomInput.value.trim(),
             datePublication: card.querySelector(".p-date").value,

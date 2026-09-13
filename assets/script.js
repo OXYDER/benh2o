@@ -912,6 +912,14 @@
       } else {
         modalBody.textContent = post.resume || "";
       }
+      const modalGallery = document.getElementById("post-modal-gallery");
+      if (modalGallery) {
+        const images = Array.isArray(post.images) ? post.images : [];
+        modalGallery.innerHTML = images
+          .map((url) => `<a href="${url}" target="_blank" rel="noopener"><img src="${url}" alt="" loading="lazy"></a>`)
+          .join("");
+        modalGallery.hidden = images.length === 0;
+      }
       if (modalFile) {
         if (post.fichier_url) {
           modalFile.href = post.fichier_url;

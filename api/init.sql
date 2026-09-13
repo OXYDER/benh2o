@@ -25,6 +25,7 @@ CREATE TABLE IF NOT EXISTS posts (
   resume TEXT,
   contenu TEXT,
   image_url TEXT,
+  images JSONB NOT NULL DEFAULT '[]'::jsonb,
   fichier_url TEXT,
   fichier_nom TEXT,
   date_publication DATE NOT NULL DEFAULT CURRENT_DATE,
