@@ -302,6 +302,25 @@ publication), et tableaux.
 Le champ « Résumé » reste un texte simple (affiché tel quel sur les cartes, sans mise
 en forme) — c'est voulu, pour garder les aperçus courts et sobres.
 
+## 3j. Aperçu condensé sur l'accueil + choix du format d'affichage
+
+**Sur la page d'accueil**, les sections « Nouvelles et Événements » et « Tutoriels »
+affichent maintenant les **3 publications les plus récentes** (au lieu d'une seule),
+dans une version condensée (cartes plus petites, largeur limitée) plutôt qu'en pleine
+largeur — avec toujours un bouton vers la page complète.
+
+**Format d'affichage** — dans `/admin` → Contenu de la page, chacune des 4 sections
+(Nouvelles, Tutoriels, Manuels, Fiches Techniques) a maintenant un menu déroulant
+« Format d'affichage » avec trois choix :
+- **Grille** (par défaut) — cartes avec image, résumé et bouton « Lire plus »
+- **Tableau** — liste compacte (date, titre, catégorie), pratique pour parcourir
+  beaucoup de publications rapidement
+- **Affiche** — grandes bannières visuelles avec l'image en fond et le titre en
+  surimpression, pour un effet plus impactant
+
+Le format choisi s'applique à la fois à la page complète et à l'aperçu condensé sur
+l'accueil (quand la section en a un).
+
 ## 4. Formulaire de contact
 
 Deux façons d'envoyer les demandes du formulaire, gérées par le serveur (`POST

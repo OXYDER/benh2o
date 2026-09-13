@@ -206,23 +206,27 @@ INSERT INTO site_data (key, data) VALUES ('content', '{
     "tag": "Actualités",
     "title": "Nouvelles et Événements",
     "description": "Les nouveautés H2O Innovation, les événements auxquels je participe, et les beaux moments vécus avec mes clients.",
-    "voirTout": "Voir toutes les nouvelles"
+    "voirTout": "Voir toutes les nouvelles",
+    "affichage": "grille"
   },
   "tutoriels": {
     "tag": "Ressources",
     "title": "Tutoriels, informations et modes d'emploi",
     "description": "Des guides et conseils pratiques pour bien utiliser et entretenir ton équipement.",
-    "voirTout": "Voir tous les tutoriels"
+    "voirTout": "Voir tous les tutoriels",
+    "affichage": "grille"
   },
   "manuels": {
     "tag": "Documentation",
     "title": "Manuels de l'utilisateur",
-    "description": "Les guides complets pour installer, configurer et utiliser ton équipement H2O Innovation."
+    "description": "Les guides complets pour installer, configurer et utiliser ton équipement H2O Innovation.",
+    "affichage": "grille"
   },
   "fiches": {
     "tag": "Documentation",
     "title": "Fiches Techniques",
-    "description": "Spécifications, caractéristiques et données techniques de l'équipement H2O Innovation."
+    "description": "Spécifications, caractéristiques et données techniques de l'équipement H2O Innovation.",
+    "affichage": "grille"
   },
   "channels": {
     "tag": "Nous joindre",

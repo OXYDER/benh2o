@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,500&family=Playfair+Display:wght@600;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="icon" href="assets/favicon.ico">
-<link rel="stylesheet" href="assets/style.css?v=45">
-<link rel="stylesheet" href="assets/admin.css?v=45">
+<link rel="stylesheet" href="assets/style.css?v=46">
+<link rel="stylesheet" href="assets/admin.css?v=46">
 </head>
 <body class="admin-body">
 
@@ -560,9 +560,19 @@
         <label for="cc-nouvelles-desc">Description</label>
         <textarea id="cc-nouvelles-desc" data-key="nouvelles.description" rows="2"></textarea>
       </div>
-      <div class="admin-field" style="max-width:280px">
-        <label for="cc-nouvelles-voirtout">Texte du lien « Voir toutes »</label>
-        <input type="text" id="cc-nouvelles-voirtout" data-key="nouvelles.voirTout">
+      <div class="admin-field-row">
+        <div class="admin-field" style="max-width:280px">
+          <label for="cc-nouvelles-voirtout">Texte du lien « Voir toutes »</label>
+          <input type="text" id="cc-nouvelles-voirtout" data-key="nouvelles.voirTout">
+        </div>
+        <div class="admin-field" style="max-width:220px">
+          <label for="cc-nouvelles-affichage">Format d'affichage</label>
+          <select id="cc-nouvelles-affichage" data-key="nouvelles.affichage">
+            <option value="grille">Grille (cartes)</option>
+            <option value="tableau">Tableau</option>
+            <option value="affiche">Affiche</option>
+          </select>
+        </div>
       </div>
 
       <h3 class="admin-field-group-title">Section « Tutoriels »</h3>
@@ -580,9 +590,19 @@
         <label for="cc-tutoriels-desc">Description</label>
         <textarea id="cc-tutoriels-desc" data-key="tutoriels.description" rows="2"></textarea>
       </div>
-      <div class="admin-field" style="max-width:280px">
-        <label for="cc-tutoriels-voirtout">Texte du lien « Voir tous »</label>
-        <input type="text" id="cc-tutoriels-voirtout" data-key="tutoriels.voirTout">
+      <div class="admin-field-row">
+        <div class="admin-field" style="max-width:280px">
+          <label for="cc-tutoriels-voirtout">Texte du lien « Voir tous »</label>
+          <input type="text" id="cc-tutoriels-voirtout" data-key="tutoriels.voirTout">
+        </div>
+        <div class="admin-field" style="max-width:220px">
+          <label for="cc-tutoriels-affichage">Format d'affichage</label>
+          <select id="cc-tutoriels-affichage" data-key="tutoriels.affichage">
+            <option value="grille">Grille (cartes)</option>
+            <option value="tableau">Tableau</option>
+            <option value="affiche">Affiche</option>
+          </select>
+        </div>
       </div>
 
       <h3 class="admin-field-group-title">Page « Manuels de l'utilisateur »</h3>
@@ -600,6 +620,14 @@
         <label for="cc-manuels-desc">Description</label>
         <textarea id="cc-manuels-desc" data-key="manuels.description" rows="2"></textarea>
       </div>
+      <div class="admin-field" style="max-width:220px">
+        <label for="cc-manuels-affichage">Format d'affichage</label>
+        <select id="cc-manuels-affichage" data-key="manuels.affichage">
+          <option value="grille">Grille (cartes)</option>
+          <option value="tableau">Tableau</option>
+          <option value="affiche">Affiche</option>
+        </select>
+      </div>
 
       <h3 class="admin-field-group-title">Page « Fiches Techniques »</h3>
       <div class="admin-field-row">
@@ -615,6 +643,14 @@
       <div class="admin-field">
         <label for="cc-fiches-desc">Description</label>
         <textarea id="cc-fiches-desc" data-key="fiches.description" rows="2"></textarea>
+      </div>
+      <div class="admin-field" style="max-width:220px">
+        <label for="cc-fiches-affichage">Format d'affichage</label>
+        <select id="cc-fiches-affichage" data-key="fiches.affichage">
+          <option value="grille">Grille (cartes)</option>
+          <option value="tableau">Tableau</option>
+          <option value="affiche">Affiche</option>
+        </select>
       </div>
 
       <h3 class="admin-field-group-title">Section « Nous joindre »</h3>
@@ -911,6 +947,6 @@
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/tinymce@6/tinymce.min.js" referrerpolicy="origin"></script>
-<script src="assets/admin.js?v=45"></script>
+<script src="assets/admin.js?v=46"></script>
 </body>
 </html>

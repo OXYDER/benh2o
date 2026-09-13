@@ -945,17 +945,8 @@
       return `<a class="post-card-file" href="${p.fichier_url}" target="_blank" rel="noopener" onclick="event.stopPropagation()">⬇ Télécharger${p.fichier_nom ? " — " + p.fichier_nom : ""}</a>`;
     }
 
-    function renderGrid(gridEl, emptyEl, posts) {
-      if (!gridEl) return;
-      if (!posts.length) {
-        gridEl.innerHTML = "";
-        if (emptyEl) emptyEl.hidden = false;
-        return;
-      }
-      if (emptyEl) emptyEl.hidden = true;
-      gridEl.innerHTML = posts
-        .map(
-          (p, i) => `
+    function cardHtml(p, i) {
+      return `
         <article class="post-card">
           ${p.image_url ? `<img class="post-card-img" src="${p.image_url}" alt="" loading="lazy">` : ""}
           <div class="post-card-body">
@@ -966,46 +957,97 @@
             <button class="post-card-more" type="button" data-idx="${i}">Lire plus</button>
           </div>
         </article>
+      `;
+    }
+
+    function tableHtml(posts) {
+      return `
+        <table class="posts-table">
+          <thead><tr><th>Date</th><th>Titre</th><th>Catégorie</th><th></th></tr></thead>
+          <tbody>
+            ${posts
+              .map(
+                (p, i) => `
+              <tr class="posts-table-row" data-idx="${i}">
+                <td>${formatPostDate(p.date_publication)}</td>
+                <td>${p.titre}</td>
+                <td>${p.categorie || "—"}</td>
+                <td>${p.fichier_url ? fileButtonHtml(p) : ""}<button class="post-card-more" type="button" data-idx="${i}">Lire plus</button></td>
+              </tr>
+            `
+              )
+              .join("")}
+          </tbody>
+        </table>
+      `;
+    }
+
+    function posterHtml(posts) {
+      return posts
+        .map(
+          (p, i) => `
+        <article class="post-poster">
+          ${p.image_url ? `<img class="post-poster-img" src="${p.image_url}" alt="" loading="lazy">` : ""}
+          <div class="post-poster-overlay">
+            <span class="post-card-date">${formatPostDate(p.date_publication)}</span>
+            <h3 class="post-poster-title">${p.titre}</h3>
+            <button class="post-card-more post-poster-btn" type="button" data-idx="${i}">Lire plus</button>
+          </div>
+        </article>
       `
         )
         .join("");
-      gridEl.querySelectorAll(".post-card-more").forEach((btn) => {
-        btn.addEventListener("click", () => openModal(posts[Number(btn.dataset.idx)]));
-      });
     }
 
-    function renderFeatured(containerEl, posts) {
+    function renderPostsList(containerEl, emptyEl, posts, mode, condensed) {
       if (!containerEl) return;
+      containerEl.classList.remove("posts-grid", "posts-table-wrap", "posts-poster-list", "posts-condensed");
       if (!posts.length) {
         containerEl.innerHTML = "";
+        if (emptyEl) emptyEl.hidden = false;
         return;
       }
-      const p = posts[0];
-      containerEl.innerHTML = `
-        <article class="post-card post-card-featured">
-          ${p.image_url ? `<img class="post-card-img" src="${p.image_url}" alt="" loading="lazy">` : ""}
-          <div class="post-card-body">
-            <span class="post-card-date">${formatPostDate(p.date_publication)}</span>
-            <h3 class="post-card-title">${p.titre}</h3>
-            ${p.resume ? `<p class="post-card-resume">${p.resume}</p>` : ""}
-            ${fileButtonHtml(p)}
-            <button class="post-card-more" type="button">Lire plus</button>
-          </div>
-        </article>
-      `;
-      containerEl.querySelector(".post-card-more").addEventListener("click", () => openModal(p));
+      if (emptyEl) emptyEl.hidden = true;
+      if (condensed) containerEl.classList.add("posts-condensed");
+
+      if (mode === "tableau") {
+        containerEl.classList.add("posts-table-wrap");
+        containerEl.innerHTML = tableHtml(posts);
+        containerEl.querySelectorAll(".posts-table-row, .post-card-more").forEach((el) => {
+          el.addEventListener("click", () => openModal(posts[Number(el.dataset.idx)]));
+        });
+      } else if (mode === "affiche") {
+        containerEl.classList.add("posts-poster-list");
+        containerEl.innerHTML = posterHtml(posts);
+        containerEl.querySelectorAll(".post-card-more").forEach((btn) => {
+          btn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            openModal(posts[Number(btn.dataset.idx)]);
+          });
+        });
+        containerEl.querySelectorAll(".post-poster").forEach((el, i) => {
+          el.addEventListener("click", () => openModal(posts[i]));
+        });
+      } else {
+        containerEl.classList.add("posts-grid");
+        containerEl.innerHTML = posts.map((p, i) => cardHtml(p, i)).join("");
+        containerEl.querySelectorAll(".post-card-more").forEach((btn) => {
+          btn.addEventListener("click", () => openModal(posts[Number(btn.dataset.idx)]));
+        });
+      }
     }
 
-    function loadType(type, gridId, emptyId, featuredId, filterId) {
+    function loadType(type, gridId, emptyId, featuredId, filterId, contentKey) {
       const gridEl = document.getElementById(gridId);
       const emptyEl = document.getElementById(emptyId);
       const featuredEl = document.getElementById(featuredId);
       const filterEl = document.getElementById(filterId);
       let allPosts = [];
+      let mode = "grille";
 
       function applyFilter(categorie) {
         const filtered = categorie ? allPosts.filter((p) => p.categorie === categorie) : allPosts;
-        renderGrid(gridEl, emptyEl, filtered);
+        renderPostsList(gridEl, emptyEl, filtered, mode, false);
       }
 
       function renderFilters(categories) {
@@ -1026,20 +1068,22 @@
       Promise.all([
         fetch("/api/posts?type=" + encodeURIComponent(type)).then((r) => r.json()),
         fetch("/api/categories?type=" + encodeURIComponent(type)).then((r) => r.json()),
+        fetch("/api/content").then((r) => r.json()),
       ])
-        .then(([posts, categories]) => {
+        .then(([posts, categories, content]) => {
           allPosts = posts || [];
-          renderGrid(gridEl, emptyEl, allPosts);
-          renderFeatured(featuredEl, allPosts);
+          mode = (content && content[contentKey] && content[contentKey].affichage) || "grille";
+          renderPostsList(gridEl, emptyEl, allPosts, mode, false);
+          renderPostsList(featuredEl, null, allPosts.slice(0, 3), mode, true);
           renderFilters(categories || []);
         })
         .catch(() => {});
     }
 
-    loadType("nouvelle", "nouvelles-full-grid", "nouvelles-full-empty", "nouvelles-featured", "nouvelles-filter");
-    loadType("tutoriel", "tutoriels-full-grid", "tutoriels-full-empty", "tutoriels-featured", "tutoriels-filter");
-    loadType("manuel", "manuels-full-grid", "manuels-full-empty", "manuels-featured", "manuels-filter");
-    loadType("fiche", "fiches-full-grid", "fiches-full-empty", "fiches-featured", "fiches-filter");
+    loadType("nouvelle", "nouvelles-full-grid", "nouvelles-full-empty", "nouvelles-featured", "nouvelles-filter", "nouvelles");
+    loadType("tutoriel", "tutoriels-full-grid", "tutoriels-full-empty", "tutoriels-featured", "tutoriels-filter", "tutoriels");
+    loadType("manuel", "manuels-full-grid", "manuels-full-empty", "manuels-featured", "manuels-filter", "manuels");
+    loadType("fiche", "fiches-full-grid", "fiches-full-empty", "fiches-featured", "fiches-filter", "fiches");
   }
 
   function setupProductSearch() {
