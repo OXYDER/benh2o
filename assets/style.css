@@ -1771,12 +1771,27 @@ body.gate-open { overflow: hidden; }
 }
 .theme-neon .brand,
 .theme-neon .brand .brand-subtitle,
-.theme-neon .site-nav a,
+.theme-neon .site-nav > a,
 .theme-neon .site-nav-dropdown-toggle {
   color: var(--birch-100);
 }
-.theme-neon .site-nav a:hover,
+.theme-neon .site-nav > a:hover,
 .theme-neon .site-nav-dropdown-toggle:hover { color: var(--amber-600); background: rgba(0,229,255,0.08); }
+@media (min-width: 900px) {
+  /* Le sous-menu déroulant garde un fond clair peu importe le thème (--birch-050)
+     seulement en version bureau — son texte doit donc rester foncé là, même si le
+     reste du menu est en texte clair. Sur mobile le sous-menu hérite du panneau
+     sombre du menu complet, donc le texte clair y reste correct. */
+  .theme-neon .site-nav-submenu,
+  .theme-neon .site-nav-submenu a,
+  .theme-neon .site-nav-submenu-btn,
+  .theme-neon .site-nav-submenu-label,
+  .theme-neon .site-nav-submenu .pill {
+    color: var(--ink-900);
+  }
+  .theme-neon .site-nav-submenu a:hover,
+  .theme-neon .site-nav-submenu-btn:hover { color: var(--amber-700); }
+}
 .theme-neon .site-nav {
   background: rgba(6, 10, 20, 0.92);
   backdrop-filter: blur(14px);
