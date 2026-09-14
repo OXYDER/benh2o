@@ -1993,6 +1993,7 @@ body.gate-open { overflow: hidden; }
   margin-bottom: 28px;
 }
 .conv-tool h2 { font-family: var(--serif); font-size: 1.3rem; margin: 0 0 8px; }
+.conv-subtitle { font-size: 0.95rem; font-weight: 700; color: var(--amber-700); margin: 18px 0 10px; }
 .conv-tool > p { color: var(--ink-600); font-size: 0.92rem; margin-bottom: 20px; max-width: 640px; }
 
 .conv-row {

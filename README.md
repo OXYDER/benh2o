@@ -475,6 +475,23 @@ complexe (loi des gaz, bilan de matière multi-passe) dont la reproduction exact
 partir du bytecode décompilé comportait trop d'incertitude pour être fiable sans
 validation supplémentaire.
 
+## 3t. Les deux derniers calculateurs (16/16)
+
+**Débit d'une pompe à vide** — ajouté avec confiance : la correction pression/
+température (loi des gaz combinée, conditions de référence standard 29,92126 po Hg
+et 519,67 °R) a été tracée et vérifiée précisément dans le bytecode décompilé.
+
+**Débit d'évaporation** — ajouté en **version simplifiée**. L'application originale
+répartit ce calcul entre la panne à ailettes et la panne plate séparément; après
+plusieurs tentatives de relecture du bytecode décompilé, cette répartition précise
+restait ambiguë (variables réutilisées de façon à créer de l'incertitude réelle sur
+l'ordre des opérations). Plutôt que de deviner, l'outil ici donne un **bilan total**
+(eau évaporée ÷ surface totale) — scientifiquement solide, mais moins détaillé que
+l'original. Une amélioration future possible si les specs exactes de Centre ACER
+deviennent disponibles autrement.
+
+Le convertisseur couvre maintenant les 16 calculateurs de l'application originale.
+
 ## 4. Formulaire de contact
 
 Deux façons d'envoyer les demandes du formulaire, gérées par le serveur (`POST

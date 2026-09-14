@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,500&family=Playfair+Display:wght@600;700&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="icon" href="assets/favicon.ico">
-<link rel="stylesheet" href="assets/style.css?v=69">
+<link rel="stylesheet" href="assets/style.css?v=70">
 <script>
 (function() {
   try {
@@ -215,7 +215,7 @@
       <button type="button" class="conv-tab" data-tab="volumes" role="tab" aria-selected="false">Volumes</button>
       <button type="button" class="conv-tab" data-tab="densite" role="tab" aria-selected="false">Densité &amp; Dilution</button>
       <button type="button" class="conv-tab" data-tab="conversions" role="tab" aria-selected="false">Conversions &amp; Prix</button>
-      <button type="button" class="conv-tab" data-tab="filtration" role="tab" aria-selected="false">Osmose, Lavage &amp; Couleur</button>
+      <button type="button" class="conv-tab" data-tab="filtration" role="tab" aria-selected="false">Équipement &amp; Couleur</button>
     </div>
 
     <!-- ===== Onglet : Rendement & Cuisson ===== -->
@@ -610,6 +610,64 @@
         </div>
         <div class="conv-result" id="conv-transv-result"></div>
       </div>
+
+      <div class="conv-tool">
+        <h2>Débit d'une pompe à vide — correction selon pression et température</h2>
+        <p>Compare un débit mesuré dans une condition à ce qu'il donnerait dans une autre (ex. : conditions du fabricant vs conditions réelles sur le terrain) — basé sur la loi des gaz.</p>
+        <h3 class="conv-subtitle">Mesure de référence</h3>
+        <div class="conv-row">
+          <div class="conv-field">
+            <label for="conv-pump-pressure">Pression (vacuum, po Hg)</label>
+            <input type="number" id="conv-pump-pressure" step="0.1" min="0" value="0">
+          </div>
+          <div class="conv-field">
+            <label for="conv-pump-temp">Température (°C)</label>
+            <input type="number" id="conv-pump-temp" step="0.1" value="20">
+          </div>
+          <div class="conv-field">
+            <label for="conv-pump-volume">Débit mesuré (CFM, L/min, etc.)</label>
+            <input type="number" id="conv-pump-volume" step="0.1" min="0" value="10">
+          </div>
+        </div>
+        <h3 class="conv-subtitle">Condition à convertir vers</h3>
+        <div class="conv-row">
+          <div class="conv-field">
+            <label for="conv-pump-cond-pressure">Pression (vacuum, po Hg)</label>
+            <input type="number" id="conv-pump-cond-pressure" step="0.1" min="0" value="15">
+          </div>
+          <div class="conv-field">
+            <label for="conv-pump-cond-temp">Température (°C)</label>
+            <input type="number" id="conv-pump-cond-temp" step="0.1" value="20">
+          </div>
+        </div>
+        <div class="conv-result" id="conv-pump-result"></div>
+        <p class="conv-note">« Pression » est la lecture de vacuum (0 po Hg = pression atmosphérique). Le débit peut être dans n'importe quelle unité — le résultat sort dans la même unité.</p>
+      </div>
+
+      <div class="conv-tool">
+        <h2>Débit d'évaporation</h2>
+        <p>La quantité d'eau évaporée par unité de temps et par surface totale de ton évaporateur (bilan de matière simple — sève entrante à ton Brix de départ, sirop sortant à ton Brix cible).</p>
+        <div class="conv-row">
+          <div class="conv-field">
+            <label for="conv-evap-consumption">Sève consommée (litres/heure)</label>
+            <input type="number" id="conv-evap-consumption" step="0.1" min="0" value="400">
+          </div>
+          <div class="conv-field">
+            <label for="conv-evap-inbrix">° Brix de la sève entrante</label>
+            <input type="number" id="conv-evap-inbrix" step="0.1" min="0" value="2">
+          </div>
+          <div class="conv-field">
+            <label for="conv-evap-outbrix">° Brix du sirop sortant</label>
+            <input type="number" id="conv-evap-outbrix" step="0.1" min="0" value="66">
+          </div>
+          <div class="conv-field">
+            <label for="conv-evap-area">Surface totale de l'évaporateur (pi²)</label>
+            <input type="number" id="conv-evap-area" step="0.1" min="0" value="30">
+          </div>
+        </div>
+        <div class="conv-result" id="conv-evap-result"></div>
+        <p class="conv-note">Version simplifiée (bilan global) — l'application Centre ACER répartit ce calcul entre la panne à ailettes et la panne plate séparément; cette répartition précise n'a pas pu être reconstruite avec certitude à partir du code décompilé, donc ce chiffre est un total, pas un détail par section.</p>
+      </div>
     </div>
 
     <p class="conv-sources">
@@ -639,7 +697,7 @@
   </div>
 </footer>
 
-<script src="assets/script.js?v=69"></script>
-<script src="assets/convertisseur.js?v=69"></script>
+<script src="assets/script.js?v=70"></script>
+<script src="assets/convertisseur.js?v=70"></script>
 </body>
 </html>

@@ -682,6 +682,90 @@
     compute();
   }
 
+  /* ---------- Débit d'une pompe à vide ----------
+     Correction pression/température selon la loi des gaz combinée, formule exacte
+     extraite de l'application (conditions de référence standard : 29,92126 po Hg,
+     519,67 °R = 60 °F). */
+  function celsiusToRankine(c) {
+    return c * 1.8 + 491.67;
+  }
+  function setupPumpFlowCalc() {
+    const pressureInput = document.getElementById("conv-pump-pressure");
+    const tempInput = document.getElementById("conv-pump-temp");
+    const volumeInput = document.getElementById("conv-pump-volume");
+    const condPressureInput = document.getElementById("conv-pump-cond-pressure");
+    const condTempInput = document.getElementById("conv-pump-cond-temp");
+    const resultEl = document.getElementById("conv-pump-result");
+    if (!pressureInput || !resultEl) return;
+
+    const STD_INHG = 29.92125984;
+    const STD_RANKINE = 519.67;
+
+    function compute() {
+      const pressure = parseFloat(pressureInput.value);
+      const temp = parseFloat(tempInput.value);
+      const volume = parseFloat(volumeInput.value);
+      const condPressure = parseFloat(condPressureInput.value);
+      const condTemp = parseFloat(condTempInput.value);
+      if (isNaN(pressure) || isNaN(temp) || !volume || isNaN(condPressure) || isNaN(condTemp)) {
+        resultEl.innerHTML = "";
+        return;
+      }
+      const absPressure = STD_INHG - pressure;
+      const tRankine = celsiusToRankine(temp);
+      if (absPressure <= 0) {
+        resultEl.innerHTML = "Pression hors plage (doit être inférieure à 29,92 po Hg).";
+        return;
+      }
+      const normalizedFlow = (absPressure * volume * STD_RANKINE) / (STD_INHG * tRankine);
+
+      const condAbsPressure = STD_INHG - condPressure;
+      const condTRankine = celsiusToRankine(condTemp);
+      if (condAbsPressure <= 0) {
+        resultEl.innerHTML = "Pression cible hors plage.";
+        return;
+      }
+      const condVolume = (normalizedFlow * STD_INHG * condTRankine) / (condAbsPressure * STD_RANKINE);
+
+      resultEl.innerHTML = `
+        Dans la condition visée, le débit équivalent est d'environ <strong>${fmt(condVolume, 2)}</strong> (même unité que le débit mesuré).
+      `;
+    }
+    [pressureInput, tempInput, volumeInput, condPressureInput, condTempInput].forEach((el) => el.addEventListener("input", compute));
+    compute();
+  }
+
+  /* ---------- Débit d'évaporation — version simplifiée (bilan global) ---------- */
+  function setupEvaporationCalc() {
+    const consumptionInput = document.getElementById("conv-evap-consumption");
+    const inBrixInput = document.getElementById("conv-evap-inbrix");
+    const outBrixInput = document.getElementById("conv-evap-outbrix");
+    const areaInput = document.getElementById("conv-evap-area");
+    const resultEl = document.getElementById("conv-evap-result");
+    if (!consumptionInput || !resultEl) return;
+
+    function compute() {
+      const consumption = parseFloat(consumptionInput.value);
+      const inBrix = parseFloat(inBrixInput.value);
+      const outBrix = parseFloat(outBrixInput.value);
+      const area = parseFloat(areaInput.value);
+      if (!consumption || !inBrix || !outBrix || !area || outBrix <= inBrix) {
+        resultEl.innerHTML = "";
+        return;
+      }
+      const syrupOut = (consumption * inBrix) / outBrix;
+      const waterEvap = consumption - syrupOut;
+      const ratePerFt2 = waterEvap / area;
+      resultEl.innerHTML = `
+        Eau évaporée : <strong>${fmt(waterEvap, 1)} litres/heure</strong>
+        (≈ ${fmt(ratePerFt2, 2)} L/h par pi² de surface).<br>
+        <span class="conv-result-sub">Sirop produit ≈ ${fmt(syrupOut, 2)} L/h à ${fmt(outBrix, 1)}° Brix</span>
+      `;
+    }
+    [consumptionInput, inBrixInput, outBrixInput, areaInput].forEach((el) => el.addEventListener("input", compute));
+    compute();
+  }
+
   document.addEventListener("DOMContentLoaded", () => {
     setupTabs();
     setupYieldCalc();
@@ -700,5 +784,7 @@
     setupDiatomaceousCalc();
     setupTransmittanceCalc();
     setupVolumeForTransmittanceCalc();
+    setupPumpFlowCalc();
+    setupEvaporationCalc();
   });
 })();
