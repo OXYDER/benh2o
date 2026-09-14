@@ -397,6 +397,16 @@ demanderait de faire générer les pages différemment par le serveur pour chaqu
 publication — un changement d'architecture plus important, à envisager si l'aperçu
 devient important pour toi.
 
+## 3p. Thème « Marine Profond » (6e thème)
+
+Une version plus sobre du thème néon — les mêmes fonds noir/marine profonds et le
+même verre dépoli à l'en-tête, mais **un seul accent : le bleu H2O**, sans le rose ni
+le vert fluo. Pensé pour garder l'effet moderne et distinctif tout en restant
+confortable pour une clientèle plus âgée ou plus conservatrice.
+
+Disponible dans `/admin` → Contenu de la page → Apparence du site, à essayer comme
+les autres.
+
 ## 4. Formulaire de contact
 
 Deux façons d'envoyer les demandes du formulaire, gérées par le serveur (`POST

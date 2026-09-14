@@ -853,6 +853,7 @@
     if (theme.serif) root.setProperty("--serif", theme.serif);
     if (theme.sans) root.setProperty("--sans", theme.sans);
     document.documentElement.classList.toggle("theme-neon", theme.id === "neon-cyberacericole");
+    document.documentElement.classList.toggle("theme-marine", theme.id === "marine-profond");
     try {
       localStorage.setItem("bl_cached_theme", JSON.stringify(theme));
     } catch (e) {}
