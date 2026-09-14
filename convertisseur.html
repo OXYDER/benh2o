@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,500&family=Playfair+Display:wght@600;700&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="icon" href="assets/favicon.ico">
-<link rel="stylesheet" href="assets/style.css?v=72">
+<link rel="stylesheet" href="assets/style.css?v=73">
 <script>
 (function() {
   try {
@@ -210,16 +210,22 @@
 <section class="conv-section">
   <div class="container">
 
-    <div class="conv-tabs" id="conv-tabs" role="tablist">
-      <button type="button" class="conv-tab active" data-tab="rendement" role="tab" aria-selected="true">Rendement &amp; Cuisson</button>
-      <button type="button" class="conv-tab" data-tab="volumes" role="tab" aria-selected="false">Volumes</button>
-      <button type="button" class="conv-tab" data-tab="densite" role="tab" aria-selected="false">Densité &amp; Dilution</button>
-      <button type="button" class="conv-tab" data-tab="conversions" role="tab" aria-selected="false">Conversions &amp; Prix</button>
-      <button type="button" class="conv-tab" data-tab="filtration" role="tab" aria-selected="false">Équipement &amp; Couleur</button>
+    <div class="conv-mode-switch" id="conv-mode-switch">
+      <button type="button" class="conv-mode-btn active" data-mode="calculateurs">Calculateurs</button>
+      <button type="button" class="conv-mode-btn" data-mode="convertisseurs">Convertisseurs</button>
     </div>
 
+    <div class="conv-mode-panel" data-mode="calculateurs">
+      <div class="conv-tabs" id="conv-subnav-calculateurs">
+        <a href="#sec-rendement" class="conv-tab">Rendement &amp; Cuisson</a>
+        <a href="#sec-volumes" class="conv-tab">Volumes</a>
+        <a href="#sec-densite" class="conv-tab">Densité &amp; Dilution</a>
+        <a href="#sec-conversions" class="conv-tab">Prix &amp; Estimation</a>
+        <a href="#sec-filtration" class="conv-tab">Équipement &amp; Couleur</a>
+      </div>
+
     <!-- ===== Onglet : Rendement & Cuisson ===== -->
-    <div class="conv-panel" data-panel="rendement">
+    <div class="conv-panel" id="sec-rendement">
       <div class="conv-tool">
         <h2>Rendement — de la sève au sirop</h2>
         <p>Selon la <strong>Règle de 87</strong> : le nombre de litres (ou gallons) de sève nécessaires pour produire une quantité donnée de sirop à 66° Brix, selon le taux de sucre de ta sève.</p>
@@ -302,7 +308,7 @@
     </div>
 
     <!-- ===== Onglet : Volumes ===== -->
-    <div class="conv-panel" data-panel="volumes" hidden>
+    <div class="conv-panel" id="sec-volumes">
       <div class="conv-tool">
         <h2>Volume d'eau selon la longueur d'un tube</h2>
         <p>Le volume de sève (ou d'eau) contenu dans une longueur donnée de tubulure, selon son diamètre intérieur.</p>
@@ -388,7 +394,7 @@
     </div>
 
     <!-- ===== Onglet : Densité & Dilution ===== -->
-    <div class="conv-panel" data-panel="densite" hidden>
+    <div class="conv-panel" id="sec-densite">
       <div class="conv-tool">
         <h2>Poids spécifique (densité) selon le ° Brix</h2>
         <p>La densité relative (gravité spécifique) d'une solution sucrée à 20 °C, selon sa lecture en ° Brix.</p>
@@ -444,39 +450,8 @@
       </div>
     </div>
 
-    <!-- ===== Onglet : Conversions & Prix ===== -->
-    <div class="conv-panel" data-panel="conversions" hidden>
-      <div class="conv-tool">
-        <h2>Conversions — produits d'érable</h2>
-        <p>Convertis entre litres, gallons et poids, selon le produit (facteurs officiels MAPAQ, basés sur un sirop à 66° Brix).</p>
-        <div class="conv-row">
-          <div class="conv-field">
-            <label for="conv-product">Produit</label>
-            <select id="conv-product">
-              <option value="sirop">Sirop d'érable</option>
-              <option value="beurre">Beurre d'érable</option>
-              <option value="tire">Tire d'érable (en pot / sucre mou)</option>
-              <option value="sucre">Sucre d'érable granulé</option>
-            </select>
-          </div>
-          <div class="conv-field">
-            <label for="conv-qty">Quantité</label>
-            <input type="number" id="conv-qty" step="0.01" min="0" value="1">
-          </div>
-          <div class="conv-field">
-            <label for="conv-unit">Unité de départ</label>
-            <select id="conv-unit">
-              <option value="L">Litres</option>
-              <option value="galUS">Gallons US</option>
-              <option value="galImp">Gallons impériaux (can.)</option>
-              <option value="kg">Kilogrammes</option>
-              <option value="lb">Livres</option>
-            </select>
-          </div>
-        </div>
-        <div class="conv-result" id="conv-product-result"></div>
-      </div>
-
+    <!-- ===== Onglet : Prix & Estimation ===== -->
+    <div class="conv-panel" id="sec-conversions">
       <div class="conv-tool">
         <h2>Valeur de ta production</h2>
         <p>Calcule la valeur totale d'une quantité de sirop selon ton propre prix de vente (le prix du marché varie — entre le tien).</p>
@@ -522,8 +497,8 @@
       </div>
     </div>
 
-    <!-- ===== Onglet : Osmose, Lavage & Couleur ===== -->
-    <div class="conv-panel" data-panel="filtration" hidden>
+    <!-- ===== Onglet : Équipement & Couleur ===== -->
+    <div class="conv-panel" id="sec-filtration">
       <div class="conv-tool">
         <h2>Osmose — calcul du PEP (perméabilité à l'eau pure)</h2>
         <p>Compare le débit de ta membrane aujourd'hui à son débit de départ, corrigé pour la température (les membranes filtrent plus vite quand c'est plus chaud — il faut corriger pour comparer avec justesse).</p>
@@ -706,6 +681,231 @@
         <p class="conv-note">Version simplifiée (bilan global) — l'application Centre ACER répartit ce calcul entre la panne à ailettes et la panne plate séparément; cette répartition précise n'a pas pu être reconstruite avec certitude à partir du code décompilé, donc ce chiffre est un total, pas un détail par section.</p>
       </div>
     </div>
+    </div><!-- /conv-mode-panel calculateurs -->
+
+    <div class="conv-mode-panel" data-mode="convertisseurs" hidden>
+      <div class="conv-tabs" id="conv-subnav-convertisseurs">
+        <a href="#sec-conv-produits" class="conv-tab">Sirop/Beurre/Tire/Sucre</a>
+        <a href="#sec-conv-concentration" class="conv-tab">Concentration</a>
+        <a href="#sec-conv-poids" class="conv-tab">Poids</a>
+        <a href="#sec-conv-pression" class="conv-tab">Pression</a>
+        <a href="#sec-conv-temperature" class="conv-tab">Température</a>
+        <a href="#sec-conv-distance" class="conv-tab">Distance</a>
+        <a href="#sec-conv-surface" class="conv-tab">Surface</a>
+        <a href="#sec-conv-volume" class="conv-tab">Volume</a>
+        <a href="#sec-conv-vitesse" class="conv-tab">Vitesse</a>
+        <a href="#sec-conv-force" class="conv-tab">Force</a>
+        <a href="#sec-conv-energie" class="conv-tab">Énergie</a>
+        <a href="#sec-conv-puissance" class="conv-tab">Puissance</a>
+      </div>
+
+      <div class="conv-tool" id="sec-conv-produits">
+        <h2>Sirop / Beurre / Tire / Sucre</h2>
+        <p>Convertis entre litres, gallons et poids, selon le produit (facteurs officiels MAPAQ, basés sur un sirop à 66° Brix).</p>
+        <div class="conv-row">
+          <div class="conv-field">
+            <label for="conv-product">Produit</label>
+            <select id="conv-product">
+              <option value="sirop">Sirop d'érable</option>
+              <option value="beurre">Beurre d'érable</option>
+              <option value="tire">Tire d'érable (en pot / sucre mou)</option>
+              <option value="sucre">Sucre d'érable granulé</option>
+            </select>
+          </div>
+          <div class="conv-field">
+            <label for="conv-qty">Quantité</label>
+            <input type="number" id="conv-qty" step="0.01" min="0" value="1">
+          </div>
+          <div class="conv-field">
+            <label for="conv-unit">Unité de départ</label>
+            <select id="conv-unit">
+              <option value="L">Litres</option>
+              <option value="galUS">Gallons US</option>
+              <option value="galImp">Gallons impériaux (can.)</option>
+              <option value="kg">Kilogrammes</option>
+              <option value="lb">Livres</option>
+            </select>
+          </div>
+        </div>
+        <div class="conv-result" id="conv-product-result"></div>
+      </div>
+
+      <div class="conv-tool" id="sec-conv-concentration">
+        <h2>Concentration</h2>
+        <p>Convertis entre ° Brix, gravité spécifique (densité) et ° Baumé pour une solution sucrée à 20 °C.</p>
+        <div class="conv-row">
+          <div class="conv-field">
+            <label for="conv-conc-value">Valeur</label>
+            <input type="number" id="conv-conc-value" step="0.1" value="66">
+          </div>
+          <div class="conv-field">
+            <label for="conv-conc-unit">Unité de départ</label>
+            <select id="conv-conc-unit">
+              <option value="brix">° Brix</option>
+              <option value="sg">Gravité spécifique</option>
+              <option value="baume">° Baumé</option>
+            </select>
+          </div>
+        </div>
+        <div class="conv-grid" id="conv-conc-result"></div>
+        <p class="conv-note">Basé sur la table officielle Centre ACER (0 à 70° Brix). Hors de cette plage, seule la relation Baumé ↔ densité reste calculée.</p>
+      </div>
+
+      <div class="conv-tool conv-generic" data-category="poids" id="sec-conv-poids">
+        <h2>Poids</h2>
+        <div class="conv-row">
+          <div class="conv-field">
+            <label>Quantité</label>
+            <input type="number" class="conv-generic-value" value="1" step="any">
+          </div>
+          <div class="conv-field">
+            <label>Unité de départ</label>
+            <select class="conv-generic-unit"></select>
+          </div>
+        </div>
+        <div class="conv-grid conv-generic-result"></div>
+      </div>
+
+      <div class="conv-tool conv-generic" data-category="pression" id="sec-conv-pression">
+        <h2>Pression</h2>
+        <div class="conv-row">
+          <div class="conv-field">
+            <label>Quantité</label>
+            <input type="number" class="conv-generic-value" value="1" step="any">
+          </div>
+          <div class="conv-field">
+            <label>Unité de départ</label>
+            <select class="conv-generic-unit"></select>
+          </div>
+        </div>
+        <div class="conv-grid conv-generic-result"></div>
+      </div>
+
+      <div class="conv-tool" id="sec-conv-temperature">
+        <h2>Température</h2>
+        <div class="conv-row">
+          <div class="conv-field">
+            <label for="conv-temp-value">Quantité</label>
+            <input type="number" id="conv-temp-value" value="20" step="any">
+          </div>
+          <div class="conv-field">
+            <label for="conv-temp-unit">Unité de départ</label>
+            <select id="conv-temp-unit">
+              <option value="celsius">Celsius (°C)</option>
+              <option value="fahrenheit">Fahrenheit (°F)</option>
+              <option value="kelvin">Kelvin (K)</option>
+              <option value="rankine">Rankine (°R)</option>
+            </select>
+          </div>
+        </div>
+        <div class="conv-grid" id="conv-temp-result"></div>
+      </div>
+
+      <div class="conv-tool conv-generic" data-category="distance" id="sec-conv-distance">
+        <h2>Distance</h2>
+        <div class="conv-row">
+          <div class="conv-field">
+            <label>Quantité</label>
+            <input type="number" class="conv-generic-value" value="1" step="any">
+          </div>
+          <div class="conv-field">
+            <label>Unité de départ</label>
+            <select class="conv-generic-unit"></select>
+          </div>
+        </div>
+        <div class="conv-grid conv-generic-result"></div>
+      </div>
+
+      <div class="conv-tool conv-generic" data-category="surface" id="sec-conv-surface">
+        <h2>Surface</h2>
+        <div class="conv-row">
+          <div class="conv-field">
+            <label>Quantité</label>
+            <input type="number" class="conv-generic-value" value="1" step="any">
+          </div>
+          <div class="conv-field">
+            <label>Unité de départ</label>
+            <select class="conv-generic-unit"></select>
+          </div>
+        </div>
+        <div class="conv-grid conv-generic-result"></div>
+      </div>
+
+      <div class="conv-tool conv-generic" data-category="volume" id="sec-conv-volume">
+        <h2>Volume</h2>
+        <div class="conv-row">
+          <div class="conv-field">
+            <label>Quantité</label>
+            <input type="number" class="conv-generic-value" value="1" step="any">
+          </div>
+          <div class="conv-field">
+            <label>Unité de départ</label>
+            <select class="conv-generic-unit"></select>
+          </div>
+        </div>
+        <div class="conv-grid conv-generic-result"></div>
+      </div>
+
+      <div class="conv-tool conv-generic" data-category="vitesse" id="sec-conv-vitesse">
+        <h2>Vitesse</h2>
+        <div class="conv-row">
+          <div class="conv-field">
+            <label>Quantité</label>
+            <input type="number" class="conv-generic-value" value="1" step="any">
+          </div>
+          <div class="conv-field">
+            <label>Unité de départ</label>
+            <select class="conv-generic-unit"></select>
+          </div>
+        </div>
+        <div class="conv-grid conv-generic-result"></div>
+      </div>
+
+      <div class="conv-tool conv-generic" data-category="force" id="sec-conv-force">
+        <h2>Force</h2>
+        <div class="conv-row">
+          <div class="conv-field">
+            <label>Quantité</label>
+            <input type="number" class="conv-generic-value" value="1" step="any">
+          </div>
+          <div class="conv-field">
+            <label>Unité de départ</label>
+            <select class="conv-generic-unit"></select>
+          </div>
+        </div>
+        <div class="conv-grid conv-generic-result"></div>
+      </div>
+
+      <div class="conv-tool conv-generic" data-category="energie" id="sec-conv-energie">
+        <h2>Énergie</h2>
+        <div class="conv-row">
+          <div class="conv-field">
+            <label>Quantité</label>
+            <input type="number" class="conv-generic-value" value="1" step="any">
+          </div>
+          <div class="conv-field">
+            <label>Unité de départ</label>
+            <select class="conv-generic-unit"></select>
+          </div>
+        </div>
+        <div class="conv-grid conv-generic-result"></div>
+      </div>
+
+      <div class="conv-tool conv-generic" data-category="puissance" id="sec-conv-puissance">
+        <h2>Puissance</h2>
+        <div class="conv-row">
+          <div class="conv-field">
+            <label>Quantité</label>
+            <input type="number" class="conv-generic-value" value="1" step="any">
+          </div>
+          <div class="conv-field">
+            <label>Unité de départ</label>
+            <select class="conv-generic-unit"></select>
+          </div>
+        </div>
+        <div class="conv-grid conv-generic-result"></div>
+      </div>
+    </div><!-- /conv-mode-panel convertisseurs -->
 
     <p class="conv-sources">
       Sources : Centre ACER, PPAQ, MAPAQ (facteurs de conversion officiels), CDL Inc., tables sucrose ICUMSA/NIST, Filmtec (manuel technique des membranes) — outil fourni à titre indicatif pour la planification; toujours vérifier la densité finale avec un réfractomètre calibré avant la mise en contenant.
@@ -734,7 +934,7 @@
   </div>
 </footer>
 
-<script src="assets/script.js?v=72"></script>
-<script src="assets/convertisseur.js?v=72"></script>
+<script src="assets/script.js?v=73"></script>
+<script src="assets/convertisseur.js?v=73"></script>
 </body>
 </html>

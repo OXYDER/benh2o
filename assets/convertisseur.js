@@ -277,20 +277,30 @@
 
   /* ---------- Onglets ---------- */
   function setupTabs() {
-    const tabs = document.querySelectorAll(".conv-tab");
-    const panels = document.querySelectorAll(".conv-panel");
-    if (!tabs.length) return;
-    tabs.forEach((tab) => {
-      tab.addEventListener("click", () => {
-        tabs.forEach((t) => {
-          t.classList.remove("active");
-          t.setAttribute("aria-selected", "false");
+    // Bascule de mode : Calculateurs <-> Convertisseurs
+    const modeButtons = document.querySelectorAll(".conv-mode-btn");
+    const modePanels = document.querySelectorAll(".conv-mode-panel");
+    modeButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        modeButtons.forEach((b) => b.classList.toggle("active", b === btn));
+        modePanels.forEach((p) => {
+          p.hidden = p.dataset.mode !== btn.dataset.mode;
         });
-        tab.classList.add("active");
-        tab.setAttribute("aria-selected", "true");
-        panels.forEach((p) => {
-          p.hidden = p.dataset.panel !== tab.dataset.tab;
-        });
+        window.scrollTo({ top: document.getElementById("conv-mode-switch").offsetTop - 20, behavior: "smooth" });
+      });
+    });
+
+    // Liens de sous-catégories : défilement doux vers la section, avec léger surlignage
+    document.querySelectorAll(".conv-tabs .conv-tab").forEach((link) => {
+      link.addEventListener("click", (e) => {
+        e.preventDefault();
+        const target = document.querySelector(link.getAttribute("href"));
+        if (!target) return;
+        const headerOffset = 90;
+        const top = target.getBoundingClientRect().top + window.pageYOffset - headerOffset;
+        window.scrollTo({ top, behavior: "smooth" });
+        target.classList.add("conv-panel-highlight");
+        setTimeout(() => target.classList.remove("conv-panel-highlight"), 1500);
       });
     });
   }
@@ -813,6 +823,226 @@
     compute();
   }
 
+  /* ============================================================
+     CONVERTISSEURS — conversions générales d'unités
+     ============================================================ */
+
+  /* ---------- Moteur générique (facteur linéaire vers une unité de base) ---------- */
+  const UNIT_CATEGORIES = {
+    poids: {
+      base: "kg",
+      units: [
+        { id: "mg", label: "milligrammes", factor: 1e-6 },
+        { id: "g", label: "grammes", factor: 0.001 },
+        { id: "kg", label: "kilogrammes", factor: 1 },
+        { id: "t", label: "tonnes métriques", factor: 1000 },
+        { id: "oz", label: "onces", factor: 0.028349523125 },
+        { id: "lb", label: "livres", factor: 0.45359237 },
+        { id: "ton_us", label: "tonnes courtes (US)", factor: 907.18474 },
+      ],
+    },
+    pression: {
+      base: "kPa",
+      units: [
+        { id: "Pa", label: "pascals", factor: 0.001 },
+        { id: "kPa", label: "kilopascals", factor: 1 },
+        { id: "bar", label: "bar", factor: 100 },
+        { id: "atm", label: "atmosphères", factor: 101.325 },
+        { id: "psi", label: "psi (lb/po²)", factor: 6.894757293168 },
+        { id: "mmHg", label: "mm Hg (torr)", factor: 0.13332239 },
+        { id: "inHg", label: "po Hg", factor: 3.386389 },
+      ],
+    },
+    distance: {
+      base: "m",
+      units: [
+        { id: "mm", label: "millimètres", factor: 0.001 },
+        { id: "cm", label: "centimètres", factor: 0.01 },
+        { id: "m", label: "mètres", factor: 1 },
+        { id: "km", label: "kilomètres", factor: 1000 },
+        { id: "in", label: "pouces", factor: 0.0254 },
+        { id: "ft", label: "pieds", factor: 0.3048 },
+        { id: "yd", label: "verges", factor: 0.9144 },
+        { id: "mi", label: "milles", factor: 1609.344 },
+      ],
+    },
+    surface: {
+      base: "m2",
+      units: [
+        { id: "cm2", label: "centimètres carrés", factor: 0.0001 },
+        { id: "m2", label: "mètres carrés", factor: 1 },
+        { id: "km2", label: "kilomètres carrés", factor: 1000000 },
+        { id: "in2", label: "pouces carrés", factor: 0.00064516 },
+        { id: "ft2", label: "pieds carrés", factor: 0.09290304 },
+        { id: "acre", label: "acres", factor: 4046.8564224 },
+        { id: "ha", label: "hectares", factor: 10000 },
+      ],
+    },
+    volume: {
+      base: "L",
+      units: [
+        { id: "mL", label: "millilitres", factor: 0.001 },
+        { id: "L", label: "litres", factor: 1 },
+        { id: "m3", label: "mètres cubes", factor: 1000 },
+        { id: "in3", label: "pouces cubes", factor: 0.0163871 },
+        { id: "ft3", label: "pieds cubes", factor: 28.316846592 },
+        { id: "galUS", label: "gallons US", factor: 3.785411784 },
+        { id: "galImp", label: "gallons canadiens", factor: 4.54609 },
+      ],
+    },
+    vitesse: {
+      base: "m/s",
+      units: [
+        { id: "ms", label: "mètres/seconde", factor: 1 },
+        { id: "kmh", label: "km/h", factor: 0.277778 },
+        { id: "mph", label: "mi/h", factor: 0.44704 },
+        { id: "noeud", label: "nœuds", factor: 0.514444 },
+        { id: "fts", label: "pieds/seconde", factor: 0.3048 },
+      ],
+    },
+    force: {
+      base: "N",
+      units: [
+        { id: "N", label: "newtons", factor: 1 },
+        { id: "kN", label: "kilonewtons", factor: 1000 },
+        { id: "lbf", label: "livres-force", factor: 4.4482216153 },
+        { id: "kgf", label: "kilogrammes-force", factor: 9.80665 },
+      ],
+    },
+    energie: {
+      base: "J",
+      units: [
+        { id: "J", label: "joules", factor: 1 },
+        { id: "kJ", label: "kilojoules", factor: 1000 },
+        { id: "cal", label: "calories", factor: 4.184 },
+        { id: "kcal", label: "kilocalories", factor: 4184 },
+        { id: "Wh", label: "watt-heures", factor: 3600 },
+        { id: "kWh", label: "kilowatt-heures", factor: 3600000 },
+        { id: "BTU", label: "BTU", factor: 1055.05585262 },
+      ],
+    },
+    puissance: {
+      base: "W",
+      units: [
+        { id: "W", label: "watts", factor: 1 },
+        { id: "kW", label: "kilowatts", factor: 1000 },
+        { id: "hp", label: "chevaux-vapeur (hp)", factor: 745.699872 },
+        { id: "BTUh", label: "BTU/heure", factor: 0.29307107 },
+      ],
+    },
+  };
+
+  function setupGenericConverters() {
+    document.querySelectorAll(".conv-generic").forEach((container) => {
+      const category = UNIT_CATEGORIES[container.dataset.category];
+      if (!category) return;
+      const valueInput = container.querySelector(".conv-generic-value");
+      const unitSelect = container.querySelector(".conv-generic-unit");
+      const resultEl = container.querySelector(".conv-generic-result");
+
+      unitSelect.innerHTML = category.units.map((u) => `<option value="${u.id}">${u.label}</option>`).join("");
+
+      function compute() {
+        const value = parseFloat(valueInput.value);
+        const fromUnit = category.units.find((u) => u.id === unitSelect.value);
+        if (isNaN(value) || !fromUnit) {
+          resultEl.innerHTML = "";
+          return;
+        }
+        const baseValue = value * fromUnit.factor;
+        resultEl.innerHTML = category.units
+          .map((u) => `<div><strong>${fmt(baseValue / u.factor, 4)}</strong>${u.label}</div>`)
+          .join("");
+      }
+      [valueInput, unitSelect].forEach((el) => el.addEventListener("input", compute));
+      compute();
+    });
+  }
+
+  /* ---------- Concentration : ° Brix ↔ gravité spécifique ↔ ° Baumé ----------
+     Réutilise la table officielle Brix->SG (interpolation), et sa version inverse
+     SG->Brix (même table, interpolation dans l'autre sens). Formule Baumé standard
+     pour liquides plus denses que l'eau : °Bé = 145 - 145/SG. */
+  function brixFromSG(sg) {
+    const exact = BRIX_SG_TABLE.find((p) => p.value === sg);
+    if (exact) return exact.brix;
+    const below = BRIX_SG_TABLE.filter((p) => p.value < sg).pop();
+    const above = BRIX_SG_TABLE.find((p) => p.value > sg);
+    if (!below || !above) return null;
+    const ratio = (sg - below.value) / (above.value - below.value);
+    return below.brix + ratio * (above.brix - below.brix);
+  }
+  function setupConcentrationConverter() {
+    const valueInput = document.getElementById("conv-conc-value");
+    const unitSelect = document.getElementById("conv-conc-unit");
+    const resultEl = document.getElementById("conv-conc-result");
+    if (!valueInput || !resultEl) return;
+
+    function compute() {
+      const value = parseFloat(valueInput.value);
+      if (isNaN(value)) {
+        resultEl.innerHTML = "";
+        return;
+      }
+      let sg, brix, baume;
+      if (unitSelect.value === "brix") {
+        brix = value;
+        sg = sgFromBrix(brix);
+      } else if (unitSelect.value === "sg") {
+        sg = value;
+        brix = brixFromSG(sg);
+      } else {
+        baume = value;
+        sg = 145 / (145 - baume);
+        brix = brixFromSG(sg);
+      }
+      if (unitSelect.value !== "baume") baume = sg ? 145 - 145 / sg : null;
+
+      resultEl.innerHTML = `
+        <div><strong>${brix !== null ? fmt(brix, 2) : "—"}</strong>° Brix</div>
+        <div><strong>${sg ? sg.toFixed(5) : "—"}</strong>gravité spécifique</div>
+        <div><strong>${baume !== null && isFinite(baume) ? fmt(baume, 2) : "—"}</strong>° Baumé</div>
+      `;
+    }
+    [valueInput, unitSelect].forEach((el) => el.addEventListener("input", compute));
+    compute();
+  }
+
+  /* ---------- Température ---------- */
+  function setupTemperatureConverter() {
+    const valueInput = document.getElementById("conv-temp-value");
+    const unitSelect = document.getElementById("conv-temp-unit");
+    const resultEl = document.getElementById("conv-temp-result");
+    if (!valueInput || !resultEl) return;
+
+    function toCelsius(v, unit) {
+      if (unit === "celsius") return v;
+      if (unit === "fahrenheit") return ((v - 32) * 5) / 9;
+      if (unit === "kelvin") return v - 273.15;
+      if (unit === "rankine") return ((v - 491.67) * 5) / 9;
+      return null;
+    }
+    function compute() {
+      const value = parseFloat(valueInput.value);
+      if (isNaN(value)) {
+        resultEl.innerHTML = "";
+        return;
+      }
+      const c = toCelsius(value, unitSelect.value);
+      const f = (c * 9) / 5 + 32;
+      const k = c + 273.15;
+      const r = (c + 273.15) * 1.8;
+      resultEl.innerHTML = `
+        <div><strong>${fmt(c, 2)}</strong>Celsius (°C)</div>
+        <div><strong>${fmt(f, 2)}</strong>Fahrenheit (°F)</div>
+        <div><strong>${fmt(k, 2)}</strong>Kelvin (K)</div>
+        <div><strong>${fmt(r, 2)}</strong>Rankine (°R)</div>
+      `;
+    }
+    [valueInput, unitSelect].forEach((el) => el.addEventListener("input", compute));
+    compute();
+  }
+
   document.addEventListener("DOMContentLoaded", () => {
     setupTabs();
     setupYieldCalc();
@@ -834,5 +1064,8 @@
     setupVolumeForTransmittanceCalc();
     setupPumpFlowCalc();
     setupEvaporationCalc();
+    setupGenericConverters();
+    setupConcentrationConverter();
+    setupTemperatureConverter();
   });
 })();

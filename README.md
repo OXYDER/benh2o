@@ -500,6 +500,30 @@ modélise un procédé avec **pré-concentration à l'osmose inverse**, en 3 ét
 séparation de la membrane et les pertes de procédé estimées, formule extraite
 exactement de la fonction `convertConcentration` de l'application originale.
 
+## 3v. Refonte de navigation : Calculateurs vs Convertisseurs
+
+Le Convertisseur Acéricole a maintenant deux modes, choisis par deux gros boutons en
+haut de la page :
+
+- **Calculateurs** — les 5 catégories déjà en place (Rendement & Cuisson, Volumes,
+  Densité & Dilution, Prix & Estimation, Équipement & Couleur), toujours accessibles
+  ainsi qu'avant.
+- **Convertisseurs** — nouveau, 12 catégories : Sirop/Beurre/Tire/Sucre (déplacé
+  depuis Calculateurs), Concentration (°Brix ↔ gravité spécifique ↔ °Baumé), Poids,
+  Pression, Température, Distance, Surface, Volume, Vitesse, Force, Énergie, Puissance.
+
+Dans chaque mode, une rangée de puces sous les gros boutons sert de table des
+matières : cliquer une puce fait défiler la page jusqu'à cet outil (au lieu de
+cacher/montrer des onglets comme avant), avec un léger effet de surbrillance pour
+confirmer l'arrivée au bon endroit. Tous les outils d'un même mode restent visibles
+en même temps, l'un en dessous de l'autre.
+
+Les 9 nouveaux convertisseurs généraux (Poids, Pression, Distance, Surface, Volume,
+Vitesse, Force, Énergie, Puissance) utilisent un même moteur générique dans le code
+(`UNIT_CATEGORIES` + `setupGenericConverters`) — entrer une valeur affiche
+l'équivalent dans toutes les unités de la catégorie en même temps, facteurs de
+conversion standards internationaux.
+
 ## 4. Formulaire de contact
 
 Deux façons d'envoyer les demandes du formulaire, gérées par le serveur (`POST
