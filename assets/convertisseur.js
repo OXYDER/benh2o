@@ -293,6 +293,10 @@
     document.querySelectorAll(".conv-mode-panel").forEach((p) => {
       p.hidden = p.dataset.mode !== mode;
     });
+    // Si le lien pointe directement sur le mode (menu Outils : Calculateurs / Convertisseurs),
+    // on bascule juste le mode sans faire défiler la page. Seuls les liens vers un outil
+    // précis (à l'intérieur d'un mode) font défiler.
+    if (target === modePanel) return;
     setTimeout(() => {
       const headerOffset = 110;
       const top = target.getBoundingClientRect().top + window.pageYOffset - headerOffset;
