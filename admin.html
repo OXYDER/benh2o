@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,500&family=Playfair+Display:wght@600;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="icon" href="assets/favicon.ico">
-<link rel="stylesheet" href="assets/style.css?v=66">
-<link rel="stylesheet" href="assets/admin.css?v=66">
+<link rel="stylesheet" href="assets/style.css?v=67">
+<link rel="stylesheet" href="assets/admin.css?v=67">
 </head>
 <body class="admin-body">
 
@@ -333,6 +333,10 @@
           <input type="text" id="cc-nav-fiches" data-key="nav.fiches">
         </div>
       </div>
+      <div class="admin-field" style="max-width:320px">
+        <label for="cc-nav-convertisseur">Lien « Convertisseur Acéricole »</label>
+        <input type="text" id="cc-nav-convertisseur" data-key="nav.convertisseur">
+      </div>
       <div class="admin-field-row">
         <div class="admin-field">
           <label for="cc-nav-groupe-contact">Étiquette de section — Contact</label>
@@ -653,6 +657,26 @@
         </select>
       </div>
 
+      <h3 class="admin-field-group-title">Page « Convertisseur Acéricole »</h3>
+      <div class="admin-field-row">
+        <div class="admin-field">
+          <label for="cc-conv-tag">Étiquette</label>
+          <input type="text" id="cc-conv-tag" data-key="convertisseur.tag">
+        </div>
+        <div class="admin-field">
+          <label for="cc-conv-title">Titre</label>
+          <input type="text" id="cc-conv-title" data-key="convertisseur.title">
+        </div>
+      </div>
+      <div class="admin-field">
+        <label for="cc-conv-desc">Description</label>
+        <textarea id="cc-conv-desc" data-key="convertisseur.description" rows="2"></textarea>
+      </div>
+      <div class="admin-field">
+        <label for="cc-conv-avert">Avertissement (encadré, sous la description)</label>
+        <textarea id="cc-conv-avert" data-key="convertisseur.avertissement" rows="2"></textarea>
+      </div>
+
       <h3 class="admin-field-group-title">Section « Nous joindre »</h3>
       <div class="admin-field-row">
         <div class="admin-field">
@@ -947,6 +971,6 @@
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/tinymce@6/tinymce.min.js" referrerpolicy="origin"></script>
-<script src="assets/admin.js?v=66"></script>
+<script src="assets/admin.js?v=67"></script>
 </body>
 </html>

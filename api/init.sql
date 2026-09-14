@@ -149,6 +149,7 @@ INSERT INTO site_data (key, data) VALUES ('content', '{
   "support": "Support & Contact",
   "manuels": "Manuels de l'utilisateur",
   "fiches": "Fiches Techniques",
+  "convertisseur": "Convertisseur Acéricole",
   "groupeContact": "Contact",
   "groupeInfos": "Informations"
   },
@@ -228,6 +229,12 @@ INSERT INTO site_data (key, data) VALUES ('content', '{
     "title": "Fiches Techniques",
     "description": "Spécifications, caractéristiques et données techniques de l'équipement H2O Innovation.",
     "affichage": "grille"
+  },
+  "convertisseur": {
+    "tag": "Outil pratique",
+    "title": "Convertisseur Acéricole",
+    "description": "Rendement sève-sirop, point d'ébullition selon l'altitude, et conversions entre litres, gallons, kilogrammes et livres pour tes produits d'érable.",
+    "avertissement": "Outil fourni à titre indicatif pour la planification. Toujours vérifier la densité finale de ton sirop avec un réfractomètre calibré avant la mise en contenant."
   },
   "channels": {
     "tag": "Nous joindre",

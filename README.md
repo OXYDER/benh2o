@@ -420,6 +420,30 @@ officiel. Pareil pour « Ste- » → « Sainte- ». Ça s'applique à la fois à
 suggestions et à la vérification elle-même (donc même sans cliquer une suggestion,
 soumettre « St-Rémi » fonctionne).
 
+## 3r. Convertisseur Acéricole
+
+Nouvelle page (`convertisseur.html`, accessible via Support & Contact ▾ dans le menu)
+avec quatre outils de calcul, basés sur des sources officielles (MAPAQ, PPAQ, Centre
+ACER, CDL Inc.) :
+
+1. **Rendement sève → sirop** (Règle de 87) — combien de sève il faut selon son taux
+   de sucre pour produire une quantité donnée de sirop.
+2. **Point d'ébullition selon l'altitude** — calcule le point d'ébullition réel de
+   l'eau à ton altitude (formule barométrique standard), et la température exacte à
+   laquelle ton sirop atteint 66° Brix (+3,94 °C / +7,1 °F au-dessus du point
+   d'ébullition local), avec des repères approximatifs pour le beurre, la tire et le
+   sucre d'érable.
+3. **Conversions de produits d'érable** — litres, gallons (US et canadiens),
+   kilogrammes, livres, pour le sirop, le beurre, la tire et le sucre granulé, à
+   partir des facteurs de conversion officiels du MAPAQ.
+4. **Estimation par nombre d'entailles** — fourchette large et clairement identifiée
+   comme approximative, pour la planification.
+
+Les textes de la page (étiquette, titre, description, avertissement) sont éditables
+dans Contenu de la page → Page « Convertisseur Acéricole ». Les calculs eux-mêmes
+sont dans `assets/convertisseur.js` — un changement de formule demanderait de
+modifier ce fichier directement.
+
 ## 4. Formulaire de contact
 
 Deux façons d'envoyer les demandes du formulaire, gérées par le serveur (`POST
