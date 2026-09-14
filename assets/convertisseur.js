@@ -79,62 +79,74 @@
     compute();
   }
 
-  /* ---------- 2) Point d'ébullition selon l'altitude ---------- */
+  /* ---------- 2) Point d'ébullition selon l'altitude ----------
+     Formules exactes extraites de l'application Convertisseur Acéricole (Centre ACER) :
+     - boilingPointByAltitude : polynôme direct altitude -> température d'ébullition de l'eau
+     - offsetTemperature : polynôme donnant l'écart (°C) au-dessus du point d'ébullition
+       de l'eau selon le ° Brix cible (fonctionne pour n'importe quel Brix, pas seulement 66). */
   function boilingPointC(altitudeM) {
-    // Formule barométrique standard (niveau de la mer -> pression), puis
-    // relation pression -> température d'ébullition de l'eau (Clausius-Clapeyron).
-    const P0 = 1013.25; // hPa au niveau de la mer
-    const P = P0 * Math.pow(1 - (0.0065 * altitudeM) / 288.15, 5.255);
-    const T_K = 1 / (1 / 373.15 - (8.314 / 40680) * Math.log(P / P0));
-    return T_K - 273.15;
+    return 100 - 0.0035529 * altitudeM + 4.2994e-8 * altitudeM * altitudeM;
+  }
+  function offsetTemperature(brix) {
+    return (
+      0.028749926 * brix -
+      0.00204687 * brix ** 2 +
+      0.00010678 * brix ** 3 -
+      1.9777e-6 * brix ** 4 +
+      1.41996e-8 * brix ** 5
+    );
   }
 
   function setupBoilingCalc() {
     const altInput = document.getElementById("conv-alt");
+    const brixInput = document.getElementById("conv-alt-brix");
     const resultEl = document.getElementById("conv-alt-result");
     const tableEl = document.getElementById("conv-alt-table");
     if (!altInput || !resultEl) return;
 
-    // Écarts approximatifs au-dessus du point de finition du sirop (repères de cuisson,
-    // à valider au thermomètre — la texture finale dépend de plus que la seule température).
+    // Écarts (au-dessus du point de finition du sirop à 66° Brix) pour les autres produits —
+    // repères relatifs de Centre ACER, à valider au thermomètre.
     const PRODUITS_CUISSON = [
-      { nom: "Sirop d'érable (66° Brix)", offsetC: 3.94 },
-      { nom: "Beurre d'érable", offsetC: 3.94 + 8.1 },
-      { nom: "Tire d'érable sur neige", offsetC: 3.94 + 9.9 },
-      { nom: "Tire en pot / sucre mou", offsetC: 3.94 + 10.5 },
-      { nom: "Sucre dur", offsetC: 3.94 + 13.8 },
-      { nom: "Sucre granulé", offsetC: 3.94 + 20.0 },
+      { nom: "Beurre d'érable", offsetC: 8.1 },
+      { nom: "Tire d'érable sur neige", offsetC: 9.9 },
+      { nom: "Tire en pot / sucre mou", offsetC: 10.5 },
+      { nom: "Sucre dur", offsetC: 13.8 },
+      { nom: "Sucre granulé", offsetC: 20.0 },
     ];
 
     function compute() {
       const alt = parseFloat(altInput.value);
-      if (isNaN(alt) || alt < 0) {
+      const brix = parseFloat(brixInput.value);
+      if (isNaN(alt) || alt < 0 || !brix) {
         resultEl.innerHTML = "";
         tableEl.innerHTML = "";
         return;
       }
       const tEau = boilingPointC(alt);
       const tEauF = tEau * 9/5 + 32;
-      const tSirop = tEau + 3.94;
+      const offset = offsetTemperature(brix);
+      const tSirop = tEau + offset;
       const tSiropF = tSirop * 9/5 + 32;
 
       resultEl.innerHTML = `
         À ${fmt(alt, 0)} m d'altitude, l'eau bout à <strong>${fmt(tEau, 1)} °C (${fmt(tEauF, 1)} °F)</strong>.<br>
-        Ton sirop sera à 66° Brix lorsqu'il atteindra <strong>${fmt(tSirop, 1)} °C (${fmt(tSiropF, 1)} °F)</strong>
-        — soit 3,94 °C (7,1 °F) de plus que le point d'ébullition de l'eau ce jour-là.
+        Ton sirop sera à ${fmt(brix, 1)}° Brix lorsqu'il atteindra <strong>${fmt(tSirop, 1)} °C (${fmt(tSiropF, 1)} °F)</strong>
+        — soit ${fmt(offset, 2)} °C de plus que le point d'ébullition de l'eau ce jour-là.
       `;
 
+      const tSirop66 = tEau + offsetTemperature(66);
       tableEl.innerHTML =
         "<tbody>" +
+        `<tr><td>Sirop d'érable (66° Brix)</td><td>${fmt(tSirop66, 1)} °C</td><td>${fmt(tSirop66 * 9/5 + 32, 1)} °F</td></tr>` +
         PRODUITS_CUISSON.map((p) => {
-          const tc = tEau + p.offsetC;
+          const tc = tSirop66 + p.offsetC;
           const tf = tc * 9/5 + 32;
           return `<tr><td>${p.nom}</td><td>${fmt(tc, 1)} °C</td><td>${fmt(tf, 1)} °F</td></tr>`;
         }).join("") +
         "</tbody>";
     }
 
-    altInput.addEventListener("input", compute);
+    [altInput, brixInput].forEach((el) => el.addEventListener("input", compute));
     compute();
   }
 
@@ -339,20 +351,31 @@
   }
 
   /* ---------- Poids spécifique (densité) selon le ° Brix ----------
-     Basé sur le polynôme standard ICUMSA/NIST reliant le °Brix à la gravité
-     spécifique d'une solution de sucrose (brix = f(sg)), inversé numériquement
-     (méthode de Newton) puisque la relation officielle va de SG vers Brix. */
-  function brixFromSG(sg) {
-    return 143.254 * sg ** 3 - 648.670 * sg ** 2 + 1125.805 * sg - 620.389;
-  }
+     Table officielle exacte (36 points, extraite de l'application Convertisseur
+     Acéricole de Centre ACER), avec interpolation linéaire entre les points —
+     exactement la même méthode que l'application originale. */
+  const BRIX_SG_TABLE = [
+    { brix: 0, value: 1 }, { brix: 0.1, value: 1.00038 }, { brix: 0.2, value: 1.00076 },
+    { brix: 0.3, value: 1.00114 }, { brix: 0.4, value: 1.00152 }, { brix: 0.5, value: 1.0019 },
+    { brix: 0.6, value: 1.0023 }, { brix: 0.7, value: 1.0027 }, { brix: 0.8, value: 1.0031 },
+    { brix: 0.9, value: 1.0035 }, { brix: 1, value: 1.0039 }, { brix: 2, value: 1.0078 },
+    { brix: 3, value: 1.0117 }, { brix: 4, value: 1.0156 }, { brix: 5, value: 1.0196 },
+    { brix: 6, value: 1.0236 }, { brix: 7, value: 1.0277 }, { brix: 8, value: 1.0317 },
+    { brix: 9, value: 1.0358 }, { brix: 10, value: 1.04 }, { brix: 15, value: 1.061 },
+    { brix: 20, value: 1.0829 }, { brix: 25, value: 1.10555 }, { brix: 30, value: 1.129 },
+    { brix: 35, value: 1.15335 }, { brix: 40, value: 1.1785 }, { brix: 45, value: 1.2047 },
+    { brix: 50, value: 1.2317 }, { brix: 55, value: 1.2597 }, { brix: 60, value: 1.2887 },
+    { brix: 65, value: 1.3187 }, { brix: 66, value: 1.3248 }, { brix: 67, value: 1.33095 },
+    { brix: 68, value: 1.3371 }, { brix: 69, value: 1.34335 }, { brix: 70, value: 1.3496 },
+  ];
   function sgFromBrix(brix) {
-    let sg = 1 + brix / 400; // estimation de départ
-    for (let i = 0; i < 20; i++) {
-      const f = brixFromSG(sg) - brix;
-      const fPrime = 3 * 143.254 * sg ** 2 - 2 * 648.670 * sg + 1125.805;
-      sg = sg - f / fPrime;
-    }
-    return sg;
+    const exact = BRIX_SG_TABLE.find((p) => p.brix === brix);
+    if (exact) return exact.value;
+    const below = BRIX_SG_TABLE.filter((p) => p.brix < brix).pop();
+    const above = BRIX_SG_TABLE.find((p) => p.brix > brix);
+    if (!below || !above) return null;
+    const ratio = (brix - below.brix) / (above.brix - below.brix);
+    return below.value + ratio * (above.value - below.value);
   }
 
   function setupSGCalc() {
@@ -367,9 +390,13 @@
         return;
       }
       const sg = sgFromBrix(brix);
+      if (sg === null) {
+        resultEl.innerHTML = "Valeur hors de la table (0 à 70° Brix).";
+        return;
+      }
       const kgPerL = sg * 0.9982; // eau à 20°C ≈ 0.9982 kg/L
       resultEl.innerHTML = `
-        À ${fmt(brix, 1)}° Brix (20 °C) : gravité spécifique ≈ <strong>${sg.toFixed(4)}</strong>,
+        À ${fmt(brix, 1)}° Brix (20 °C) : gravité spécifique = <strong>${sg.toFixed(5)}</strong>,
         soit une masse d'environ <strong>${fmt(kgPerL, 3)} kg/litre</strong>
         (${fmt(kgPerL * LB_PAR_KG / L_PER_GAL_US, 2)} lb/gallon US).
       `;
@@ -476,6 +503,185 @@
     compute();
   }
 
+  /* ---------- Osmose — PEP (perméabilité à l'eau pure) ----------
+     Formule exacte extraite de l'application Convertisseur Acéricole (Centre ACER),
+     basée sur le facteur de correction Filmtec (Reverse Osmosis Membranes Technical
+     Manual, Doc. No. 45-D01504, version 7, février 2021). */
+  function filmtecCorrectionFactor(tempC) {
+    const k = tempC < 25 ? 3020 : 2640;
+    return Math.exp(k * (1 / (tempC + 273) - 1 / 298));
+  }
+  function setupOsmosisCalc() {
+    const startDebitInput = document.getElementById("conv-osm-start-debit");
+    const startTempInput = document.getElementById("conv-osm-start-temp");
+    const nowDebitInput = document.getElementById("conv-osm-now-debit");
+    const nowTempInput = document.getElementById("conv-osm-now-temp");
+    const resultEl = document.getElementById("conv-osm-result");
+    if (!startDebitInput || !resultEl) return;
+
+    function compute() {
+      const d0 = parseFloat(startDebitInput.value);
+      const t0 = parseFloat(startTempInput.value);
+      const d1 = parseFloat(nowDebitInput.value);
+      const t1 = parseFloat(nowTempInput.value);
+      if (!d0 || isNaN(t0) || !d1 || isNaN(t1)) {
+        resultEl.innerHTML = "";
+        return;
+      }
+      const d0corr = d0 * filmtecCorrectionFactor(t0);
+      const d1corr = d1 * filmtecCorrectionFactor(t1);
+      const pep = (d1corr / d0corr) * 100;
+      resultEl.innerHTML = `
+        PEP actuel (normalisé à 25 °C) : <strong>${fmt(pep, 1)} %</strong> du débit de départ.<br>
+        <span class="conv-result-sub">Débit de départ corrigé : ${fmt(d0corr, 3)} · débit actuel corrigé : ${fmt(d1corr, 3)}</span>
+      `;
+    }
+    [startDebitInput, startTempInput, nowDebitInput, nowTempInput].forEach((el) => el.addEventListener("input", compute));
+    compute();
+  }
+
+  /* ---------- Solution de lavage — dilution ---------- */
+  function setupCleaningCalc() {
+    const volInput = document.getElementById("conv-clean-vol");
+    const activeInput = document.getElementById("conv-clean-active");
+    const targetInput = document.getElementById("conv-clean-target");
+    const resultEl = document.getElementById("conv-clean-result");
+    if (!volInput || !resultEl) return;
+
+    function compute() {
+      const vol = parseFloat(volInput.value);
+      const active = parseFloat(activeInput.value);
+      const target = parseFloat(targetInput.value);
+      if (!vol || !active || !target || target >= active) {
+        resultEl.innerHTML = target >= active && target && active
+          ? "La concentration voulue doit être plus basse que la concentration active du produit."
+          : "";
+        return;
+      }
+      const eau = vol * (active / target - 1);
+      resultEl.innerHTML = `
+        Ajoute environ <strong>${fmt(eau, 2)} litres d'eau</strong> à tes ${fmt(vol, 1)} L de produit concentré
+        pour obtenir une solution à ${fmt(target, 1)} % (volume final ≈ ${fmt(vol + eau, 2)} L).
+      `;
+    }
+    [volInput, activeInput, targetInput].forEach((el) => el.addEventListener("input", compute));
+    compute();
+  }
+
+  /* ---------- Surface d'une presse à terre diatomée ----------
+     Formules exactes extraites de l'application (surface totale de filtration,
+     les deux côtés de chaque plaque comptent). */
+  function setupDiatomaceousCalc() {
+    const shapeSelect = document.getElementById("conv-de-shape");
+    const squareFields = document.getElementById("conv-de-square-fields");
+    const cylFields = document.getElementById("conv-de-cyl-fields");
+    const plateDimInput = document.getElementById("conv-de-plate-dim");
+    const plateCountInput = document.getElementById("conv-de-plate-count");
+    const heightInput = document.getElementById("conv-de-height");
+    const resultEl = document.getElementById("conv-de-result");
+    if (!shapeSelect || !resultEl) return;
+
+    function compute() {
+      const isSquare = shapeSelect.value === "square";
+      squareFields.hidden = !isSquare;
+      cylFields.hidden = isSquare;
+      let areaFt2;
+      if (isSquare) {
+        const dim = parseFloat(plateDimInput.value);
+        const count = parseFloat(plateCountInput.value);
+        if (!dim || !count) {
+          resultEl.innerHTML = "";
+          return;
+        }
+        areaFt2 = ((dim * dim) / 144) * count * 2;
+      } else {
+        const height = parseFloat(heightInput.value);
+        if (!height) {
+          resultEl.innerHTML = "";
+          return;
+        }
+        areaFt2 = ((18 * height) / 144) * 2;
+      }
+      resultEl.innerHTML = `Surface de filtration totale : <strong>${fmt(areaFt2, 2)} pi²</strong> (${fmt(areaFt2 * 0.0929, 2)} m²).`;
+    }
+    [shapeSelect, plateDimInput, plateCountInput, heightInput].forEach((el) => el.addEventListener("input", compute));
+    compute();
+  }
+
+  /* ---------- Transmittance d'un mélange ----------
+     Moyenne pondérée logarithmique (pas une simple moyenne) — formule exacte
+     extraite de l'application, cohérente avec la loi de Beer-Lambert pour
+     la transmittance optique d'un mélange. */
+  const log10 = (x) => Math.log(x) / Math.LN10;
+
+  function setupTransmittanceCalc() {
+    const qtyAInput = document.getElementById("conv-trans-qtyA");
+    const transAInput = document.getElementById("conv-trans-transA");
+    const qtyBInput = document.getElementById("conv-trans-qtyB");
+    const transBInput = document.getElementById("conv-trans-transB");
+    const resultEl = document.getElementById("conv-trans-result");
+    if (!qtyAInput || !resultEl) return;
+
+    function compute() {
+      const qA = parseFloat(qtyAInput.value);
+      const tA = parseFloat(transAInput.value);
+      const qB = parseFloat(qtyBInput.value);
+      const tB = parseFloat(transBInput.value);
+      if (!qA || !tA || !qB || !tB) {
+        resultEl.innerHTML = "";
+        return;
+      }
+      const total = qA + qB;
+      const weightedLog = (qA * log10(100 / tA) + qB * log10(100 / tB)) / total;
+      const resultTrans = 100 / Math.pow(10, weightedLog);
+      resultEl.innerHTML = `
+        Mélange de ${fmt(total, 1)} L : transmittance résultante ≈ <strong>${fmt(resultTrans, 1)} %</strong>.
+      `;
+    }
+    [qtyAInput, transAInput, qtyBInput, transBInput].forEach((el) => el.addEventListener("input", compute));
+    compute();
+  }
+
+  /* ---------- Volume à mélanger pour une transmittance cible ----------
+     Même formule que ci-dessus, résolue pour la quantité de sirop B inconnue. */
+  function setupVolumeForTransmittanceCalc() {
+    const qtyAInput = document.getElementById("conv-transv-qtyA");
+    const transAInput = document.getElementById("conv-transv-transA");
+    const transBInput = document.getElementById("conv-transv-transB");
+    const targetInput = document.getElementById("conv-transv-target");
+    const resultEl = document.getElementById("conv-transv-result");
+    if (!qtyAInput || !resultEl) return;
+
+    function compute() {
+      const qA = parseFloat(qtyAInput.value);
+      const tA = parseFloat(transAInput.value);
+      const tB = parseFloat(transBInput.value);
+      const target = parseFloat(targetInput.value);
+      if (!qA || !tA || !tB || !target) {
+        resultEl.innerHTML = "";
+        return;
+      }
+      // weightedLog = target_log ; qA*logA + qB*logB = (qA+qB)*target_log
+      // qB*(logB - target_log) = qA*(target_log - logA)
+      const logA = log10(100 / tA);
+      const logB = log10(100 / tB);
+      const targetLog = log10(100 / target);
+      const denom = logB - targetLog;
+      if (denom === 0 || (qA * (targetLog - logA)) / denom < 0) {
+        resultEl.innerHTML = "Cette cible n'est pas atteignable avec ces deux sirops — vérifie que la transmittance visée se situe bien entre celle du sirop A et celle du sirop B.";
+        return;
+      }
+      const qB = (qA * (targetLog - logA)) / denom;
+      resultEl.innerHTML = `
+        Ajoute environ <strong>${fmt(qB, 2)} litres</strong> de sirop B (${fmt(tB, 1)} %)
+        à tes ${fmt(qA, 1)} L de sirop A (${fmt(tA, 1)} %)
+        pour obtenir ${fmt(qA + qB, 2)} L à ${fmt(target, 1)} % de transmittance.
+      `;
+    }
+    [qtyAInput, transAInput, transBInput, targetInput].forEach((el) => el.addEventListener("input", compute));
+    compute();
+  }
+
   document.addEventListener("DOMContentLoaded", () => {
     setupTabs();
     setupYieldCalc();
@@ -489,5 +695,10 @@
     setupDiluteCalc();
     setupBlendCalc();
     setupPriceCalc();
+    setupOsmosisCalc();
+    setupCleaningCalc();
+    setupDiatomaceousCalc();
+    setupTransmittanceCalc();
+    setupVolumeForTransmittanceCalc();
   });
 })();

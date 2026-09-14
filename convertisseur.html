@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,500&family=Playfair+Display:wght@600;700&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="icon" href="assets/favicon.ico">
-<link rel="stylesheet" href="assets/style.css?v=68">
+<link rel="stylesheet" href="assets/style.css?v=69">
 <script>
 (function() {
   try {
@@ -215,6 +215,7 @@
       <button type="button" class="conv-tab" data-tab="volumes" role="tab" aria-selected="false">Volumes</button>
       <button type="button" class="conv-tab" data-tab="densite" role="tab" aria-selected="false">Densité &amp; Dilution</button>
       <button type="button" class="conv-tab" data-tab="conversions" role="tab" aria-selected="false">Conversions &amp; Prix</button>
+      <button type="button" class="conv-tab" data-tab="filtration" role="tab" aria-selected="false">Osmose, Lavage &amp; Couleur</button>
     </div>
 
     <!-- ===== Onglet : Rendement & Cuisson ===== -->
@@ -244,13 +245,19 @@
 
       <div class="conv-tool">
         <h2>Point d'ébullition et température de finition</h2>
-        <p>Le point d'ébullition de l'eau baisse avec l'altitude — ce qui change la température à laquelle ton sirop doit être versé pour atteindre 66° Brix.</p>
-        <div class="conv-field conv-field-narrow">
-          <label for="conv-alt">Altitude de ton érablière (mètres)</label>
-          <input type="number" id="conv-alt" step="1" min="0" placeholder="Ex. : 300" value="0">
+        <p>Le point d'ébullition de l'eau baisse avec l'altitude — ce qui change la température à laquelle ton sirop doit être versé pour atteindre la densité voulue.</p>
+        <div class="conv-row">
+          <div class="conv-field conv-field-narrow">
+            <label for="conv-alt">Altitude de ton érablière (mètres)</label>
+            <input type="number" id="conv-alt" step="1" min="0" placeholder="Ex. : 300" value="0">
+          </div>
+          <div class="conv-field conv-field-narrow">
+            <label for="conv-alt-brix">° Brix cible du sirop</label>
+            <input type="number" id="conv-alt-brix" step="0.1" min="0" max="90" value="66">
+          </div>
         </div>
         <div class="conv-result" id="conv-alt-result"></div>
-        <p class="conv-note">Repères approximatifs pour les autres produits (à valider avec un thermomètre à bonbons — la texture finale dépend aussi de facteurs autres que la seule température) :</p>
+        <p class="conv-note">Repères pour les autres produits (mêmes écarts que Centre ACER — à valider avec un thermomètre à bonbons, la texture finale dépend aussi de facteurs autres que la seule température) :</p>
         <div class="conv-table-wrap">
           <table class="conv-table" id="conv-alt-table"></table>
         </div>
@@ -478,8 +485,135 @@
       </div>
     </div>
 
+    <!-- ===== Onglet : Osmose, Lavage & Couleur ===== -->
+    <div class="conv-panel" data-panel="filtration" hidden>
+      <div class="conv-tool">
+        <h2>Osmose — calcul du PEP (perméabilité à l'eau pure)</h2>
+        <p>Compare le débit de ta membrane aujourd'hui à son débit de départ, corrigé pour la température (les membranes filtrent plus vite quand c'est plus chaud — il faut corriger pour comparer avec justesse).</p>
+        <div class="conv-row">
+          <div class="conv-field">
+            <label for="conv-osm-start-debit">Débit de départ (membrane neuve)</label>
+            <input type="number" id="conv-osm-start-debit" step="0.01" min="0" value="10">
+          </div>
+          <div class="conv-field">
+            <label for="conv-osm-start-temp">Température à ce moment (°C)</label>
+            <input type="number" id="conv-osm-start-temp" step="0.1" value="20">
+          </div>
+        </div>
+        <div class="conv-row">
+          <div class="conv-field">
+            <label for="conv-osm-now-debit">Débit actuel</label>
+            <input type="number" id="conv-osm-now-debit" step="0.01" min="0" value="8">
+          </div>
+          <div class="conv-field">
+            <label for="conv-osm-now-temp">Température actuelle (°C)</label>
+            <input type="number" id="conv-osm-now-temp" step="0.1" value="15">
+          </div>
+        </div>
+        <div class="conv-result" id="conv-osm-result"></div>
+        <p class="conv-note">Facteur de correction selon : Filmtec — Reverse Osmosis Membranes Technical Manual (Doc. No. 45-D01504, version 7, février 2021). Le débit peut être entré dans n'importe quelle unité cohérente (L/h, gal/h, etc.) — seul le rapport compte.</p>
+      </div>
+
+      <div class="conv-tool">
+        <h2>Solution de lavage — dilution</h2>
+        <p>La quantité d'eau à ajouter à un produit de lavage concentré pour obtenir la concentration voulue.</p>
+        <div class="conv-row">
+          <div class="conv-field">
+            <label for="conv-clean-vol">Volume de produit concentré (litres)</label>
+            <input type="number" id="conv-clean-vol" step="0.1" min="0" value="4">
+          </div>
+          <div class="conv-field">
+            <label for="conv-clean-active">Concentration active du produit (%)</label>
+            <input type="number" id="conv-clean-active" step="0.1" min="0" value="30">
+          </div>
+          <div class="conv-field">
+            <label for="conv-clean-target">Concentration voulue (%)</label>
+            <input type="number" id="conv-clean-target" step="0.1" min="0" value="2">
+          </div>
+        </div>
+        <div class="conv-result" id="conv-clean-result"></div>
+      </div>
+
+      <div class="conv-tool">
+        <h2>Surface d'une presse à terre diatomée</h2>
+        <p>La surface de filtration totale (les deux côtés de chaque plaque comptent) d'une presse carrée ou cylindrique.</p>
+        <div class="conv-field conv-field-narrow">
+          <label for="conv-de-shape">Forme de la presse</label>
+          <select id="conv-de-shape">
+            <option value="square">Carrée</option>
+            <option value="cylindrical">Cylindrique</option>
+          </select>
+        </div>
+        <div class="conv-row" id="conv-de-square-fields">
+          <div class="conv-field">
+            <label for="conv-de-plate-dim">Dimension d'une plaque (pouces)</label>
+            <input type="number" id="conv-de-plate-dim" step="0.5" min="0" value="12">
+          </div>
+          <div class="conv-field">
+            <label for="conv-de-plate-count">Nombre de plaques</label>
+            <input type="number" id="conv-de-plate-count" step="1" min="0" value="10">
+          </div>
+        </div>
+        <div class="conv-row" id="conv-de-cyl-fields" hidden>
+          <div class="conv-field">
+            <label for="conv-de-height">Hauteur de la presse (pouces)</label>
+            <input type="number" id="conv-de-height" step="0.5" min="0" value="18">
+          </div>
+        </div>
+        <div class="conv-result" id="conv-de-result"></div>
+      </div>
+
+      <div class="conv-tool">
+        <h2>Transmittance d'un mélange de sirop</h2>
+        <p>La transmittance (couleur/clarté) résultante d'un mélange de deux sirops — ce n'est pas une simple moyenne, la lumière se comporte de façon logarithmique.</p>
+        <div class="conv-row">
+          <div class="conv-field">
+            <label for="conv-trans-qtyA">Quantité de sirop A (litres)</label>
+            <input type="number" id="conv-trans-qtyA" step="0.1" min="0" value="10">
+          </div>
+          <div class="conv-field">
+            <label for="conv-trans-transA">Transmittance A (%)</label>
+            <input type="number" id="conv-trans-transA" step="0.1" min="0.1" max="100" value="75">
+          </div>
+          <div class="conv-field">
+            <label for="conv-trans-qtyB">Quantité de sirop B (litres)</label>
+            <input type="number" id="conv-trans-qtyB" step="0.1" min="0" value="5">
+          </div>
+          <div class="conv-field">
+            <label for="conv-trans-transB">Transmittance B (%)</label>
+            <input type="number" id="conv-trans-transB" step="0.1" min="0.1" max="100" value="50">
+          </div>
+        </div>
+        <div class="conv-result" id="conv-trans-result"></div>
+      </div>
+
+      <div class="conv-tool">
+        <h2>Volume à mélanger pour une transmittance cible</h2>
+        <p>Combien ajouter d'un sirop B (d'une transmittance connue) à ton sirop A pour atteindre la transmittance visée.</p>
+        <div class="conv-row">
+          <div class="conv-field">
+            <label for="conv-transv-qtyA">Quantité de sirop A (litres)</label>
+            <input type="number" id="conv-transv-qtyA" step="0.1" min="0" value="10">
+          </div>
+          <div class="conv-field">
+            <label for="conv-transv-transA">Transmittance A (%)</label>
+            <input type="number" id="conv-transv-transA" step="0.1" min="0.1" max="100" value="75">
+          </div>
+          <div class="conv-field">
+            <label for="conv-transv-transB">Transmittance du sirop B (%)</label>
+            <input type="number" id="conv-transv-transB" step="0.1" min="0.1" max="100" value="50">
+          </div>
+          <div class="conv-field">
+            <label for="conv-transv-target">Transmittance visée (%)</label>
+            <input type="number" id="conv-transv-target" step="0.1" min="0.1" max="100" value="70">
+          </div>
+        </div>
+        <div class="conv-result" id="conv-transv-result"></div>
+      </div>
+    </div>
+
     <p class="conv-sources">
-      Sources : Centre ACER, PPAQ, MAPAQ (facteurs de conversion officiels), CDL Inc., tables sucrose ICUMSA/NIST — outil fourni à titre indicatif pour la planification; toujours vérifier la densité finale avec un réfractomètre calibré avant la mise en contenant.
+      Sources : Centre ACER, PPAQ, MAPAQ (facteurs de conversion officiels), CDL Inc., tables sucrose ICUMSA/NIST, Filmtec (manuel technique des membranes) — outil fourni à titre indicatif pour la planification; toujours vérifier la densité finale avec un réfractomètre calibré avant la mise en contenant.
     </p>
   </div>
 </section>
@@ -505,7 +639,7 @@
   </div>
 </footer>
 
-<script src="assets/script.js?v=68"></script>
-<script src="assets/convertisseur.js?v=68"></script>
+<script src="assets/script.js?v=69"></script>
+<script src="assets/convertisseur.js?v=69"></script>
 </body>
 </html>

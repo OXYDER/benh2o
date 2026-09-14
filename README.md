@@ -444,6 +444,37 @@ dans Contenu de la page → Page « Convertisseur Acéricole ». Les calculs eux
 sont dans `assets/convertisseur.js` — un changement de formule demanderait de
 modifier ce fichier directement.
 
+## 3s. Convertisseur Acéricole — formules officielles extraites de l'app Centre ACER
+
+Après analyse du fichier APK du Convertisseur Acéricole officiel (décompilation du
+bundle JavaScript React Native/Hermes), plusieurs formules ont été remplacées par
+leurs versions **exactes**, et 5 nouveaux calculateurs ajoutés dans un 5e onglet
+« Osmose, Lavage & Couleur » :
+
+**Mis à jour avec les formules exactes :**
+- **Point d'ébullition** — polynôme direct altitude → température (au lieu de mon
+  approximation barométrique), et un polynôme séparé pour l'écart selon le ° Brix
+  cible (fonctionne maintenant pour n'importe quel Brix, pas seulement 66)
+- **Densité selon le Brix** — table officielle exacte à 36 points (interpolation
+  linéaire), au lieu de mon approximation polynomiale
+
+**Nouveaux, avec formules confirmées dans le code de l'app :**
+- **Osmose (PEP)** — facteur de correction de température Filmtec exact (constantes
+  2640/3020), permet de comparer le débit d'une membrane à différentes températures
+- **Solution de lavage** — dilution d'un produit concentré vers une concentration cible
+- **Surface d'une presse à terre diatomée** — surface de filtration totale (carrée ou
+  cylindrique)
+- **Transmittance d'un mélange** — moyenne pondérée **logarithmique** (pas une simple
+  moyenne), cohérente avec la loi de Beer-Lambert
+- **Volume pour une transmittance cible** — la même formule, résolue pour la quantité
+  de sirop B inconnue
+
+**Volontairement laissés de côté** — deux calculateurs (débit d'évaporation, débit
+d'une pompe à vide) utilisent une correction thermodynamique multi-étapes plus
+complexe (loi des gaz, bilan de matière multi-passe) dont la reproduction exacte à
+partir du bytecode décompilé comportait trop d'incertitude pour être fiable sans
+validation supplémentaire.
+
 ## 4. Formulaire de contact
 
 Deux façons d'envoyer les demandes du formulaire, gérées par le serveur (`POST
