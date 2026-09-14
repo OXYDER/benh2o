@@ -2008,10 +2008,7 @@ body.gate-open { overflow: hidden; }
   border-radius: var(--radius-lg);
   columns: 2;
   column-gap: 24px;
-  position: sticky;
-  top: 64px;
-  z-index: 20;
-  max-height: calc(100vh - 100px);
+  max-height: 60vh;
   overflow-y: auto;
 }
 .conv-tool-list li { break-inside: avoid; margin-bottom: 4px; }
@@ -2037,7 +2034,7 @@ body.gate-open { overflow: hidden; }
 .conv-tool { scroll-margin-top: 100px; }
 
 @media (max-width: 640px) {
-  .conv-tool-list { columns: 1; position: static; max-height: none; }
+  .conv-tool-list { columns: 1; max-height: 50vh; }
 }
 
 .conv-tool {
