@@ -1548,6 +1548,20 @@
     });
   }
 
+  /* ---------- Bouton « Retour en haut » ---------- */
+  function setupBackToTop() {
+    const btn = document.getElementById("back-to-top");
+    if (!btn) return;
+    const toggle = () => {
+      btn.hidden = window.scrollY < 400;
+    };
+    window.addEventListener("scroll", toggle, { passive: true });
+    toggle();
+    btn.addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  }
+
   document.addEventListener("DOMContentLoaded", () => {
     setupZoneChecker();
     setupEntryGate();
@@ -1557,6 +1571,7 @@
     setupLeafParticles();
     setupPosts();
     setupProductSearch();
+    setupBackToTop();
 
     fetch("/api/contact")
       .then((res) => res.json())

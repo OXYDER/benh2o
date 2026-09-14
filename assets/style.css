@@ -1433,6 +1433,28 @@ footer a:hover { text-decoration: underline; }
   .urgence-fab { animation: none; }
 }
 
+.back-to-top {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 50;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(32,27,20,0.15);
+  background: var(--birch-050);
+  color: var(--ink-900);
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.back-to-top:hover { background: var(--amber-600); color: #fff; border-color: var(--amber-600); }
+.back-to-top[hidden] { display: none; }
+
 .urgence-trigger {
   display: block;
   width: 100%;
