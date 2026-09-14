@@ -1845,13 +1845,21 @@ body.gate-open { overflow: hidden; }
   border-bottom: 1px solid rgba(30, 155, 255, 0.2);
 }
 .theme-marine .brand,
-.theme-marine .brand .brand-subtitle,
+.theme-marine .brand .brand-subtitle {
+  color: var(--amber-600);
+}
 .theme-marine .site-nav > a,
 .theme-marine .site-nav-dropdown-toggle {
   color: var(--birch-100);
 }
 .theme-marine .site-nav > a:hover,
 .theme-marine .site-nav-dropdown-toggle:hover { color: var(--amber-600); background: rgba(30,155,255,0.08); }
+.theme-marine .site-nav a.active,
+.theme-marine .site-nav-dropdown-toggle.active {
+  color: var(--amber-600) !important;
+  font-weight: 700;
+  background: rgba(30,155,255,0.1);
+}
 @media (min-width: 900px) {
   .theme-marine .site-nav-submenu,
   .theme-marine .site-nav-submenu a,
@@ -1859,6 +1867,10 @@ body.gate-open { overflow: hidden; }
   .theme-marine .site-nav-submenu-label,
   .theme-marine .site-nav-submenu .pill {
     color: var(--ink-900);
+  }
+  .theme-marine .site-nav-submenu a.active,
+  .theme-marine .site-nav-submenu-btn.active {
+    color: var(--amber-700) !important;
   }
   .theme-marine .site-nav-submenu a:hover,
   .theme-marine .site-nav-submenu-btn:hover { color: var(--amber-700); }
