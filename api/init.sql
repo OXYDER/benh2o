@@ -143,6 +143,7 @@ INSERT INTO site_data (key, data) VALUES ('content', '{
     "about": "À propos",
     "contact": "Formulaire de contact",
     "urgence": "URGENCE",
+  "outils": "Outils",
   "rdv": "Rendez-vous",
   "nouvelles": "Nouvelles",
   "tutoriels": "Tutoriels",

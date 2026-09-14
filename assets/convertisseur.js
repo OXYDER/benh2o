@@ -276,7 +276,36 @@
   }
 
   /* ---------- Onglets ---------- */
+  function activateModeForHash() {
+    const hash = location.hash;
+    if (!hash) return;
+    let target;
+    try {
+      target = document.querySelector(hash);
+    } catch (e) {
+      return;
+    }
+    if (!target) return;
+    const modePanel = target.closest(".conv-mode-panel");
+    if (!modePanel) return;
+    const mode = modePanel.dataset.mode;
+    document.querySelectorAll(".conv-mode-btn").forEach((b) => b.classList.toggle("active", b.dataset.mode === mode));
+    document.querySelectorAll(".conv-mode-panel").forEach((p) => {
+      p.hidden = p.dataset.mode !== mode;
+    });
+    setTimeout(() => {
+      const headerOffset = 90;
+      const top = target.getBoundingClientRect().top + window.pageYOffset - headerOffset;
+      window.scrollTo({ top, behavior: "smooth" });
+      target.classList.add("conv-panel-highlight");
+      setTimeout(() => target.classList.remove("conv-panel-highlight"), 1500);
+    }, 50);
+  }
+
   function setupTabs() {
+    activateModeForHash();
+    window.addEventListener("hashchange", activateModeForHash);
+
     // Bascule de mode : Calculateurs <-> Convertisseurs
     const modeButtons = document.querySelectorAll(".conv-mode-btn");
     const modePanels = document.querySelectorAll(".conv-mode-panel");
@@ -291,7 +320,7 @@
     });
 
     // Liens de sous-catégories : défilement doux vers la section, avec léger surlignage
-    document.querySelectorAll(".conv-tabs .conv-tab").forEach((link) => {
+    document.querySelectorAll(".conv-tool-link").forEach((link) => {
       link.addEventListener("click", (e) => {
         e.preventDefault();
         const target = document.querySelector(link.getAttribute("href"));

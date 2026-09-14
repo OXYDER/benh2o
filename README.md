@@ -524,6 +524,26 @@ Vitesse, Force, Énergie, Puissance) utilisent un même moteur générique dans 
 l'équivalent dans toutes les unités de la catégorie en même temps, facteurs de
 conversion standards internationaux.
 
+## 3w. Navigation simplifiée en liste plate + menu OUTILS dans le menu principal
+
+Suite à un retour, la navigation du convertisseur est encore plus simple : sous
+chacun des deux gros boutons (Calculateurs / Convertisseurs), une liste complète de
+**tous les outils individuels** en liens directs (18 calculateurs, 12 convertisseurs)
+— plus besoin de passer par une sous-catégorie intermédiaire. Cliquer un lien fait
+défiler directement jusqu'à cet outil précis.
+
+**Le bouton URGENCE du menu principal a été remplacé par un menu « Outils »**, avec
+ses deux groupes (Calculateurs / Convertisseurs) et les 30 liens, accessible de
+partout sur le site. La bulle flottante « 🚨 Urgence » (en bas de l'écran) et le
+bouton d'urgence dans la fenêtre de première visite restent inchangés — seul le lien
+dans la barre de menu du haut a été remplacé; l'accès à l'urgence reste donc
+disponible partout, juste pas à cet endroit précis du menu.
+
+Un clic sur un lien du menu Outils qui pointe vers un convertisseur (actuellement
+caché derrière le mode Calculateurs) fait automatiquement basculer vers le bon mode
+avant de faire défiler la page — géré par `activateModeForHash()` dans
+`convertisseur.js`.
+
 ## 4. Formulaire de contact
 
 Deux façons d'envoyer les demandes du formulaire, gérées par le serveur (`POST

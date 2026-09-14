@@ -357,6 +357,18 @@ p { margin: 0 0 1em; max-width: 62ch; }
     z-index: 30;
   }
   .site-nav-item-dropdown:hover .site-nav-submenu { display: flex; }
+
+  .site-nav-submenu-outils {
+    width: 560px;
+    max-height: 70vh;
+    overflow-y: auto;
+  }
+  .site-nav-submenu-outils .site-nav-submenu-links-stack {
+    columns: 2;
+    column-gap: 20px;
+  }
+  .site-nav-submenu-outils .site-nav-submenu-label { break-inside: avoid; break-after: avoid; }
+  .site-nav-submenu-outils a { break-inside: avoid; font-size: 0.85rem; }
 }
 
 /* ---------- Hero ---------- */
@@ -1987,32 +1999,34 @@ body.gate-open { overflow: hidden; }
 }
 .conv-mode-panel[hidden] { display: none; }
 
-.conv-tabs {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-  margin-bottom: 28px;
-  border-bottom: 2px solid rgba(32,27,20,0.1);
-  padding-bottom: 12px;
+.conv-tool-list {
+  list-style: none;
+  margin: 0 0 30px;
+  padding: 18px 20px;
+  background: var(--birch-050);
+  border: 1px solid rgba(32,27,20,0.1);
+  border-radius: var(--radius-lg);
+  columns: 2;
+  column-gap: 24px;
   position: sticky;
   top: 64px;
   z-index: 20;
-  background: var(--birch-100);
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
 }
-.conv-tab {
-  padding: 9px 16px;
-  border: 1.5px solid rgba(32,27,20,0.15);
-  background: var(--birch-050);
-  border-radius: 20px;
+.conv-tool-list li { break-inside: avoid; margin-bottom: 4px; }
+.conv-tool-link {
+  display: block;
+  padding: 7px 10px;
+  border-radius: 6px;
   font-family: var(--sans);
   font-weight: 600;
   font-size: 0.85rem;
   color: var(--ink-600);
-  cursor: pointer;
   text-decoration: none;
-  display: inline-block;
+  line-height: 1.3;
 }
-.conv-tab:hover { color: var(--amber-700); border-color: var(--amber-600); }
+.conv-tool-link:hover { color: var(--amber-700); background: var(--birch-100); }
 .conv-panel[hidden] { display: none; }
 .conv-panel-highlight { animation: conv-flash 1.5s ease; }
 @keyframes conv-flash {
@@ -2021,6 +2035,10 @@ body.gate-open { overflow: hidden; }
 }
 
 .conv-tool { scroll-margin-top: 100px; }
+
+@media (max-width: 640px) {
+  .conv-tool-list { columns: 1; position: static; max-height: none; }
+}
 
 .conv-tool {
   background: var(--birch-050);

@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,500&family=Playfair+Display:wght@600;700&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="icon" href="assets/favicon.ico">
-<link rel="stylesheet" href="assets/style.css?v=73">
+<link rel="stylesheet" href="assets/style.css?v=74">
 <script>
 (function() {
   try {
@@ -194,7 +194,47 @@
         </div>
       </div>
     </div>
-    <button type="button" class="site-nav-urgence" data-urgence-trigger data-c="nav.urgence">URGENCE</button>
+    <div class="site-nav-item-dropdown" id="nav-outils-dropdown">
+      <button type="button" class="site-nav-dropdown-toggle" id="nav-outils-toggle" aria-expanded="false" aria-controls="nav-outils-submenu">
+        <span data-c="nav.outils">Outils</span> <span class="caret">▾</span>
+      </button>
+      <div class="site-nav-submenu site-nav-submenu-outils" id="nav-outils-submenu">
+        <div class="site-nav-submenu-links site-nav-submenu-links-stack">
+          <span class="site-nav-submenu-label">Calculateurs</span>
+          <a href="/convertisseur#tool-rendement-de-la-seve-au-sirop">Rendement — de la sève au sirop</a>
+          <a href="/convertisseur#tool-point-d-ebullition-et-temperature-de-fin">Point d&#x27;ébullition et température de finition</a>
+          <a href="/convertisseur#tool-concentration-seve-concentre-sirop">Concentration sève / concentré / sirop</a>
+          <a href="/convertisseur#tool-volume-d-eau-selon-la-longueur-d-un-tube">Volume d&#x27;eau selon la longueur d&#x27;un tube</a>
+          <a href="/convertisseur#tool-volume-d-un-reservoir">Volume d&#x27;un réservoir</a>
+          <a href="/convertisseur#tool-volume-d-un-evaporateur-casserole">Volume d&#x27;un évaporateur (casserole)</a>
+          <a href="/convertisseur#tool-poids-specifique-densite-selon-le-brix">Poids spécifique (densité) selon le ° Brix</a>
+          <a href="/convertisseur#tool-eau-a-ajouter-pour-reduire-un-sirop">Eau à ajouter pour réduire un sirop</a>
+          <a href="/convertisseur#tool-melange-de-deux-sirops-pour-atteindre-66">Mélange de deux sirops pour atteindre 66° Brix</a>
+          <a href="/convertisseur#tool-valeur-de-ta-production">Valeur de ta production</a>
+          <a href="/convertisseur#tool-estimation-par-nombre-d-entailles">Estimation par nombre d&#x27;entailles</a>
+          <a href="/convertisseur#tool-osmose-calcul-du-pep-permeabilite-a-l-ea">Osmose — calcul du PEP (perméabilité à l&#x27;eau pure)</a>
+          <a href="/convertisseur#tool-solution-de-lavage-dilution">Solution de lavage — dilution</a>
+          <a href="/convertisseur#tool-surface-d-une-presse-a-terre-diatomee">Surface d&#x27;une presse à terre diatomée</a>
+          <a href="/convertisseur#tool-transmittance-d-un-melange-de-sirop">Transmittance d&#x27;un mélange de sirop</a>
+          <a href="/convertisseur#tool-volume-a-melanger-pour-une-transmittance">Volume à mélanger pour une transmittance cible</a>
+          <a href="/convertisseur#tool-debit-d-une-pompe-a-vide-correction-selo">Débit d&#x27;une pompe à vide — correction selon pression et température</a>
+          <a href="/convertisseur#tool-debit-d-evaporation">Débit d&#x27;évaporation</a>
+          <span class="site-nav-submenu-label">Convertisseurs</span>
+          <a href="/convertisseur#tool-sirop-beurre-tire-sucre">Sirop / Beurre / Tire / Sucre</a>
+          <a href="/convertisseur#tool-concentration">Concentration</a>
+          <a href="/convertisseur#tool-poids">Poids</a>
+          <a href="/convertisseur#tool-pression">Pression</a>
+          <a href="/convertisseur#tool-temperature">Température</a>
+          <a href="/convertisseur#tool-distance">Distance</a>
+          <a href="/convertisseur#tool-surface">Surface</a>
+          <a href="/convertisseur#tool-volume">Volume</a>
+          <a href="/convertisseur#tool-vitesse">Vitesse</a>
+          <a href="/convertisseur#tool-force">Force</a>
+          <a href="/convertisseur#tool-energie">Énergie</a>
+          <a href="/convertisseur#tool-puissance">Puissance</a>
+        </div>
+      </div>
+    </div>
   </nav>
 </header>
 
@@ -216,17 +256,30 @@
     </div>
 
     <div class="conv-mode-panel" data-mode="calculateurs">
-      <div class="conv-tabs" id="conv-subnav-calculateurs">
-        <a href="#sec-rendement" class="conv-tab">Rendement &amp; Cuisson</a>
-        <a href="#sec-volumes" class="conv-tab">Volumes</a>
-        <a href="#sec-densite" class="conv-tab">Densité &amp; Dilution</a>
-        <a href="#sec-conversions" class="conv-tab">Prix &amp; Estimation</a>
-        <a href="#sec-filtration" class="conv-tab">Équipement &amp; Couleur</a>
-      </div>
+      <ul class="conv-tool-list">
+        <li><a href="#tool-rendement-de-la-seve-au-sirop" class="conv-tool-link">Rendement — de la sève au sirop</a></li>
+        <li><a href="#tool-point-d-ebullition-et-temperature-de-fin" class="conv-tool-link">Point d&#x27;ébullition et température de finition</a></li>
+        <li><a href="#tool-concentration-seve-concentre-sirop" class="conv-tool-link">Concentration sève / concentré / sirop</a></li>
+        <li><a href="#tool-volume-d-eau-selon-la-longueur-d-un-tube" class="conv-tool-link">Volume d&#x27;eau selon la longueur d&#x27;un tube</a></li>
+        <li><a href="#tool-volume-d-un-reservoir" class="conv-tool-link">Volume d&#x27;un réservoir</a></li>
+        <li><a href="#tool-volume-d-un-evaporateur-casserole" class="conv-tool-link">Volume d&#x27;un évaporateur (casserole)</a></li>
+        <li><a href="#tool-poids-specifique-densite-selon-le-brix" class="conv-tool-link">Poids spécifique (densité) selon le ° Brix</a></li>
+        <li><a href="#tool-eau-a-ajouter-pour-reduire-un-sirop" class="conv-tool-link">Eau à ajouter pour réduire un sirop</a></li>
+        <li><a href="#tool-melange-de-deux-sirops-pour-atteindre-66" class="conv-tool-link">Mélange de deux sirops pour atteindre 66° Brix</a></li>
+        <li><a href="#tool-valeur-de-ta-production" class="conv-tool-link">Valeur de ta production</a></li>
+        <li><a href="#tool-estimation-par-nombre-d-entailles" class="conv-tool-link">Estimation par nombre d&#x27;entailles</a></li>
+        <li><a href="#tool-osmose-calcul-du-pep-permeabilite-a-l-ea" class="conv-tool-link">Osmose — calcul du PEP (perméabilité à l&#x27;eau pure)</a></li>
+        <li><a href="#tool-solution-de-lavage-dilution" class="conv-tool-link">Solution de lavage — dilution</a></li>
+        <li><a href="#tool-surface-d-une-presse-a-terre-diatomee" class="conv-tool-link">Surface d&#x27;une presse à terre diatomée</a></li>
+        <li><a href="#tool-transmittance-d-un-melange-de-sirop" class="conv-tool-link">Transmittance d&#x27;un mélange de sirop</a></li>
+        <li><a href="#tool-volume-a-melanger-pour-une-transmittance" class="conv-tool-link">Volume à mélanger pour une transmittance cible</a></li>
+        <li><a href="#tool-debit-d-une-pompe-a-vide-correction-selo" class="conv-tool-link">Débit d&#x27;une pompe à vide — correction selon pression et température</a></li>
+        <li><a href="#tool-debit-d-evaporation" class="conv-tool-link">Débit d&#x27;évaporation</a></li>
+      </ul>
 
     <!-- ===== Onglet : Rendement & Cuisson ===== -->
     <div class="conv-panel" id="sec-rendement">
-      <div class="conv-tool">
+      <div class="conv-tool" id="tool-rendement-de-la-seve-au-sirop">
         <h2>Rendement — de la sève au sirop</h2>
         <p>Selon la <strong>Règle de 87</strong> : le nombre de litres (ou gallons) de sève nécessaires pour produire une quantité donnée de sirop à 66° Brix, selon le taux de sucre de ta sève.</p>
         <div class="conv-row">
@@ -249,7 +302,7 @@
         <div class="conv-result" id="conv-yield-result"></div>
       </div>
 
-      <div class="conv-tool">
+      <div class="conv-tool" id="tool-point-d-ebullition-et-temperature-de-fin">
         <h2>Point d'ébullition et température de finition</h2>
         <p>Le point d'ébullition de l'eau baisse avec l'altitude — ce qui change la température à laquelle ton sirop doit être versé pour atteindre la densité voulue.</p>
         <div class="conv-row">
@@ -269,7 +322,7 @@
         </div>
       </div>
 
-      <div class="conv-tool">
+      <div class="conv-tool" id="tool-concentration-seve-concentre-sirop">
         <h2>Concentration sève / concentré / sirop</h2>
         <p>Pour un procédé avec pré-concentration à l'osmose inverse : combien de concentré tu obtiendras, le taux de séparation de la membrane, et combien de sirop fini au final (pertes de procédé incluses).</p>
         <div class="conv-row">
@@ -309,7 +362,7 @@
 
     <!-- ===== Onglet : Volumes ===== -->
     <div class="conv-panel" id="sec-volumes">
-      <div class="conv-tool">
+      <div class="conv-tool" id="tool-volume-d-eau-selon-la-longueur-d-un-tube">
         <h2>Volume d'eau selon la longueur d'un tube</h2>
         <p>Le volume de sève (ou d'eau) contenu dans une longueur donnée de tubulure, selon son diamètre intérieur.</p>
         <div class="conv-row">
@@ -335,7 +388,7 @@
         <div class="conv-result" id="conv-tube-result"></div>
       </div>
 
-      <div class="conv-tool">
+      <div class="conv-tool" id="tool-volume-d-un-reservoir">
         <h2>Volume d'un réservoir</h2>
         <p>Calcule le volume d'un réservoir cylindrique ou rectangulaire.</p>
         <div class="conv-field conv-field-narrow">
@@ -372,7 +425,7 @@
         <div class="conv-result" id="conv-tank-result"></div>
       </div>
 
-      <div class="conv-tool">
+      <div class="conv-tool" id="tool-volume-d-un-evaporateur-casserole">
         <h2>Volume d'un évaporateur (casserole)</h2>
         <p>Le volume de liquide contenu dans une casserole rectangulaire, selon la profondeur de remplissage.</p>
         <div class="conv-row">
@@ -395,7 +448,7 @@
 
     <!-- ===== Onglet : Densité & Dilution ===== -->
     <div class="conv-panel" id="sec-densite">
-      <div class="conv-tool">
+      <div class="conv-tool" id="tool-poids-specifique-densite-selon-le-brix">
         <h2>Poids spécifique (densité) selon le ° Brix</h2>
         <p>La densité relative (gravité spécifique) d'une solution sucrée à 20 °C, selon sa lecture en ° Brix.</p>
         <div class="conv-field conv-field-narrow">
@@ -405,7 +458,7 @@
         <div class="conv-result" id="conv-sg-result"></div>
       </div>
 
-      <div class="conv-tool">
+      <div class="conv-tool" id="tool-eau-a-ajouter-pour-reduire-un-sirop">
         <h2>Eau à ajouter pour réduire un sirop</h2>
         <p>La quantité d'eau d'érable (ou d'eau pure) à ajouter à un sirop trop dense pour le ramener à la densité désirée.</p>
         <div class="conv-row">
@@ -425,7 +478,7 @@
         <div class="conv-result" id="conv-dilute-result"></div>
       </div>
 
-      <div class="conv-tool">
+      <div class="conv-tool" id="tool-melange-de-deux-sirops-pour-atteindre-66">
         <h2>Mélange de deux sirops pour atteindre 66° Brix</h2>
         <p>Combien mélanger d'un sirop trop épais avec un sirop trop dilué (ou de l'eau) pour obtenir la densité cible.</p>
         <div class="conv-row">
@@ -452,7 +505,7 @@
 
     <!-- ===== Onglet : Prix & Estimation ===== -->
     <div class="conv-panel" id="sec-conversions">
-      <div class="conv-tool">
+      <div class="conv-tool" id="tool-valeur-de-ta-production">
         <h2>Valeur de ta production</h2>
         <p>Calcule la valeur totale d'une quantité de sirop selon ton propre prix de vente (le prix du marché varie — entre le tien).</p>
         <div class="conv-row">
@@ -486,7 +539,7 @@
         <div class="conv-result" id="conv-price-result"></div>
       </div>
 
-      <div class="conv-tool">
+      <div class="conv-tool" id="tool-estimation-par-nombre-d-entailles">
         <h2>Estimation par nombre d'entailles</h2>
         <p>Une estimation approximative — la production réelle varie énormément selon la saison, la génétique des arbres, l'équipement (vacuum, osmose) et les conditions météo.</p>
         <div class="conv-field conv-field-narrow">
@@ -499,7 +552,7 @@
 
     <!-- ===== Onglet : Équipement & Couleur ===== -->
     <div class="conv-panel" id="sec-filtration">
-      <div class="conv-tool">
+      <div class="conv-tool" id="tool-osmose-calcul-du-pep-permeabilite-a-l-ea">
         <h2>Osmose — calcul du PEP (perméabilité à l'eau pure)</h2>
         <p>Compare le débit de ta membrane aujourd'hui à son débit de départ, corrigé pour la température (les membranes filtrent plus vite quand c'est plus chaud — il faut corriger pour comparer avec justesse).</p>
         <div class="conv-row">
@@ -526,7 +579,7 @@
         <p class="conv-note">Facteur de correction selon : Filmtec — Reverse Osmosis Membranes Technical Manual (Doc. No. 45-D01504, version 7, février 2021). Le débit peut être entré dans n'importe quelle unité cohérente (L/h, gal/h, etc.) — seul le rapport compte.</p>
       </div>
 
-      <div class="conv-tool">
+      <div class="conv-tool" id="tool-solution-de-lavage-dilution">
         <h2>Solution de lavage — dilution</h2>
         <p>La quantité d'eau à ajouter à un produit de lavage concentré pour obtenir la concentration voulue.</p>
         <div class="conv-row">
@@ -546,7 +599,7 @@
         <div class="conv-result" id="conv-clean-result"></div>
       </div>
 
-      <div class="conv-tool">
+      <div class="conv-tool" id="tool-surface-d-une-presse-a-terre-diatomee">
         <h2>Surface d'une presse à terre diatomée</h2>
         <p>La surface de filtration totale (les deux côtés de chaque plaque comptent) d'une presse carrée ou cylindrique.</p>
         <div class="conv-field conv-field-narrow">
@@ -575,7 +628,7 @@
         <div class="conv-result" id="conv-de-result"></div>
       </div>
 
-      <div class="conv-tool">
+      <div class="conv-tool" id="tool-transmittance-d-un-melange-de-sirop">
         <h2>Transmittance d'un mélange de sirop</h2>
         <p>La transmittance (couleur/clarté) résultante d'un mélange de deux sirops — ce n'est pas une simple moyenne, la lumière se comporte de façon logarithmique.</p>
         <div class="conv-row">
@@ -599,7 +652,7 @@
         <div class="conv-result" id="conv-trans-result"></div>
       </div>
 
-      <div class="conv-tool">
+      <div class="conv-tool" id="tool-volume-a-melanger-pour-une-transmittance">
         <h2>Volume à mélanger pour une transmittance cible</h2>
         <p>Combien ajouter d'un sirop B (d'une transmittance connue) à ton sirop A pour atteindre la transmittance visée.</p>
         <div class="conv-row">
@@ -623,7 +676,7 @@
         <div class="conv-result" id="conv-transv-result"></div>
       </div>
 
-      <div class="conv-tool">
+      <div class="conv-tool" id="tool-debit-d-une-pompe-a-vide-correction-selo">
         <h2>Débit d'une pompe à vide — correction selon pression et température</h2>
         <p>Compare un débit mesuré dans une condition à ce qu'il donnerait dans une autre (ex. : conditions du fabricant vs conditions réelles sur le terrain) — basé sur la loi des gaz.</p>
         <h3 class="conv-subtitle">Mesure de référence</h3>
@@ -656,7 +709,7 @@
         <p class="conv-note">« Pression » est la lecture de vacuum (0 po Hg = pression atmosphérique). Le débit peut être dans n'importe quelle unité — le résultat sort dans la même unité.</p>
       </div>
 
-      <div class="conv-tool">
+      <div class="conv-tool" id="tool-debit-d-evaporation">
         <h2>Débit d'évaporation</h2>
         <p>La quantité d'eau évaporée par unité de temps et par surface totale de ton évaporateur (bilan de matière simple — sève entrante à ton Brix de départ, sirop sortant à ton Brix cible).</p>
         <div class="conv-row">
@@ -684,22 +737,22 @@
     </div><!-- /conv-mode-panel calculateurs -->
 
     <div class="conv-mode-panel" data-mode="convertisseurs" hidden>
-      <div class="conv-tabs" id="conv-subnav-convertisseurs">
-        <a href="#sec-conv-produits" class="conv-tab">Sirop/Beurre/Tire/Sucre</a>
-        <a href="#sec-conv-concentration" class="conv-tab">Concentration</a>
-        <a href="#sec-conv-poids" class="conv-tab">Poids</a>
-        <a href="#sec-conv-pression" class="conv-tab">Pression</a>
-        <a href="#sec-conv-temperature" class="conv-tab">Température</a>
-        <a href="#sec-conv-distance" class="conv-tab">Distance</a>
-        <a href="#sec-conv-surface" class="conv-tab">Surface</a>
-        <a href="#sec-conv-volume" class="conv-tab">Volume</a>
-        <a href="#sec-conv-vitesse" class="conv-tab">Vitesse</a>
-        <a href="#sec-conv-force" class="conv-tab">Force</a>
-        <a href="#sec-conv-energie" class="conv-tab">Énergie</a>
-        <a href="#sec-conv-puissance" class="conv-tab">Puissance</a>
-      </div>
+      <ul class="conv-tool-list">
+        <li><a href="#tool-sirop-beurre-tire-sucre" class="conv-tool-link">Sirop / Beurre / Tire / Sucre</a></li>
+        <li><a href="#tool-concentration" class="conv-tool-link">Concentration</a></li>
+        <li><a href="#tool-poids" class="conv-tool-link">Poids</a></li>
+        <li><a href="#tool-pression" class="conv-tool-link">Pression</a></li>
+        <li><a href="#tool-temperature" class="conv-tool-link">Température</a></li>
+        <li><a href="#tool-distance" class="conv-tool-link">Distance</a></li>
+        <li><a href="#tool-surface" class="conv-tool-link">Surface</a></li>
+        <li><a href="#tool-volume" class="conv-tool-link">Volume</a></li>
+        <li><a href="#tool-vitesse" class="conv-tool-link">Vitesse</a></li>
+        <li><a href="#tool-force" class="conv-tool-link">Force</a></li>
+        <li><a href="#tool-energie" class="conv-tool-link">Énergie</a></li>
+        <li><a href="#tool-puissance" class="conv-tool-link">Puissance</a></li>
+      </ul>
 
-      <div class="conv-tool" id="sec-conv-produits">
+      <div class="conv-tool" id="tool-sirop-beurre-tire-sucre">
         <h2>Sirop / Beurre / Tire / Sucre</h2>
         <p>Convertis entre litres, gallons et poids, selon le produit (facteurs officiels MAPAQ, basés sur un sirop à 66° Brix).</p>
         <div class="conv-row">
@@ -730,7 +783,7 @@
         <div class="conv-result" id="conv-product-result"></div>
       </div>
 
-      <div class="conv-tool" id="sec-conv-concentration">
+      <div class="conv-tool" id="tool-concentration">
         <h2>Concentration</h2>
         <p>Convertis entre ° Brix, gravité spécifique (densité) et ° Baumé pour une solution sucrée à 20 °C.</p>
         <div class="conv-row">
@@ -751,7 +804,7 @@
         <p class="conv-note">Basé sur la table officielle Centre ACER (0 à 70° Brix). Hors de cette plage, seule la relation Baumé ↔ densité reste calculée.</p>
       </div>
 
-      <div class="conv-tool conv-generic" data-category="poids" id="sec-conv-poids">
+      <div class="conv-tool conv-generic" data-category="poids" id="tool-poids">
         <h2>Poids</h2>
         <div class="conv-row">
           <div class="conv-field">
@@ -766,7 +819,7 @@
         <div class="conv-grid conv-generic-result"></div>
       </div>
 
-      <div class="conv-tool conv-generic" data-category="pression" id="sec-conv-pression">
+      <div class="conv-tool conv-generic" data-category="pression" id="tool-pression">
         <h2>Pression</h2>
         <div class="conv-row">
           <div class="conv-field">
@@ -781,7 +834,7 @@
         <div class="conv-grid conv-generic-result"></div>
       </div>
 
-      <div class="conv-tool" id="sec-conv-temperature">
+      <div class="conv-tool" id="tool-temperature">
         <h2>Température</h2>
         <div class="conv-row">
           <div class="conv-field">
@@ -801,7 +854,7 @@
         <div class="conv-grid" id="conv-temp-result"></div>
       </div>
 
-      <div class="conv-tool conv-generic" data-category="distance" id="sec-conv-distance">
+      <div class="conv-tool conv-generic" data-category="distance" id="tool-distance">
         <h2>Distance</h2>
         <div class="conv-row">
           <div class="conv-field">
@@ -816,7 +869,7 @@
         <div class="conv-grid conv-generic-result"></div>
       </div>
 
-      <div class="conv-tool conv-generic" data-category="surface" id="sec-conv-surface">
+      <div class="conv-tool conv-generic" data-category="surface" id="tool-surface">
         <h2>Surface</h2>
         <div class="conv-row">
           <div class="conv-field">
@@ -831,7 +884,7 @@
         <div class="conv-grid conv-generic-result"></div>
       </div>
 
-      <div class="conv-tool conv-generic" data-category="volume" id="sec-conv-volume">
+      <div class="conv-tool conv-generic" data-category="volume" id="tool-volume">
         <h2>Volume</h2>
         <div class="conv-row">
           <div class="conv-field">
@@ -846,7 +899,7 @@
         <div class="conv-grid conv-generic-result"></div>
       </div>
 
-      <div class="conv-tool conv-generic" data-category="vitesse" id="sec-conv-vitesse">
+      <div class="conv-tool conv-generic" data-category="vitesse" id="tool-vitesse">
         <h2>Vitesse</h2>
         <div class="conv-row">
           <div class="conv-field">
@@ -861,7 +914,7 @@
         <div class="conv-grid conv-generic-result"></div>
       </div>
 
-      <div class="conv-tool conv-generic" data-category="force" id="sec-conv-force">
+      <div class="conv-tool conv-generic" data-category="force" id="tool-force">
         <h2>Force</h2>
         <div class="conv-row">
           <div class="conv-field">
@@ -876,7 +929,7 @@
         <div class="conv-grid conv-generic-result"></div>
       </div>
 
-      <div class="conv-tool conv-generic" data-category="energie" id="sec-conv-energie">
+      <div class="conv-tool conv-generic" data-category="energie" id="tool-energie">
         <h2>Énergie</h2>
         <div class="conv-row">
           <div class="conv-field">
@@ -891,7 +944,7 @@
         <div class="conv-grid conv-generic-result"></div>
       </div>
 
-      <div class="conv-tool conv-generic" data-category="puissance" id="sec-conv-puissance">
+      <div class="conv-tool conv-generic" data-category="puissance" id="tool-puissance">
         <h2>Puissance</h2>
         <div class="conv-row">
           <div class="conv-field">
@@ -934,7 +987,7 @@
   </div>
 </footer>
 
-<script src="assets/script.js?v=73"></script>
-<script src="assets/convertisseur.js?v=73"></script>
+<script src="assets/script.js?v=74"></script>
+<script src="assets/convertisseur.js?v=74"></script>
 </body>
 </html>
