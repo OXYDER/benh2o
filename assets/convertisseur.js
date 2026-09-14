@@ -289,6 +289,7 @@
       document.querySelectorAll(".conv-mode-panel").forEach((p) => {
         p.hidden = p.dataset.mode !== mode;
       });
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
       return;
     }
 
@@ -317,6 +318,7 @@
 
   function setupTabs() {
     activateModeForHash();
+    window.addEventListener("load", activateModeForHash);
     window.addEventListener("hashchange", activateModeForHash);
 
     // Bascule de mode : Calculateurs <-> Convertisseurs
