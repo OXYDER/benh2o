@@ -690,17 +690,6 @@
   }
 
   /* ---------- Fenêtre d'accueil (première visite) ---------- */
-  const VISITOR_CITY_KEY = "bl_visitor_city";
-
-  function showVisitorBadge() {
-    const city = localStorage.getItem(VISITOR_CITY_KEY);
-    const badge = document.getElementById("visitor-badge");
-    const cityEl = document.getElementById("visitor-city");
-    if (city && badge && cityEl) {
-      cityEl.textContent = city;
-      badge.hidden = false;
-    }
-  }
 
   function setupEntryGate() {
     const gate = document.getElementById("entry-gate");
@@ -739,13 +728,6 @@
       result.innerHTML = r.html;
       result.classList.add(r.ok ? "yes" : "no", "show");
       if (continueBtn) continueBtn.hidden = false;
-
-      // Retient la ville indiquée (seulement si le visiteur a écrit quelque chose)
-      // pour la réafficher ailleurs sur le site — jamais si le champ est resté vide.
-      if (typed) {
-        localStorage.setItem(VISITOR_CITY_KEY, typed);
-        showVisitorBadge();
-      }
 
       // Reflète aussi la recherche dans la section plus bas sur la page, pour la cohérence.
       const mainInput = document.getElementById("zone-input");
@@ -1570,7 +1552,6 @@
     setupZoneChecker();
     setupEntryGate();
     setupContent();
-    showVisitorBadge();
     setupNav();
     setupNavActiveState();
     setupLeafParticles();
