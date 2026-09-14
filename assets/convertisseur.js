@@ -294,7 +294,7 @@
       p.hidden = p.dataset.mode !== mode;
     });
     setTimeout(() => {
-      const headerOffset = 90;
+      const headerOffset = 110;
       const top = target.getBoundingClientRect().top + window.pageYOffset - headerOffset;
       window.scrollTo({ top, behavior: "smooth" });
       target.classList.add("conv-panel-highlight");
@@ -325,7 +325,7 @@
         e.preventDefault();
         const target = document.querySelector(link.getAttribute("href"));
         if (!target) return;
-        const headerOffset = 90;
+        const headerOffset = 110;
         const top = target.getBoundingClientRect().top + window.pageYOffset - headerOffset;
         window.scrollTo({ top, behavior: "smooth" });
         target.classList.add("conv-panel-highlight");
