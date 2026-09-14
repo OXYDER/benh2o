@@ -13,6 +13,17 @@
       .trim();
   }
 
+  // Développe les abréviations courantes de noms de municipalités québécoises
+  // (ex. "St-Rémi" -> "saint-remi") pour que la recherche/auto-complétion
+  // retrouve le bon nom même écrit en abrégé.
+  function expandAbbreviations(normalized) {
+    return normalized
+      .replace(/\bste\b/g, "sainte")
+      .replace(/\bst\b/g, "saint")
+      .replace(/\bmtl\b/g, "montreal")
+      .replace(/\bqc\b/g, "quebec");
+  }
+
   function haversineKm(lat1, lon1, lat2, lon2) {
     const R = 6371;
     const dLat = ((lat2 - lat1) * Math.PI) / 180;
@@ -102,6 +113,10 @@
     const form = document.getElementById("rdv-form");
     const submitBtn = document.getElementById("rdv-submit");
     const status = document.getElementById("rdv-status");
+
+    loadZoneData().then(() =>
+      setupCityAutocomplete(document.getElementById("rdv-ville"), document.getElementById("rdv-ville-autocomplete"), getAllCityNames)
+    );
 
     const JOURS = ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"];
     const MOIS = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
@@ -434,10 +449,14 @@
   }
 
   function findNearestDistributeur(query) {
+    const expanded = expandAbbreviations(query);
     const centroidNames = Object.keys(Zone.centroids);
     const matchName =
-      centroidNames.find((n) => normalize(n) === query) ||
-      centroidNames.find((n) => normalize(n).includes(query) || query.includes(normalize(n)));
+      centroidNames.find((n) => normalize(n) === query || normalize(n) === expanded) ||
+      centroidNames.find((n) => {
+        const m = normalize(n);
+        return m.includes(query) || query.includes(m) || m.includes(expanded) || expanded.includes(m);
+      });
     if (!matchName || !Zone.distributeurs.length) return null;
 
     const [lat, lon] = Zone.centroids[matchName];
@@ -454,10 +473,14 @@
   }
 
   function findMatch(query) {
-    let hit = Zone.flat.find((z) => normalize(z.municipality) === query);
+    const expanded = expandAbbreviations(query);
+    let hit = Zone.flat.find((z) => normalize(z.municipality) === query || normalize(z.municipality) === expanded);
     if (hit) return { level: "municipality", ...hit };
 
-    hit = Zone.flat.find((z) => normalize(z.municipality).includes(query) || query.includes(normalize(z.municipality)));
+    hit = Zone.flat.find((z) => {
+      const m = normalize(z.municipality);
+      return m.includes(query) || query.includes(m) || m.includes(expanded) || expanded.includes(m);
+    });
     if (hit) return { level: "municipality", ...hit };
 
     hit = Zone.flat.find((z) => normalize(z.mrc).includes(query) || query.includes(normalize(z.mrc)));
@@ -511,15 +534,96 @@
     };
   }
 
-  function renderSuggestionsInto(datalistEl) {
-    if (!datalistEl) return;
+  function getAllCityNames() {
     const names = new Set();
     Zone.flat.forEach((z) => names.add(z.municipality));
     Object.keys(Zone.centroids).forEach((n) => names.add(n));
-    datalistEl.innerHTML = Array.from(names)
-      .sort((a, b) => a.localeCompare(b, "fr"))
-      .map((n) => `<option value="${n}"></option>`)
-      .join("");
+    return Array.from(names).sort((a, b) => a.localeCompare(b, "fr"));
+  }
+
+  // Widget d'auto-complétion réutilisable : montre des suggestions cliquables
+  // (même si le texte tapé est abrégé, ex. "St-" -> "Saint-"), navigable au clavier.
+  function setupCityAutocomplete(inputEl, listEl, getNames, onSelect) {
+    if (!inputEl || !listEl) return;
+    let items = [];
+    let activeIndex = -1;
+
+    function render(query) {
+      const q = normalize(query);
+      if (!q) {
+        listEl.innerHTML = "";
+        listEl.hidden = true;
+        return;
+      }
+      const expanded = expandAbbreviations(q);
+      const scored = getNames()
+        .map((n) => {
+          const norm = normalize(n);
+          let score = 0;
+          if (norm.startsWith(q) || norm.startsWith(expanded)) score = 3;
+          else if (norm.includes(q) || norm.includes(expanded)) score = 2;
+          return { n, score };
+        })
+        .filter((x) => x.score > 0)
+        .sort((a, b) => b.score - a.score || a.n.localeCompare(b.n, "fr"))
+        .slice(0, 8);
+      items = scored.map((x) => x.n);
+      activeIndex = -1;
+      if (!items.length) {
+        listEl.innerHTML = "";
+        listEl.hidden = true;
+        return;
+      }
+      listEl.innerHTML = items.map((n, i) => `<div class="autocomplete-item" data-idx="${i}">${n}</div>`).join("");
+      listEl.hidden = false;
+      listEl.querySelectorAll(".autocomplete-item").forEach((el) => {
+        el.addEventListener("mousedown", (e) => {
+          e.preventDefault();
+          select(Number(el.dataset.idx));
+        });
+      });
+    }
+
+    function select(idx) {
+      if (idx < 0 || idx >= items.length) return;
+      inputEl.value = items[idx];
+      listEl.innerHTML = "";
+      listEl.hidden = true;
+      if (onSelect) onSelect(items[idx]);
+    }
+
+    function updateActive() {
+      listEl.querySelectorAll(".autocomplete-item").forEach((el, i) => el.classList.toggle("active", i === activeIndex));
+    }
+
+    inputEl.addEventListener("input", () => render(inputEl.value));
+    inputEl.addEventListener("focus", () => {
+      if (inputEl.value) render(inputEl.value);
+    });
+    inputEl.addEventListener("blur", () => {
+      setTimeout(() => {
+        listEl.hidden = true;
+      }, 150);
+    });
+    inputEl.addEventListener("keydown", (e) => {
+      if (listEl.hidden) return;
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        activeIndex = Math.min(activeIndex + 1, items.length - 1);
+        updateActive();
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        activeIndex = Math.max(activeIndex - 1, 0);
+        updateActive();
+      } else if (e.key === "Enter") {
+        if (activeIndex >= 0) {
+          e.preventDefault();
+          select(activeIndex);
+        }
+      } else if (e.key === "Escape") {
+        listEl.hidden = true;
+      }
+    });
   }
 
   /* ---------- Section « Est-ce que je couvre ta région? » ---------- */
@@ -527,7 +631,7 @@
     const input = document.getElementById("zone-input");
     const button = document.getElementById("zone-submit");
     const result = document.getElementById("zone-result");
-    const suggestions = document.getElementById("zone-suggestions");
+    const suggestions = document.getElementById("zone-autocomplete");
     const listToggle = document.getElementById("zone-list-toggle");
     const listBody = document.getElementById("zone-list-body");
 
@@ -564,7 +668,7 @@
 
     loadZoneData()
       .then(({ zonesData }) => {
-        renderSuggestionsInto(suggestions);
+        setupCityAutocomplete(input, suggestions, getAllCityNames);
         renderGroupedList(zonesData);
       })
       .catch(() => {
@@ -609,7 +713,7 @@
     const input = document.getElementById("gate-input");
     const button = document.getElementById("gate-submit");
     const result = document.getElementById("gate-result");
-    const suggestions = document.getElementById("gate-suggestions");
+    const suggestions = document.getElementById("gate-autocomplete");
     const skipLink = document.getElementById("gate-skip");
     const closeBtn = document.getElementById("gate-close");
     const continueBtn = document.getElementById("gate-continue");
@@ -628,7 +732,7 @@
       }
     }
 
-    loadZoneData().then(() => renderSuggestionsInto(suggestions));
+    loadZoneData().then(() => setupCityAutocomplete(input, suggestions, getAllCityNames));
 
     function check() {
       const typed = input.value.trim();

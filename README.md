@@ -407,6 +407,19 @@ confortable pour une clientèle plus âgée ou plus conservatrice.
 Disponible dans `/admin` → Contenu de la page → Apparence du site, à essayer comme
 les autres.
 
+## 3q. Auto-complétion et auto-correction des noms de ville
+
+Les champs où on tape un nom de municipalité — le vérificateur de secteur (page
+d'accueil et fenêtre de première visite) et le champ Ville du formulaire de
+Rendez-vous — proposent maintenant une vraie liste de suggestions cliquables
+pendant que la personne tape, avec navigation au clavier (flèches + Entrée).
+
+**Auto-correction des abréviations** — taper « St-Rémi » retrouve bien
+« Saint-Rémi-de-Tingwick », même si l'abréviation ne correspond pas exactement au nom
+officiel. Pareil pour « Ste- » → « Sainte- ». Ça s'applique à la fois à la liste de
+suggestions et à la vérification elle-même (donc même sans cliquer une suggestion,
+soumettre « St-Rémi » fonctionne).
+
 ## 4. Formulaire de contact
 
 Deux façons d'envoyer les demandes du formulaire, gérées par le serveur (`POST
