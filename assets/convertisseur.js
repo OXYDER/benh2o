@@ -86,6 +86,7 @@
      (litres) directement — équivalent à l'original pour des unités de volume. */
   function setupConcentrationCalc() {
     const sapVolInput = document.getElementById("conv-conc-sap-vol");
+    const sapUnitSelect = document.getElementById("conv-conc-sap-unit");
     const sapBrixInput = document.getElementById("conv-conc-sap-brix");
     const osmBrixInput = document.getElementById("conv-conc-osm-brix");
     const syrupBrixInput = document.getElementById("conv-conc-syrup-brix");
@@ -93,8 +94,11 @@
     const resultEl = document.getElementById("conv-conc-result");
     if (!sapVolInput || !resultEl) return;
 
+    const unitLabel = { L: "litres", galUS: "gallons US", galImp: "gallons can." };
+
     function compute() {
       const sapVol = parseFloat(sapVolInput.value);
+      const unit = unitLabel[sapUnitSelect.value];
       const sapBrix = parseFloat(sapBrixInput.value);
       const osmBrix = parseFloat(osmBrixInput.value);
       const syrupBrix = parseFloat(syrupBrixInput.value);
@@ -103,19 +107,22 @@
         resultEl.innerHTML = "";
         return;
       }
+      // Le calcul est un bilan de proportions (ratios de °Brix) — le résultat sort
+      // naturellement dans la même unité que la quantité de sève entrée, peu importe
+      // laquelle (litres, gallons US ou gallons canadiens).
       const osmoseQty = (sapVol * sapBrix) / osmBrix;
       const separationRate = (1 - osmoseQty / sapVol) * 100;
       const syrupRaw = (sapVol * sapBrix) / syrupBrix;
       const syrupFinal = syrupRaw * (1 - loss / 100);
 
       resultEl.innerHTML = `
-        Concentré obtenu à l'osmose : <strong>${fmt(osmoseQty, 1)} litres</strong> à ${fmt(osmBrix, 1)}° Brix
+        Concentré obtenu à l'osmose : <strong>${fmt(osmoseQty, 1)} ${unit}</strong> à ${fmt(osmBrix, 1)}° Brix
         (taux de séparation ≈ ${fmt(separationRate, 1)} %).<br>
-        Sirop fini au final : <strong>${fmt(syrupFinal, 2)} litres</strong> à ${fmt(syrupBrix, 1)}° Brix
+        Sirop fini au final : <strong>${fmt(syrupFinal, 2)} ${unit}</strong> à ${fmt(syrupBrix, 1)}° Brix
         (pertes de ${fmt(loss, 1)} % déjà déduites).
       `;
     }
-    [sapVolInput, sapBrixInput, osmBrixInput, syrupBrixInput, lossInput].forEach((el) => el.addEventListener("input", compute));
+    [sapVolInput, sapUnitSelect, sapBrixInput, osmBrixInput, syrupBrixInput, lossInput].forEach((el) => el.addEventListener("input", compute));
     compute();
   }
 

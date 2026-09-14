@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,500&family=Playfair+Display:wght@600;700&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="icon" href="assets/favicon.ico">
-<link rel="stylesheet" href="assets/style.css?v=71">
+<link rel="stylesheet" href="assets/style.css?v=72">
 <script>
 (function() {
   try {
@@ -268,8 +268,15 @@
         <p>Pour un procédé avec pré-concentration à l'osmose inverse : combien de concentré tu obtiendras, le taux de séparation de la membrane, et combien de sirop fini au final (pertes de procédé incluses).</p>
         <div class="conv-row">
           <div class="conv-field">
-            <label for="conv-conc-sap-vol">Quantité de sève (litres)</label>
-            <input type="number" id="conv-conc-sap-vol" step="1" min="0" value="1000">
+            <label for="conv-conc-sap-vol">Quantité de sève</label>
+            <div class="conv-inline">
+              <input type="number" id="conv-conc-sap-vol" step="1" min="0" value="1000">
+              <select id="conv-conc-sap-unit">
+                <option value="L">litres</option>
+                <option value="galUS">gallons US</option>
+                <option value="galImp">gallons can.</option>
+              </select>
+            </div>
           </div>
           <div class="conv-field">
             <label for="conv-conc-sap-brix">° Brix de la sève</label>
@@ -727,7 +734,7 @@
   </div>
 </footer>
 
-<script src="assets/script.js?v=71"></script>
-<script src="assets/convertisseur.js?v=71"></script>
+<script src="assets/script.js?v=72"></script>
+<script src="assets/convertisseur.js?v=72"></script>
 </body>
 </html>
