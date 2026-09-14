@@ -330,7 +330,6 @@
         modePanels.forEach((p) => {
           p.hidden = p.dataset.mode !== btn.dataset.mode;
         });
-        window.scrollTo({ top: document.getElementById("conv-mode-switch").offsetTop - 20, behavior: "smooth" });
       });
     });
 
