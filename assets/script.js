@@ -726,10 +726,7 @@
     function close() {
       gate.hidden = true;
       document.body.classList.remove("gate-open");
-      const remember = document.getElementById("gate-remember");
-      if (remember && remember.checked) {
-        localStorage.setItem(VISITED_KEY, "1");
-      }
+      localStorage.setItem(VISITED_KEY, "1");
     }
 
     loadZoneData().then(() => setupCityAutocomplete(input, suggestions, getAllCityNames));
