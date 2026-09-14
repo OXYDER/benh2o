@@ -279,6 +279,19 @@
   function activateModeForHash() {
     const hash = location.hash;
     if (!hash) return;
+
+    // Liens du menu Outils (Calculateurs / Convertisseurs) : ces ancres ne
+    // correspondent à aucun élément du DOM, donc le navigateur ne peut pas y
+    // sauter tout seul — on bascule juste le mode, sans aucun défilement.
+    if (hash === "#mode-calculateurs" || hash === "#mode-convertisseurs") {
+      const mode = hash === "#mode-calculateurs" ? "calculateurs" : "convertisseurs";
+      document.querySelectorAll(".conv-mode-btn").forEach((b) => b.classList.toggle("active", b.dataset.mode === mode));
+      document.querySelectorAll(".conv-mode-panel").forEach((p) => {
+        p.hidden = p.dataset.mode !== mode;
+      });
+      return;
+    }
+
     let target;
     try {
       target = document.querySelector(hash);
@@ -293,10 +306,6 @@
     document.querySelectorAll(".conv-mode-panel").forEach((p) => {
       p.hidden = p.dataset.mode !== mode;
     });
-    // Si le lien pointe directement sur le mode (menu Outils : Calculateurs / Convertisseurs),
-    // on bascule juste le mode sans faire défiler la page. Seuls les liens vers un outil
-    // précis (à l'intérieur d'un mode) font défiler.
-    if (target === modePanel) return;
     setTimeout(() => {
       const headerOffset = 110;
       const top = target.getBoundingClientRect().top + window.pageYOffset - headerOffset;
