@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,500&family=Playfair+Display:wght@600;700&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="icon" href="assets/favicon.ico">
-<link rel="stylesheet" href="assets/style.css?v=70">
+<link rel="stylesheet" href="assets/style.css?v=71">
 <script>
 (function() {
   try {
@@ -261,6 +261,36 @@
         <div class="conv-table-wrap">
           <table class="conv-table" id="conv-alt-table"></table>
         </div>
+      </div>
+
+      <div class="conv-tool">
+        <h2>Concentration sève / concentré / sirop</h2>
+        <p>Pour un procédé avec pré-concentration à l'osmose inverse : combien de concentré tu obtiendras, le taux de séparation de la membrane, et combien de sirop fini au final (pertes de procédé incluses).</p>
+        <div class="conv-row">
+          <div class="conv-field">
+            <label for="conv-conc-sap-vol">Quantité de sève (litres)</label>
+            <input type="number" id="conv-conc-sap-vol" step="1" min="0" value="1000">
+          </div>
+          <div class="conv-field">
+            <label for="conv-conc-sap-brix">° Brix de la sève</label>
+            <input type="number" id="conv-conc-sap-brix" step="0.1" min="0.1" value="2.0">
+          </div>
+        </div>
+        <div class="conv-row">
+          <div class="conv-field">
+            <label for="conv-conc-osm-brix">° Brix du concentré (sortie osmose)</label>
+            <input type="number" id="conv-conc-osm-brix" step="0.1" min="0.1" value="6.0">
+          </div>
+          <div class="conv-field">
+            <label for="conv-conc-syrup-brix">° Brix du sirop fini</label>
+            <input type="number" id="conv-conc-syrup-brix" step="0.1" min="0.1" value="66">
+          </div>
+          <div class="conv-field">
+            <label for="conv-conc-loss">Pertes de procédé estimées (%)</label>
+            <input type="number" id="conv-conc-loss" step="0.1" min="0" max="99" value="2">
+          </div>
+        </div>
+        <div class="conv-result" id="conv-conc-result"></div>
       </div>
     </div>
 
@@ -697,7 +727,7 @@
   </div>
 </footer>
 
-<script src="assets/script.js?v=70"></script>
-<script src="assets/convertisseur.js?v=70"></script>
+<script src="assets/script.js?v=71"></script>
+<script src="assets/convertisseur.js?v=71"></script>
 </body>
 </html>

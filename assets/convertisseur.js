@@ -79,6 +79,46 @@
     compute();
   }
 
+  /* ---------- Concentration sève / concentré / sirop ----------
+     Formule exacte extraite de l'application (convertConcentration) : bilan de
+     matière sur 3 étapes (sève -> concentré à l'osmose -> sirop fini), avec taux
+     de séparation de la membrane et pertes de procédé. Calcul fait ici en volume
+     (litres) directement — équivalent à l'original pour des unités de volume. */
+  function setupConcentrationCalc() {
+    const sapVolInput = document.getElementById("conv-conc-sap-vol");
+    const sapBrixInput = document.getElementById("conv-conc-sap-brix");
+    const osmBrixInput = document.getElementById("conv-conc-osm-brix");
+    const syrupBrixInput = document.getElementById("conv-conc-syrup-brix");
+    const lossInput = document.getElementById("conv-conc-loss");
+    const resultEl = document.getElementById("conv-conc-result");
+    if (!sapVolInput || !resultEl) return;
+
+    function compute() {
+      const sapVol = parseFloat(sapVolInput.value);
+      const sapBrix = parseFloat(sapBrixInput.value);
+      const osmBrix = parseFloat(osmBrixInput.value);
+      const syrupBrix = parseFloat(syrupBrixInput.value);
+      const loss = parseFloat(lossInput.value) || 0;
+      if (!sapVol || !sapBrix || !osmBrix || !syrupBrix) {
+        resultEl.innerHTML = "";
+        return;
+      }
+      const osmoseQty = (sapVol * sapBrix) / osmBrix;
+      const separationRate = (1 - osmoseQty / sapVol) * 100;
+      const syrupRaw = (sapVol * sapBrix) / syrupBrix;
+      const syrupFinal = syrupRaw * (1 - loss / 100);
+
+      resultEl.innerHTML = `
+        Concentré obtenu à l'osmose : <strong>${fmt(osmoseQty, 1)} litres</strong> à ${fmt(osmBrix, 1)}° Brix
+        (taux de séparation ≈ ${fmt(separationRate, 1)} %).<br>
+        Sirop fini au final : <strong>${fmt(syrupFinal, 2)} litres</strong> à ${fmt(syrupBrix, 1)}° Brix
+        (pertes de ${fmt(loss, 1)} % déjà déduites).
+      `;
+    }
+    [sapVolInput, sapBrixInput, osmBrixInput, syrupBrixInput, lossInput].forEach((el) => el.addEventListener("input", compute));
+    compute();
+  }
+
   /* ---------- 2) Point d'ébullition selon l'altitude ----------
      Formules exactes extraites de l'application Convertisseur Acéricole (Centre ACER) :
      - boilingPointByAltitude : polynôme direct altitude -> température d'ébullition de l'eau
@@ -770,6 +810,7 @@
     setupTabs();
     setupYieldCalc();
     setupBoilingCalc();
+    setupConcentrationCalc();
     setupProductCalc();
     setupTapsCalc();
     setupTubeCalc();

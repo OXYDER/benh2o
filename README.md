@@ -492,6 +492,14 @@ deviennent disponibles autrement.
 
 Le convertisseur couvre maintenant les 16 calculateurs de l'application originale.
 
+## 3u. Concentration sève / concentré / sirop — le 17e outil
+
+Un calculateur distinct de la « Règle de 87 » (rendement simple sève→sirop) : celui-ci
+modélise un procédé avec **pré-concentration à l'osmose inverse**, en 3 étapes — sève
+→ concentré (au Brix de sortie de ta membrane) → sirop fini — avec le taux de
+séparation de la membrane et les pertes de procédé estimées, formule extraite
+exactement de la fonction `convertConcentration` de l'application originale.
+
 ## 4. Formulaire de contact
 
 Deux façons d'envoyer les demandes du formulaire, gérées par le serveur (`POST
