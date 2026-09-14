@@ -360,18 +360,6 @@ p { margin: 0 0 1em; max-width: 62ch; }
     z-index: 30;
   }
   .site-nav-item-dropdown:hover .site-nav-submenu { display: flex; }
-
-  .site-nav-submenu-outils {
-    width: 560px;
-    max-height: 70vh;
-    overflow-y: auto;
-  }
-  .site-nav-submenu-outils .site-nav-submenu-links-stack {
-    columns: 2;
-    column-gap: 20px;
-  }
-  .site-nav-submenu-outils .site-nav-submenu-label { break-inside: avoid; break-after: avoid; }
-  .site-nav-submenu-outils a { break-inside: avoid; font-size: 0.85rem; }
 }
 
 /* ---------- Hero ---------- */
