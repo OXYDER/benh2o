@@ -2034,7 +2034,7 @@ body.gate-open { overflow: hidden; }
 .conv-tool { scroll-margin-top: 100px; }
 
 @media (max-width: 640px) {
-  .conv-tool-list { columns: 1; max-height: 50vh; }
+  .conv-tool-list { columns: unset; column-width: unset; max-height: 50vh; }
 }
 
 .conv-tool {
