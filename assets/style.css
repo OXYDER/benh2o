@@ -1872,7 +1872,7 @@ body.gate-open { overflow: hidden; }
 }
 .theme-marine .brand,
 .theme-marine .brand .brand-subtitle {
-  color: var(--amber-600);
+  color: var(--birch-100);
 }
 .theme-marine .site-nav > a,
 .theme-marine .site-nav-dropdown-toggle {
