@@ -216,10 +216,278 @@
     compute();
   }
 
+  /* ---------- Onglets ---------- */
+  function setupTabs() {
+    const tabs = document.querySelectorAll(".conv-tab");
+    const panels = document.querySelectorAll(".conv-panel");
+    if (!tabs.length) return;
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        tabs.forEach((t) => {
+          t.classList.remove("active");
+          t.setAttribute("aria-selected", "false");
+        });
+        tab.classList.add("active");
+        tab.setAttribute("aria-selected", "true");
+        panels.forEach((p) => {
+          p.hidden = p.dataset.panel !== tab.dataset.tab;
+        });
+      });
+    });
+  }
+
+  /* ---------- Volume d'un tube ---------- */
+  function setupTubeCalc() {
+    const diamSelect = document.getElementById("conv-tube-diam");
+    const customWrap = document.getElementById("conv-tube-diam-custom-wrap");
+    const customInput = document.getElementById("conv-tube-diam-custom");
+    const lengthInput = document.getElementById("conv-tube-length");
+    const resultEl = document.getElementById("conv-tube-result");
+    if (!diamSelect || !resultEl) return;
+
+    function compute() {
+      customWrap.hidden = diamSelect.value !== "autre";
+      const diamMm = diamSelect.value === "autre" ? parseFloat(customInput.value) : parseFloat(diamSelect.value);
+      const lengthM = parseFloat(lengthInput.value);
+      if (!diamMm || diamMm <= 0 || !lengthM || lengthM < 0) {
+        resultEl.innerHTML = "";
+        return;
+      }
+      const rM = diamMm / 1000 / 2;
+      const volumeL = Math.PI * rM * rM * lengthM * 1000;
+      resultEl.innerHTML = `
+        Ce tube contient environ <strong>${fmt(volumeL, 2)} litres</strong>
+        (≈ ${fmt(volumeL / L_PER_GAL_IMP, 2)} gallons canadiens).
+      `;
+    }
+    [diamSelect, customInput, lengthInput].forEach((el) => el.addEventListener("input", compute));
+    compute();
+  }
+
+  /* ---------- Volume d'un réservoir ---------- */
+  function setupTankCalc() {
+    const shapeSelect = document.getElementById("conv-tank-shape");
+    const cylFields = document.getElementById("conv-tank-cyl-fields");
+    const rectFields = document.getElementById("conv-tank-rect-fields");
+    const resultEl = document.getElementById("conv-tank-result");
+    if (!shapeSelect || !resultEl) return;
+
+    const diamInput = document.getElementById("conv-tank-diam");
+    const heightInput = document.getElementById("conv-tank-height");
+    const lInput = document.getElementById("conv-tank-l");
+    const wInput = document.getElementById("conv-tank-w");
+    const hInput = document.getElementById("conv-tank-h");
+
+    function compute() {
+      const isCyl = shapeSelect.value === "cyl";
+      cylFields.hidden = !isCyl;
+      rectFields.hidden = isCyl;
+      let volumeCm3 = 0;
+      if (isCyl) {
+        const d = parseFloat(diamInput.value);
+        const h = parseFloat(heightInput.value);
+        if (!d || !h) {
+          resultEl.innerHTML = "";
+          return;
+        }
+        volumeCm3 = Math.PI * (d / 2) * (d / 2) * h;
+      } else {
+        const l = parseFloat(lInput.value);
+        const w = parseFloat(wInput.value);
+        const h = parseFloat(hInput.value);
+        if (!l || !w || !h) {
+          resultEl.innerHTML = "";
+          return;
+        }
+        volumeCm3 = l * w * h;
+      }
+      const volumeL = volumeCm3 / 1000;
+      resultEl.innerHTML = `
+        Volume : <strong>${fmt(volumeL, 1)} litres</strong>
+        (≈ ${fmt(volumeL / L_PER_GAL_IMP, 1)} gallons can. / ${fmt(volumeL / L_PER_GAL_US, 1)} gallons US)
+      `;
+    }
+    [shapeSelect, diamInput, heightInput, lInput, wInput, hInput].forEach((el) => el.addEventListener("input", compute));
+    compute();
+  }
+
+  /* ---------- Volume d'un évaporateur (casserole) ---------- */
+  function setupPanCalc() {
+    const lInput = document.getElementById("conv-pan-l");
+    const wInput = document.getElementById("conv-pan-w");
+    const depthInput = document.getElementById("conv-pan-depth");
+    const resultEl = document.getElementById("conv-pan-result");
+    if (!lInput || !resultEl) return;
+
+    function compute() {
+      const l = parseFloat(lInput.value);
+      const w = parseFloat(wInput.value);
+      const d = parseFloat(depthInput.value);
+      if (!l || !w || !d) {
+        resultEl.innerHTML = "";
+        return;
+      }
+      const volumeInCube = l * w * d;
+      const volumeL = volumeInCube * 0.0163871;
+      resultEl.innerHTML = `
+        Cette casserole contient environ <strong>${fmt(volumeL, 1)} litres</strong> à cette profondeur
+        (≈ ${fmt(volumeL / L_PER_GAL_US, 1)} gallons US).
+      `;
+    }
+    [lInput, wInput, depthInput].forEach((el) => el.addEventListener("input", compute));
+    compute();
+  }
+
+  /* ---------- Poids spécifique (densité) selon le ° Brix ----------
+     Basé sur le polynôme standard ICUMSA/NIST reliant le °Brix à la gravité
+     spécifique d'une solution de sucrose (brix = f(sg)), inversé numériquement
+     (méthode de Newton) puisque la relation officielle va de SG vers Brix. */
+  function brixFromSG(sg) {
+    return 143.254 * sg ** 3 - 648.670 * sg ** 2 + 1125.805 * sg - 620.389;
+  }
+  function sgFromBrix(brix) {
+    let sg = 1 + brix / 400; // estimation de départ
+    for (let i = 0; i < 20; i++) {
+      const f = brixFromSG(sg) - brix;
+      const fPrime = 3 * 143.254 * sg ** 2 - 2 * 648.670 * sg + 1125.805;
+      sg = sg - f / fPrime;
+    }
+    return sg;
+  }
+
+  function setupSGCalc() {
+    const brixInput = document.getElementById("conv-sg-brix");
+    const resultEl = document.getElementById("conv-sg-result");
+    if (!brixInput || !resultEl) return;
+
+    function compute() {
+      const brix = parseFloat(brixInput.value);
+      if (isNaN(brix) || brix < 0) {
+        resultEl.innerHTML = "";
+        return;
+      }
+      const sg = sgFromBrix(brix);
+      const kgPerL = sg * 0.9982; // eau à 20°C ≈ 0.9982 kg/L
+      resultEl.innerHTML = `
+        À ${fmt(brix, 1)}° Brix (20 °C) : gravité spécifique ≈ <strong>${sg.toFixed(4)}</strong>,
+        soit une masse d'environ <strong>${fmt(kgPerL, 3)} kg/litre</strong>
+        (${fmt(kgPerL * LB_PAR_KG / L_PER_GAL_US, 2)} lb/gallon US).
+      `;
+    }
+    brixInput.addEventListener("input", compute);
+    compute();
+  }
+
+  /* ---------- Eau à ajouter pour réduire un sirop ---------- */
+  function setupDiluteCalc() {
+    const volInput = document.getElementById("conv-dilute-vol");
+    const brixInput = document.getElementById("conv-dilute-brix");
+    const targetInput = document.getElementById("conv-dilute-target");
+    const resultEl = document.getElementById("conv-dilute-result");
+    if (!volInput || !resultEl) return;
+
+    function compute() {
+      const vol = parseFloat(volInput.value);
+      const brix = parseFloat(brixInput.value);
+      const target = parseFloat(targetInput.value);
+      if (!vol || !brix || !target || target <= 0 || target >= brix) {
+        resultEl.innerHTML = target >= brix && target && brix
+          ? "Le ° Brix désiré doit être plus bas que le ° Brix actuel."
+          : "";
+        return;
+      }
+      const eauAjouter = vol * (brix / target - 1);
+      const volFinal = vol + eauAjouter;
+      resultEl.innerHTML = `
+        Ajoute environ <strong>${fmt(eauAjouter, 2)} litres d'eau</strong>
+        pour faire passer ${fmt(vol, 1)} L de sirop de ${fmt(brix, 1)}° à ${fmt(target, 1)}° Brix
+        (volume final ≈ ${fmt(volFinal, 2)} L).
+      `;
+    }
+    [volInput, brixInput, targetInput].forEach((el) => el.addEventListener("input", compute));
+    compute();
+  }
+
+  /* ---------- Mélange de deux sirops ---------- */
+  function setupBlendCalc() {
+    const vol1Input = document.getElementById("conv-blend-vol1");
+    const brix1Input = document.getElementById("conv-blend-brix1");
+    const brix2Input = document.getElementById("conv-blend-brix2");
+    const targetInput = document.getElementById("conv-blend-target");
+    const resultEl = document.getElementById("conv-blend-result");
+    if (!vol1Input || !resultEl) return;
+
+    function compute() {
+      const v1 = parseFloat(vol1Input.value);
+      const b1 = parseFloat(brix1Input.value);
+      const b2 = parseFloat(brix2Input.value);
+      const target = parseFloat(targetInput.value);
+      if (!v1 || isNaN(b1) || isNaN(b2) || !target) {
+        resultEl.innerHTML = "";
+        return;
+      }
+      // Bilan de matière : v1*b1 + v2*b2 = (v1+v2)*target  =>  v2 = v1*(b1-target)/(target-b2)
+      const denom = target - b2;
+      if (denom === 0 || (b1 - target) / denom < 0) {
+        resultEl.innerHTML = "Ce mélange ne permet pas d'atteindre ce ° Brix cible — vérifie que le sirop B (ou l'eau) est bien moins concentré que la cible, et le sirop A plus concentré.";
+        return;
+      }
+      const v2 = (v1 * (b1 - target)) / denom;
+      resultEl.innerHTML = `
+        Mélange environ <strong>${fmt(v2, 2)} litres</strong> de sirop B (${fmt(b2, 1)}° Brix)
+        avec tes ${fmt(v1, 1)} L de sirop A (${fmt(b1, 1)}° Brix)
+        pour obtenir ${fmt(v1 + v2, 2)} L à ${fmt(target, 1)}° Brix.
+      `;
+    }
+    [vol1Input, brix1Input, brix2Input, targetInput].forEach((el) => el.addEventListener("input", compute));
+    compute();
+  }
+
+  /* ---------- Valeur de la production ---------- */
+  function setupPriceCalc() {
+    const qtyInput = document.getElementById("conv-price-qty");
+    const qtyUnitSelect = document.getElementById("conv-price-unit");
+    const rateInput = document.getElementById("conv-price-rate");
+    const rateUnitSelect = document.getElementById("conv-price-rate-unit");
+    const resultEl = document.getElementById("conv-price-result");
+    if (!qtyInput || !resultEl) return;
+
+    function toLitresSirop(qty, unit) {
+      if (unit === "galUS") return qty * L_PER_GAL_US;
+      if (unit === "galImp") return qty * L_PER_GAL_IMP;
+      if (unit === "kg") return qty / KG_PAR_LITRE.sirop;
+      if (unit === "lb") return qty / LB_PAR_KG / KG_PAR_LITRE.sirop;
+      return qty;
+    }
+
+    function compute() {
+      const qty = parseFloat(qtyInput.value);
+      const rate = parseFloat(rateInput.value);
+      if (!qty || !rate) {
+        resultEl.innerHTML = "";
+        return;
+      }
+      const litres = toLitresSirop(qty, qtyUnitSelect.value);
+      const litresParUniteTarif = toLitresSirop(1, rateUnitSelect.value);
+      const total = (litres / litresParUniteTarif) * rate;
+      resultEl.innerHTML = `Valeur totale estimée : <strong>${total.toLocaleString("fr-CA", { style: "currency", currency: "CAD" })}</strong>`;
+    }
+    [qtyInput, qtyUnitSelect, rateInput, rateUnitSelect].forEach((el) => el.addEventListener("input", compute));
+    compute();
+  }
+
   document.addEventListener("DOMContentLoaded", () => {
+    setupTabs();
     setupYieldCalc();
     setupBoilingCalc();
     setupProductCalc();
     setupTapsCalc();
+    setupTubeCalc();
+    setupTankCalc();
+    setupPanCalc();
+    setupSGCalc();
+    setupDiluteCalc();
+    setupBlendCalc();
+    setupPriceCalc();
   });
 })();

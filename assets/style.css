@@ -1961,6 +1961,30 @@ body.gate-open { overflow: hidden; }
 
 .conv-section { background: var(--birch-100); padding: 50px 0 70px; }
 
+.conv-tabs {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+  border-bottom: 2px solid rgba(32,27,20,0.1);
+  padding-bottom: 0;
+}
+.conv-tab {
+  padding: 12px 18px;
+  border: none;
+  background: none;
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 0.92rem;
+  color: var(--ink-600);
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+}
+.conv-tab:hover { color: var(--ink-900); }
+.conv-tab.active { color: var(--amber-700); border-bottom-color: var(--amber-600); }
+.conv-panel[hidden] { display: none; }
+
 .conv-tool {
   background: var(--birch-050);
   border: 1px solid rgba(32,27,20,0.1);
