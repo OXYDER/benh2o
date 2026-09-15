@@ -668,3 +668,14 @@ input.menu-field[data-field="url"] { flex: 2 1 220px; min-width: 160px; }
   margin-bottom: 8px;
 }
 .menu-add-child { font-size: 0.8rem; padding: 6px 12px; }
+.menu-newtab-label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--sans);
+  font-size: 0.78rem;
+  color: var(--ink-600);
+  white-space: nowrap;
+  cursor: pointer;
+}
+.menu-newtab-label input { margin: 0; }

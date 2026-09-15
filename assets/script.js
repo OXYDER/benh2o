@@ -948,7 +948,8 @@
       const attr = item.action === "urgence" ? "data-urgence-trigger" : "data-rdv-trigger";
       return `<button type="button" class="site-nav-submenu-btn" ${attr}>${escapeHtml(item.label)}</button>`;
     }
-    return `<a href="${escapeAttr(item.url || "#")}">${escapeHtml(item.label)}</a>`;
+    const targetAttr = item.openInNewTab ? ' target="_blank" rel="noopener"' : "";
+    return `<a href="${escapeAttr(item.url || "#")}"${targetAttr}>${escapeHtml(item.label)}</a>`;
   }
 
   function renderProductsDropdown(item, uid) {

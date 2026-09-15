@@ -689,6 +689,7 @@
     function renderNavChildRow(child, i, ci, total) {
       const isSep = child.type === "separator";
       const isAction = child.type === "action";
+      const isLink = !isSep && !isAction;
       return `
         <div class="menu-child-row" data-idx="${i}" data-cidx="${ci}">
           <select class="menu-field" data-field="type">${navTypeOptions(NAV_CHILD_TYPES, child.type)}</select>
@@ -698,6 +699,9 @@
             <option value="rdv" ${child.action === "rdv" ? "selected" : ""}>Ouvrir Rendez-vous</option>
             <option value="urgence" ${child.action === "urgence" ? "selected" : ""}>Ouvrir Urgence</option>
           </select>
+          <label class="menu-newtab-label" ${isLink ? "" : "hidden"} title="Ouvrir dans un nouvel onglet">
+            <input type="checkbox" class="menu-field" data-field="openInNewTab" ${child.openInNewTab ? "checked" : ""}> nouvel onglet
+          </label>
           <div class="menu-item-actions">
             <button type="button" data-action="child-up" ${ci === 0 ? "disabled" : ""} aria-label="Monter">↑</button>
             <button type="button" data-action="child-down" ${ci === total - 1 ? "disabled" : ""} aria-label="Descendre">↓</button>
@@ -710,6 +714,7 @@
       const isProducts = item.type === "products";
       const isDropdown = item.type === "dropdown";
       const isAction = item.type === "action";
+      const isLink = !isProducts && !isDropdown && !isAction;
       const children = isDropdown ? (item.children || []) : [];
       return `
         <div class="menu-item" data-idx="${i}">
@@ -721,6 +726,9 @@
               <option value="rdv" ${item.action === "rdv" ? "selected" : ""}>Ouvrir Rendez-vous</option>
               <option value="urgence" ${item.action === "urgence" ? "selected" : ""}>Ouvrir Urgence</option>
             </select>
+            <label class="menu-newtab-label" ${isLink ? "" : "hidden"} title="Ouvrir dans un nouvel onglet">
+              <input type="checkbox" class="menu-field" data-field="openInNewTab" ${item.openInNewTab ? "checked" : ""}> nouvel onglet
+            </label>
             <div class="menu-item-actions">
               <button type="button" data-action="up" ${i === 0 ? "disabled" : ""} aria-label="Monter">↑</button>
               <button type="button" data-action="down" ${i === total - 1 ? "disabled" : ""} aria-label="Descendre">↓</button>
@@ -777,7 +785,7 @@
         const items = navMenuData();
         const isChildRow = row.classList.contains("menu-child-row");
         const target = isChildRow ? items[idx].children[parseInt(row.dataset.cidx, 10)] : items[idx];
-        target[field] = e.target.value;
+        target[field] = e.target.type === "checkbox" ? e.target.checked : e.target.value;
         markDirty("content");
         if (field === "type") renderNavMenuEditor();
       });

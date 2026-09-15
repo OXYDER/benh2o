@@ -909,3 +909,11 @@ docker compose exec -T benoitlaprise-db psql -U benoitlaprise -d benoitlaprise <
 
 Corrigé au passage : le dégradé sombre par-dessus la vidéo s'appliquait même quand
 elle était censée être coupée — il ne s'active maintenant que si la vidéo l'est aussi.
+
+## 4d. Ouvrir un lien du menu dans un nouvel onglet
+
+Dans `/admin` → Menu, chaque lien (pas les séparateurs ni les actions Rendez-vous/
+Urgence, qui n'ont pas de destination) a maintenant une case « nouvel onglet » — coché,
+le lien s'ouvre dans un nouvel onglet (`target="_blank"`); décoché (par défaut),
+il s'ouvre dans la même fenêtre, comme avant. Rien à migrer : les liens existants
+gardent leur comportement actuel tant que la case n'est pas cochée.
