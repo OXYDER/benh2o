@@ -11,6 +11,8 @@
   let pdfUrl = null;
   let libLoadingPromise = null;
   let renderTaskId = 0; // pour ignorer les rendus obsolètes si on change vite de page
+  let viewMode = "page"; // "page" ou "scroll" — choix libre sur ordinateur, toujours "scroll" sur mobile
+  let resizeTimer = null;
 
   function loadPdfLib() {
     if (window.pdfjsLib) return Promise.resolve();
@@ -44,7 +46,7 @@
     await page.render({ canvasContext: ctx, viewport }).promise;
   }
 
-  async function renderDesktopPage(num) {
+  async function renderPageMode(num) {
     const canvas = document.getElementById("catalogue-canvas");
     const body = document.getElementById("catalogue-viewer-body");
     if (!canvas || !pdfDoc) return;
@@ -64,7 +66,7 @@
     if (nextBtn) nextBtn.disabled = num >= totalPages;
   }
 
-  function setupMobileScroll(container) {
+  function setupScrollMode(container) {
     container.innerHTML = "";
     const wraps = [];
     for (let i = 1; i <= totalPages; i++) {
@@ -103,10 +105,36 @@
     wraps.forEach((w) => observer.observe(w));
   }
 
+  function renderCurrentMode() {
+    const body = document.getElementById("catalogue-viewer-body");
+    const controls = document.getElementById("catalogue-viewer-controls");
+    const pageControls = ["catalogue-prev", "catalogue-next", "catalogue-page-info"];
+    const modeToggle = document.getElementById("catalogue-mode-toggle");
+    const mobile = isMobile();
+    const useScroll = mobile || viewMode === "scroll";
+
+    if (controls) controls.hidden = false;
+    pageControls.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = useScroll ? "none" : "";
+    });
+    if (modeToggle) {
+      modeToggle.hidden = mobile; // le choix de mode n'a de sens que sur ordinateur
+      modeToggle.textContent = viewMode === "page" ? "☰ Défilement" : "▤ Page";
+    }
+
+    if (useScroll) {
+      body.innerHTML = '<div class="catalogue-mobile-scroll" id="catalogue-mobile-scroll"></div>';
+      setupScrollMode(document.getElementById("catalogue-mobile-scroll"));
+    } else {
+      body.innerHTML = '<canvas id="catalogue-canvas"></canvas>';
+      renderPageMode(currentPage);
+    }
+  }
+
   async function openViewer() {
     const viewer = document.getElementById("catalogue-viewer");
     const body = document.getElementById("catalogue-viewer-body");
-    const controls = document.getElementById("catalogue-viewer-controls");
     if (!viewer || !pdfUrl) return;
     viewer.hidden = false;
     document.body.classList.add("gate-open");
@@ -118,18 +146,9 @@
         pdfDoc = await window.pdfjsLib.getDocument(pdfUrl).promise;
         totalPages = pdfDoc.numPages;
       }
-
-      if (isMobile()) {
-        if (controls) controls.hidden = true;
-        body.innerHTML = '<div class="catalogue-mobile-scroll" id="catalogue-mobile-scroll"></div>';
-        setupMobileScroll(document.getElementById("catalogue-mobile-scroll"));
-      } else {
-        if (controls) controls.hidden = false;
-        body.innerHTML = '<canvas id="catalogue-canvas"></canvas>';
-        currentPage = 1;
-        scale = 1;
-        await renderDesktopPage(currentPage);
-      }
+      currentPage = 1;
+      scale = 1;
+      renderCurrentMode();
     } catch (e) {
       body.innerHTML = '<p class="catalogue-loading">Impossible de charger le catalogue pour le moment. Réessayez plus tard.</p>';
     }
@@ -137,8 +156,22 @@
 
   function closeViewer() {
     const viewer = document.getElementById("catalogue-viewer");
+    if (document.fullscreenElement) {
+      document.exitFullscreen().catch(() => {});
+    }
     if (viewer) viewer.hidden = true;
     document.body.classList.remove("gate-open");
+  }
+
+  function toggleFullscreen() {
+    const card = document.querySelector(".catalogue-viewer-card");
+    if (!card) return;
+    if (!document.fullscreenElement) {
+      const req = card.requestFullscreen || card.webkitRequestFullscreen;
+      if (req) req.call(card).catch(() => {});
+    } else {
+      document.exitFullscreen().catch(() => {});
+    }
   }
 
   function setupCatalogue() {
@@ -149,6 +182,8 @@
     const nextBtn = document.getElementById("catalogue-next");
     const zoomInBtn = document.getElementById("catalogue-zoom-in");
     const zoomOutBtn = document.getElementById("catalogue-zoom-out");
+    const fullscreenBtn = document.getElementById("catalogue-fullscreen");
+    const modeToggle = document.getElementById("catalogue-mode-toggle");
     const overlay = document.getElementById("catalogue-viewer");
     if (!tabWrap || !tab) return;
 
@@ -173,7 +208,7 @@
       prevBtn.addEventListener("click", () => {
         if (currentPage > 1) {
           currentPage--;
-          renderDesktopPage(currentPage);
+          renderPageMode(currentPage);
         }
       });
     }
@@ -181,30 +216,43 @@
       nextBtn.addEventListener("click", () => {
         if (currentPage < totalPages) {
           currentPage++;
-          renderDesktopPage(currentPage);
+          renderPageMode(currentPage);
         }
       });
     }
     if (zoomInBtn) {
       zoomInBtn.addEventListener("click", () => {
         scale = Math.min(scale + 0.15, 2.2);
-        renderDesktopPage(currentPage);
+        renderPageMode(currentPage);
       });
     }
     if (zoomOutBtn) {
       zoomOutBtn.addEventListener("click", () => {
         scale = Math.max(scale - 0.15, 0.5);
-        renderDesktopPage(currentPage);
+        renderPageMode(currentPage);
+      });
+    }
+    if (fullscreenBtn) fullscreenBtn.addEventListener("click", toggleFullscreen);
+    if (modeToggle) {
+      modeToggle.addEventListener("click", () => {
+        viewMode = viewMode === "page" ? "scroll" : "page";
+        renderCurrentMode();
       });
     }
 
     document.addEventListener("keydown", (e) => {
       if (!overlay || overlay.hidden) return;
       if (e.key === "Escape") closeViewer();
-      if (!isMobile()) {
+      if (!isMobile() && viewMode === "page") {
         if (e.key === "ArrowRight") nextBtn && nextBtn.click();
         if (e.key === "ArrowLeft") prevBtn && prevBtn.click();
       }
+    });
+
+    window.addEventListener("resize", () => {
+      if (!overlay || overlay.hidden) return;
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(renderCurrentMode, 300);
     });
   }
 
