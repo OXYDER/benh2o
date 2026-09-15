@@ -2174,6 +2174,31 @@ body.gate-open { overflow: hidden; }
   scrollbar-gutter: stable;
 }
 .theme-picker.open .theme-picker-panel { margin-left: 0; }
+
+.theme-picker-quickmode {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+.theme-picker-mode-btn {
+  flex: 1;
+  padding: 9px 6px;
+  border-radius: 8px;
+  border: 1.5px solid rgba(32,27,20,0.15);
+  background: var(--birch-100);
+  font-family: var(--sans);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--ink-600);
+  cursor: pointer;
+}
+.theme-picker-mode-btn:hover { border-color: var(--amber-600); }
+.theme-picker-mode-btn.active {
+  background: var(--amber-600);
+  border-color: var(--amber-600);
+  color: #fff;
+}
+
 .theme-picker-panel h3 {
   font-family: var(--sans);
   font-size: 0.85rem;

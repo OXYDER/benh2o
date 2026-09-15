@@ -578,6 +578,22 @@ Techniquement : la préférence est stockée sous la clé `bl_user_theme`
 (différente de `bl_cached_theme`, qui sert uniquement à éviter le flash au
 chargement — voir section 3g).
 
+## 3z. Raccourci Clair / Sombre (☀️ / 🌙)
+
+Deux boutons rapides en haut du panneau de thèmes, plutôt que de dédoubler les 6
+thèmes en versions claires et sombres (trop de recoins CSS à retester pour le
+bénéfice réel) :
+
+- **🌙 Sombre** — bascule instantanément vers « Marine Profond » (déjà un vrai thème
+  sombre, fonds presque noirs — économe en batterie sur écrans OLED), en mémorisant
+  le thème clair qui était actif.
+- **☀️ Clair** — revient au dernier thème clair utilisé (par défaut : Navy Électrique
+  si aucun n'a encore été choisi).
+
+Les deux préférences sont mémorisées séparément (`bl_user_theme` pour le thème actif,
+`bl_last_light_theme` pour le dernier thème clair), donc basculer entre les deux
+boutons plusieurs fois ne fait jamais perdre le thème clair préféré du visiteur.
+
 ## 4. Formulaire de contact
 
 Deux façons d'envoyer les demandes du formulaire, gérées par le serveur (`POST

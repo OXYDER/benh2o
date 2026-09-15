@@ -947,9 +947,41 @@
     const tab = document.getElementById("theme-picker-tab");
     const listEl = document.getElementById("theme-picker-list");
     const resetBtn = document.getElementById("theme-picker-reset");
+    const lightBtn = document.getElementById("theme-picker-light");
+    const darkBtn = document.getElementById("theme-picker-dark");
     if (!picker || !tab || !listEl) return;
     if (listEl.dataset.built) return; // évite de reconstruire si setupContent est rappelé
     listEl.dataset.built = "1";
+
+    const DARK_THEME_ID = "marine-profond";
+    const DARK_THEME_IDS = ["marine-profond", "neon-cyberacericole"];
+    const LAST_LIGHT_KEY = "bl_last_light_theme";
+
+    function currentThemeId() {
+      try {
+        return localStorage.getItem(USER_THEME_KEY) || currentUserThemeId;
+      } catch (e) {
+        return currentUserThemeId;
+      }
+    }
+
+    function updateSwatchActive(themeId) {
+      listEl.querySelectorAll(".theme-picker-swatch").forEach((b) => b.classList.toggle("active", b.dataset.themeId === themeId));
+    }
+    function updateModeButtons(themeId) {
+      const isDark = DARK_THEME_IDS.includes(themeId);
+      if (lightBtn) lightBtn.classList.toggle("active", !isDark);
+      if (darkBtn) darkBtn.classList.toggle("active", isDark);
+    }
+
+    function selectTheme(themeId) {
+      try {
+        localStorage.setItem(USER_THEME_KEY, themeId);
+      } catch (e) {}
+      applyTheme(themeId, themes);
+      updateSwatchActive(themeId);
+      updateModeButtons(themeId);
+    }
 
     listEl.innerHTML = themes
       .map((t) => {
@@ -965,6 +997,8 @@
       })
       .join("");
 
+    updateModeButtons(currentUserThemeId);
+
     tab.addEventListener("click", () => {
       picker.classList.toggle("open");
     });
@@ -975,15 +1009,29 @@
     });
 
     listEl.querySelectorAll(".theme-picker-swatch").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const themeId = btn.dataset.themeId;
-        try {
-          localStorage.setItem(USER_THEME_KEY, themeId);
-        } catch (e) {}
-        applyTheme(themeId, themes);
-        listEl.querySelectorAll(".theme-picker-swatch").forEach((b) => b.classList.toggle("active", b === btn));
-      });
+      btn.addEventListener("click", () => selectTheme(btn.dataset.themeId));
     });
+
+    if (darkBtn) {
+      darkBtn.addEventListener("click", () => {
+        const current = currentThemeId();
+        if (!DARK_THEME_IDS.includes(current)) {
+          try {
+            localStorage.setItem(LAST_LIGHT_KEY, current);
+          } catch (e) {}
+        }
+        selectTheme(DARK_THEME_ID);
+      });
+    }
+    if (lightBtn) {
+      lightBtn.addEventListener("click", () => {
+        let lastLight = "navy-electrique";
+        try {
+          lastLight = localStorage.getItem(LAST_LIGHT_KEY) || lastLight;
+        } catch (e) {}
+        selectTheme(lastLight);
+      });
+    }
 
     if (resetBtn) {
       resetBtn.addEventListener("click", () => {
@@ -1018,7 +1066,7 @@
             } catch (e) {}
             const themeIdToUse = userTheme || data.activeTheme;
             applyTheme(themeIdToUse, themeData.themes);
-            setupThemePicker(themeData.themes, userTheme);
+            setupThemePicker(themeData.themes, themeIdToUse);
           })
           .catch(() => {});
       })
