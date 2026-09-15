@@ -549,7 +549,11 @@
     function bindForm() {
       panel.querySelectorAll("[data-key]").forEach((el) => {
         el.addEventListener("input", () => {
-          setPath(contentData, el.dataset.key, el.type === "checkbox" ? el.checked : el.value);
+          let value;
+          if (el.type === "checkbox") value = el.checked;
+          else if (el.type === "range" || el.type === "number") value = parseFloat(el.value);
+          else value = el.value;
+          setPath(contentData, el.dataset.key, value);
           markDirty("content");
         });
       });

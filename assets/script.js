@@ -1577,8 +1577,8 @@
     const isMobile = window.innerWidth < 900;
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (isMobile || reducedMotion) return; // pas de vidéo sur mobile ni si mouvement réduit demandé
-    const opacityPercent = data.hero.videoOpacity;
-    const opacity = typeof opacityPercent === "number" ? opacityPercent / 100 : 0.22;
+    const opacityPercent = parseFloat(data.hero.videoOpacity);
+    const opacity = !isNaN(opacityPercent) ? opacityPercent / 100 : 0.22;
     video.style.opacity = String(opacity);
     video.hidden = false;
     const heroSection = document.getElementById("home");
