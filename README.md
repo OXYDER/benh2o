@@ -891,3 +891,21 @@ Implémenté avec prudence :
   ré-encodée sans audio à 667 Ko
 
 Fichier : `assets/hero-video.mp4`. Présente seulement sur la page d'accueil (`index.html`).
+
+## 4c. Réglages admin pour la vidéo du hero
+
+Ajoutés dans `/admin` → Contenu de la page → section « En-tête (Hero) » :
+- **Case à cocher** pour activer/désactiver la vidéo d'arrière-plan (ordinateur
+  seulement — reste toujours absente sur mobile, peu importe ce réglage)
+- **Curseur d'opacité** (5 % à 60 %), avec l'affichage du pourcentage en direct
+
+Par défaut, les deux valeurs reprennent exactement ce qui était déjà en ligne
+(activée, 22 %) — rien ne change tant que tu ne touches pas au curseur ou à la case.
+
+Migration pour ta base existante :
+```bash
+docker compose exec -T benoitlaprise-db psql -U benoitlaprise -d benoitlaprise < api/add-hero-video-controls.sql
+```
+
+Corrigé au passage : le dégradé sombre par-dessus la vidéo s'appliquait même quand
+elle était censée être coupée — il ne s'active maintenant que si la vidéo l'est aussi.

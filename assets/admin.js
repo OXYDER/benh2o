@@ -536,14 +536,20 @@
     function populateForm() {
       panel.querySelectorAll("[data-key]").forEach((el) => {
         const val = getPath(contentData, el.dataset.key);
-        el.value = val === undefined || val === null ? "" : val;
+        if (el.type === "checkbox") {
+          el.checked = !!val;
+        } else if (val === undefined || val === null) {
+          if (el.type !== "range") el.value = ""; // les curseurs gardent leur valeur par défaut du HTML
+        } else {
+          el.value = val;
+        }
       });
     }
 
     function bindForm() {
       panel.querySelectorAll("[data-key]").forEach((el) => {
         el.addEventListener("input", () => {
-          setPath(contentData, el.dataset.key, el.value);
+          setPath(contentData, el.dataset.key, el.type === "checkbox" ? el.checked : el.value);
           markDirty("content");
         });
       });
@@ -735,6 +741,16 @@
       container.innerHTML = items.map((item, i) => renderNavTopRow(item, i, items.length)).join("");
     }
 
+    function setupHeroVideoOpacityDisplay() {
+      const slider = document.getElementById("cc-hero-video-opacity");
+      const display = document.getElementById("cc-hero-video-opacity-value");
+      if (!slider || !display || slider.dataset.wired) return;
+      slider.dataset.wired = "1";
+      slider.addEventListener("input", () => {
+        display.textContent = slider.value;
+      });
+    }
+
     function setupNavMenuEditor() {
       const container = document.getElementById("nav-menu-editor");
       const addTopBtn = document.getElementById("nav-menu-add-top");
@@ -820,6 +836,10 @@
         renderThemePicker();
         renderOgImage();
         setupOgImageUpload();
+        setupHeroVideoOpacityDisplay();
+        const opacitySlider = document.getElementById("cc-hero-video-opacity");
+        const opacityDisplay = document.getElementById("cc-hero-video-opacity-value");
+        if (opacitySlider && opacityDisplay) opacityDisplay.textContent = opacitySlider.value;
         renderNavMenuEditor();
         setupNavMenuEditor();
         renderEquipmentItems();

@@ -381,7 +381,7 @@ p { margin: 0 0 1em; max-width: 62ch; }
   opacity: 0.22;
   pointer-events: none;
 }
-.hero::after {
+.hero.has-video::after {
   content: "";
   position: absolute;
   inset: 0;
@@ -393,11 +393,11 @@ p { margin: 0 0 1em; max-width: 62ch; }
   /* Sur mobile, on n'affiche pas la vidéo (poids de données, connexions parfois
      limitées en région) — le fond reste la feuille animée seule. */
   .hero-video { display: none; }
-  .hero::after { background: none; }
+  .hero.has-video::after { background: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   .hero-video { display: none; }
-  .hero::after { background: none; }
+  .hero.has-video::after { background: none; }
 }
 
 .hero .container {

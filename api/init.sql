@@ -257,7 +257,9 @@ INSERT INTO site_data (key, data) VALUES ('content', '{
     "ctaCall": "Appeler maintenant",
     "ctaSms": "Texter",
     "ctaZone": "Vérifier ma région",
-    "ctaRdv": "Rendez-vous"
+    "ctaRdv": "Rendez-vous",
+    "videoEnabled": true,
+    "videoOpacity": 22
   },
   "zone": {
     "tag": "Territoire",

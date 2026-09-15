@@ -1139,6 +1139,7 @@
         setupNav();
         setupNavActiveState();
         setupProductSearch();
+        setupHeroVideo(data);
         return fetch("assets/data/themes.json")
           .then((res) => res.json())
           .then((themeData) => {
@@ -1568,12 +1569,20 @@
 
   /* ---------- Particules animées derrière la feuille d'érable (hero) ---------- */
   /* ---------- Vidéo d'arrière-plan du hero ---------- */
-  function setupHeroVideo() {
+  function setupHeroVideo(data) {
     const video = document.getElementById("hero-video");
     if (!video) return;
+    const enabled = !!(data && data.hero && data.hero.videoEnabled);
+    if (!enabled) return; // désactivée par défaut tant que non activée dans /admin
     const isMobile = window.innerWidth < 900;
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (isMobile || reducedMotion) return; // pas de vidéo sur mobile ni si mouvement réduit demandé
+    const opacityPercent = data.hero.videoOpacity;
+    const opacity = typeof opacityPercent === "number" ? opacityPercent / 100 : 0.22;
+    video.style.opacity = String(opacity);
+    video.hidden = false;
+    const heroSection = document.getElementById("home");
+    if (heroSection) heroSection.classList.add("has-video");
     video.preload = "auto";
     video.load();
     video.play().catch(() => {}); // ignore silencieusement si le navigateur bloque la lecture auto
@@ -1772,7 +1781,6 @@
     setupEntryGate();
     setupContent();
     setupLeafParticles();
-    setupHeroVideo();
     setupPosts();
     setupBackToTop();
 
