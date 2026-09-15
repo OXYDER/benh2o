@@ -162,6 +162,7 @@
     setupHoraireEditor();
     setupPostsAdmin();
     setupCategoriesAdmin();
+    setupCatalogueAdmin();
   }
 
   /* =========================================================
@@ -1552,5 +1553,63 @@
     });
 
     load();
+  }
+
+  function setupCatalogueAdmin() {
+    const currentEl = document.getElementById("catalogue-current");
+    const fileInput = document.getElementById("catalogue-file-input");
+    const uploadBtn = document.getElementById("catalogue-upload-btn");
+    const statusEl = document.getElementById("catalogue-upload-status");
+    if (!currentEl || !fileInput || !uploadBtn) return;
+
+    function renderCurrent(data) {
+      if (data && data.url) {
+        const date = data.uploadedAt ? new Date(data.uploadedAt).toLocaleDateString("fr-CA") : "";
+        currentEl.innerHTML =
+          `Catalogue actuel : <strong>${data.originalName || "catalogue.pdf"}</strong>` +
+          (date ? ` — téléversé le ${date}` : "") +
+          ` — <a href="${data.url}" target="_blank" rel="noopener">voir le fichier</a>`;
+      } else {
+        currentEl.textContent = "Aucun catalogue téléversé pour le moment.";
+      }
+    }
+
+    fetch("/api/catalogue")
+      .then((r) => r.json())
+      .then(renderCurrent)
+      .catch(() => renderCurrent(null));
+
+    fileInput.addEventListener("change", () => {
+      uploadBtn.disabled = !fileInput.files.length;
+      statusEl.textContent = "";
+    });
+
+    uploadBtn.addEventListener("click", async () => {
+      if (!fileInput.files.length) return;
+      const file = fileInput.files[0];
+      const formData = new FormData();
+      formData.append("file", file);
+      uploadBtn.disabled = true;
+      statusEl.textContent = "Téléversement en cours… (peut prendre une minute pour un gros fichier)";
+      statusEl.style.color = "var(--ink-600)";
+      try {
+        const res = await fetch("/api/catalogue/upload", { method: "POST", body: formData });
+        const data = await res.json().catch(() => ({}));
+        if (res.ok) {
+          statusEl.textContent = "Catalogue mis à jour avec succès.";
+          statusEl.style.color = "#2E7D32";
+          renderCurrent(data);
+          fileInput.value = "";
+        } else {
+          statusEl.textContent = data.error || "Échec du téléversement.";
+          statusEl.style.color = "#C8352E";
+        }
+      } catch (e) {
+        statusEl.textContent = "Impossible de contacter le serveur.";
+        statusEl.style.color = "#C8352E";
+      } finally {
+        uploadBtn.disabled = !fileInput.files.length;
+      }
+    });
   }
 })();

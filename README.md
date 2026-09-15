@@ -588,6 +588,34 @@ gauche, avec les 6 thèmes complets — dont Marine Profond, qui reste un vrai t
 sombre à part entière) continue de fonctionner normalement, exactement comme avant
 d'avoir commencé à travailler sur le mode clair/sombre.
 
+## 3zz. Liseuse de catalogue PDF
+
+Un onglet « 📖 Catalogue », sur le même modèle que l'onglet « Thèmes » (empilé juste
+en dessous, bord gauche de l'écran), qui ouvre une liseuse plein écran pour ton
+catalogue PDF H2O Innovation — sans convertir le PDF en images, directement dans le
+navigateur (librairie PDF.js de Mozilla).
+
+**Comportement adapté à l'appareil** :
+- **Ordinateur** : navigation page par page avec boutons précédent/suivant, zoom, et
+  les touches flèches du clavier
+- **Mobile** : défilement vertical continu — les pages se chargent au fur et à
+  mesure que tu descends (pas les 100 pages d'un coup, pour rester rapide)
+
+**Pour mettre ton catalogue en ligne** : va dans `/admin` → nouvel onglet
+« Catalogue », téléverse ton PDF (jusqu'à 90 Mo). L'onglet « Catalogue » n'apparaît
+sur le site public qu'une fois un catalogue téléversé — invisible avant ça.
+
+**Changements techniques nécessaires** :
+- nginx acceptait seulement 1 Mo par requête par défaut — augmenté à 100 Mo
+  (`client_max_body_size`) pour permettre l'envoi d'un gros PDF
+- Nouvel endpoint `/api/catalogue/upload` (backend) avec une limite dédiée de 90 Mo
+- Le PDF est stocké dans le même volume que tes autres fichiers téléversés, aucune
+  nouvelle infrastructure nécessaire
+
+**Limite honnête** : la navigation est propre et professionnelle, mais ce n'est pas
+l'effet « coin de page qui se retourne » en 3D comme Issuu — un ajout possible plus
+tard si tu y tiens, mais nettement plus complexe à bien réussir.
+
 ## 4. Formulaire de contact
 
 Deux façons d'envoyer les demandes du formulaire, gérées par le serveur (`POST

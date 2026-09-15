@@ -107,6 +107,49 @@ app.post("/api/upload", requireAuth, (req, res) => {
   });
 });
 
+/* ---------- Catalogue PDF (liseuse) ---------- */
+const catalogueUpload = multer({
+  storage: uploadStorage,
+  limits: { fileSize: 90 * 1024 * 1024 }, // 90 Mo — les catalogues PDF sont volumineux
+  fileFilter: (req, file, cb) => {
+    if (path.extname(file.originalname).toLowerCase() !== ".pdf") {
+      return cb(new Error("Le catalogue doit être un fichier PDF."));
+    }
+    cb(null, true);
+  },
+});
+
+app.get("/api/catalogue", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT data FROM site_data WHERE key = 'catalogue'");
+    res.json(result.rows[0] ? result.rows[0].data : null);
+  } catch (err) {
+    res.status(500).json({ error: "Erreur serveur." });
+  }
+});
+
+app.post("/api/catalogue/upload", requireAuth, (req, res) => {
+  catalogueUpload.single("file")(req, res, async (err) => {
+    if (err) return res.status(400).json({ error: err.message || "Échec du téléversement." });
+    if (!req.file) return res.status(400).json({ error: "Aucun fichier reçu." });
+    const data = {
+      url: "/uploads/" + req.file.filename,
+      originalName: req.file.originalname,
+      uploadedAt: new Date().toISOString(),
+    };
+    try {
+      await pool.query(
+        `INSERT INTO site_data (key, data, updated_at) VALUES ('catalogue', $1::jsonb, now())
+         ON CONFLICT (key) DO UPDATE SET data = $1::jsonb, updated_at = now()`,
+        [JSON.stringify(data)]
+      );
+      res.json(data);
+    } catch (e) {
+      res.status(500).json({ error: "Erreur serveur lors de l'enregistrement." });
+    }
+  });
+});
+
 /* ---------- Auth ---------- */
 app.post("/api/login", async (req, res) => {
   const ip = req.ip;

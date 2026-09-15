@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,500&family=Playfair+Display:wght@600;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="icon" href="assets/favicon.ico">
-<link rel="stylesheet" href="assets/style.css?v=95">
-<link rel="stylesheet" href="assets/admin.css?v=95">
+<link rel="stylesheet" href="assets/style.css?v=96">
+<link rel="stylesheet" href="assets/admin.css?v=96">
 </head>
 <body class="admin-body">
 
@@ -55,6 +55,7 @@
       <button class="admin-tab" data-tab="distributeurs" role="tab" aria-selected="false">Distributeurs</button>
       <button class="admin-tab" data-tab="rendezvous" role="tab" aria-selected="false">Rendez-vous</button>
       <button class="admin-tab" data-tab="publications" role="tab" aria-selected="false">Publications</button>
+      <button class="admin-tab" data-tab="catalogue" role="tab" aria-selected="false">Catalogue</button>
     </div>
 
     <!-- ===== Onglet : Mes informations de contact ===== -->
@@ -970,11 +971,27 @@
       <div id="posts-admin-list" class="posts-admin-list"></div>
     </div>
 
+    <div class="admin-panel" data-panel="catalogue" hidden>
+      <h3 class="admin-field-group-title">Catalogue PDF (liseuse sur le site)</h3>
+      <p style="color:var(--ink-600); font-size:0.9rem; max-width:560px; margin-bottom:18px;">
+        Le PDF que tu téléverses ici s'affiche directement sur le site dans une liseuse accessible
+        par l'onglet « Catalogue » sur le bord de la page — navigation page par page sur ordinateur,
+        défilement continu sur mobile. Fichier PDF seulement, jusqu'à 90 Mo.
+      </p>
+      <div id="catalogue-current" class="admin-field" style="max-width:480px; margin-bottom:18px;"></div>
+      <div class="admin-field" style="max-width:420px">
+        <label for="catalogue-file-input">Téléverser un nouveau catalogue (remplace l'actuel)</label>
+        <input type="file" id="catalogue-file-input" accept="application/pdf">
+      </div>
+      <button class="btn btn-primary" id="catalogue-upload-btn" type="button" style="margin-top:12px" disabled>Téléverser le catalogue</button>
+      <div id="catalogue-upload-status" style="margin-top:10px; font-size:0.88rem;"></div>
+    </div>
+
   </section>
 
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/tinymce@6/tinymce.min.js" referrerpolicy="origin"></script>
-<script src="assets/admin.js?v=95"></script>
+<script src="assets/admin.js?v=96"></script>
 </body>
 </html>
