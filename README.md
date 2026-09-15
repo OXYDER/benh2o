@@ -634,6 +634,29 @@ visible) — voir aussi section 3zz.
 rendu transparent (la version originale avait un fond noir opaque), redimensionnée
 à 64×64 pour rester légère.
 
+## 3zzzz. Bogue des cartes de thèmes dans l'admin + image de partage (Open Graph)
+
+**Bogue corrigé** : les cartes de thèmes dans `/admin` utilisaient la classe
+`.theme-picker`, exactement le même nom que le petit widget flottant du site public
+(l'onglet « Thèmes »). Comme l'admin charge aussi `style.css`, cette règle
+(`position: fixed`) s'appliquait par erreur aux cartes, les faisant sortir de leur
+emplacement normal. Renommée en `.admin-theme-grid` — aucune autre incidence.
+
+**Menu principal et référencement — déjà en place** : le menu complet (tous les
+libellés de liens) est éditable sous « Menu principal » et le titre/la description
+pour les résultats Google sous « Titre de la page et référencement », dans l'onglet
+Contenu de la page. Le bogue ci-dessus rendait probablement la page difficile à lire
+correctement.
+
+**Nouveau — Image de partage (Open Graph)** : un vrai ajout, celui-là. Le site
+n'avait aucune image ni aperçu personnalisé quand un lien est partagé sur Facebook,
+LinkedIn ou Messenger. Ajouté :
+- Un champ dans `/admin` → Contenu de la page → section référencement, pour
+  téléverser une image de partage (environ 1200×630 px recommandé)
+- Les balises Open Graph et Twitter Card nécessaires sur les 6 pages, remplies
+  automatiquement (titre et description reprennent ceux déjà utilisés pour Google;
+  l'image vient du nouveau champ)
+
 ## 4. Formulaire de contact
 
 Deux façons d'envoyer les demandes du formulaire, gérées par le serveur (`POST

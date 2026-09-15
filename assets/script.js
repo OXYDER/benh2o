@@ -997,6 +997,27 @@
 
   const USER_THEME_KEY = "bl_user_theme";
 
+  function applyOgTags(data) {
+    const setMeta = (id, value) => {
+      const el = document.getElementById(id);
+      if (el && value) el.setAttribute("content", value);
+    };
+    const pageTitle = document.title;
+    const metaDescEl = document.getElementById("meta-description");
+    const pageDesc = metaDescEl ? metaDescEl.getAttribute("content") : null;
+    setMeta("og-title", pageTitle);
+    setMeta("twitter-title", pageTitle);
+    setMeta("og-description", pageDesc);
+    setMeta("twitter-description", pageDesc);
+    setMeta("og-url", location.href);
+    const ogImage = data.site && data.site.ogImage;
+    if (ogImage) {
+      const absoluteUrl = ogImage.startsWith("http") ? ogImage : location.origin + ogImage;
+      setMeta("og-image", absoluteUrl);
+      setMeta("twitter-image", absoluteUrl);
+    }
+  }
+
   function setupContent() {
     fetch("/api/content")
       .then((res) => res.json())
@@ -1009,6 +1030,7 @@
           const metaEl = document.getElementById("meta-description");
           if (metaEl) metaEl.setAttribute("content", data.site.metaDescription);
         }
+        applyOgTags(data);
         return fetch("assets/data/themes.json")
           .then((res) => res.json())
           .then((themeData) => {

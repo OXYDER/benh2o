@@ -579,6 +579,47 @@
       });
     }
 
+    function renderOgImage() {
+      const preview = document.getElementById("cc-og-image-preview");
+      if (!preview) return;
+      const url = contentData.site && contentData.site.ogImage;
+      preview.innerHTML = url
+        ? `<img src="${url}" alt="Aperçu de l'image de partage" style="max-width:280px; max-height:150px; border-radius:6px; display:block; border:1px solid rgba(32,27,20,0.15)">`
+        : `<span style="color:var(--ink-600); font-size:0.85rem">Aucune image de partage définie pour le moment.</span>`;
+    }
+
+    function setupOgImageUpload() {
+      const input = document.getElementById("cc-og-image-input");
+      const btn = document.getElementById("cc-og-image-upload");
+      if (!input || !btn || btn.dataset.wired) return;
+      btn.dataset.wired = "1";
+      btn.addEventListener("click", async () => {
+        if (!input.files.length) return;
+        const formData = new FormData();
+        formData.append("file", input.files[0]);
+        btn.disabled = true;
+        btn.textContent = "Téléversement…";
+        try {
+          const res = await fetch("/api/upload", { method: "POST", body: formData });
+          const data = await res.json().catch(() => ({}));
+          if (res.ok) {
+            if (!contentData.site) contentData.site = {};
+            contentData.site.ogImage = data.url;
+            markDirty("content");
+            renderOgImage();
+            input.value = "";
+          } else {
+            alert(data.error || "Échec du téléversement.");
+          }
+        } catch (e) {
+          alert("Impossible de contacter le serveur.");
+        } finally {
+          btn.disabled = false;
+          btn.textContent = "Téléverser une image";
+        }
+      });
+    }
+
     async function load() {
       try {
         const [contentRes, themesRes] = await Promise.all([
@@ -590,6 +631,8 @@
         themes = themeData.themes || [];
         populateForm();
         renderThemePicker();
+        renderOgImage();
+        setupOgImageUpload();
         renderEquipmentItems();
         const addBtn = document.getElementById("equipment-item-add");
         if (addBtn && !addBtn.dataset.wired) {

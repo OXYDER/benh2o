@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,500&family=Playfair+Display:wght@600;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="icon" type="image/gif" href="assets/favicon-animated.gif?v=98">
-<link rel="stylesheet" href="assets/style.css?v=98">
-<link rel="stylesheet" href="assets/admin.css?v=98">
+<link rel="stylesheet" href="assets/style.css?v=99">
+<link rel="stylesheet" href="assets/admin.css?v=99">
 </head>
 <body class="admin-body">
 
@@ -244,7 +244,7 @@
 
       <h3 class="admin-field-group-title">Apparence du site</h3>
       <p class="admin-field-hint">Choisis une combinaison de couleurs et de polices — s'applique à tout le site après enregistrement.</p>
-      <div class="theme-picker" id="theme-picker"></div>
+      <div class="admin-theme-grid" id="theme-picker"></div>
 
       <h3 class="admin-field-group-title">Titre de la page et référencement</h3>
       <p class="admin-field-hint">Le titre apparaît dans l'onglet du navigateur et dans les résultats Google. La description apparaît sous le titre dans les résultats de recherche.</p>
@@ -255,6 +255,13 @@
       <div class="admin-field">
         <label for="cc-site-desc">Description (résultats de recherche)</label>
         <textarea id="cc-site-desc" data-key="site.metaDescription" rows="2"></textarea>
+      </div>
+      <div class="admin-field">
+        <label>Image de partage (Facebook, LinkedIn, Messenger…)</label>
+        <p class="admin-field-hint" style="margin-top:0">L'image qui apparaît quand quelqu'un partage un lien de ton site sur les réseaux sociaux. Idéalement environ 1200 × 630 pixels.</p>
+        <div id="cc-og-image-preview" style="margin-bottom:8px"></div>
+        <input type="file" id="cc-og-image-input" accept="image/*">
+        <button class="btn btn-outline" id="cc-og-image-upload" type="button" style="margin-top:8px">Téléverser une image</button>
       </div>
 
       <h3 class="admin-field-group-title">En-tête du site (haut de chaque page)</h3>
@@ -992,6 +999,6 @@
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/tinymce@6/tinymce.min.js" referrerpolicy="origin"></script>
-<script src="assets/admin.js?v=98"></script>
+<script src="assets/admin.js?v=99"></script>
 </body>
 </html>
