@@ -2140,7 +2140,6 @@ body.gate-open { overflow: hidden; }
 
 .theme-picker-tab {
   writing-mode: vertical-rl;
-  transform: rotate(180deg);
   background: var(--birch-050);
   border: 1px solid rgba(32,27,20,0.18);
   border-left: none;
