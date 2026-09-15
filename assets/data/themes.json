@@ -108,20 +108,20 @@
     {
       "id": "marine-profond",
       "name": "Marine Profond",
-      "description": "Les mêmes fonds noir/marine profonds que le thème néon, mais raffinés — seul le bleu H2O comme accent, sans le rose ni le vert fluo. Sobre, moderne, lisible pour toute clientèle.",
+      "description": "Un vrai thème sombre de bout en bout — le moins de blanc possible, seul le bleu H2O comme accent, sans le rose ni le vert fluo. Sobre, moderne, économe en batterie sur écrans OLED.",
       "vars": {
         "--spruce-950": "#05070D",
         "--spruce-900": "#0B0F1C",
         "--spruce-800": "#141B30",
-        "--birch-100": "#F4F7FB",
-        "--birch-050": "#FAFBFD",
+        "--birch-100": "#0D1117",
+        "--birch-050": "#171C24",
         "--amber-600": "#1E9BFF",
-        "--amber-700": "#1670C4",
+        "--amber-700": "#7CC4FF",
         "--amber-300": "#7CC4FF",
-        "--water-500": "#3D5A80",
+        "--water-500": "#6B84A3",
         "--water-300": "#8FA8C4",
-        "--ink-900": "#0A0E18",
-        "--ink-600": "#4A5568"
+        "--ink-900": "#EDF1F6",
+        "--ink-600": "#9FAAB8"
       },
       "serif": "'Playfair Display', Georgia, serif",
       "sans": "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"

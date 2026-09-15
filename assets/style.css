@@ -1900,11 +1900,11 @@ body.gate-open { overflow: hidden; }
 }
 .theme-marine .brand,
 .theme-marine .brand .brand-subtitle {
-  color: var(--birch-100);
+  color: var(--ink-900);
 }
 .theme-marine .site-nav > a,
 .theme-marine .site-nav-dropdown-toggle {
-  color: var(--birch-100);
+  color: var(--ink-900);
 }
 .theme-marine .site-nav > a:hover,
 .theme-marine .site-nav-dropdown-toggle:hover { color: var(--amber-600); background: rgba(30,155,255,0.08); }
@@ -2254,3 +2254,61 @@ body.gate-open { overflow: hidden; }
 @media (max-width: 640px) {
   .theme-picker-panel { width: 210px; margin-left: -210px; }
 }
+
+/* ---------- Marine Profond — retouches supplémentaires pour un vrai thème sombre de bout en bout ---------- */
+/* Beaucoup de bordures/tableaux du site utilisent une couleur foncée codée en dur
+   (pensée pour un fond clair) qui deviendrait presque invisible sur les nouveaux
+   fonds sombres. On les éclaircit pour les cas les plus visibles. */
+.theme-marine input,
+.theme-marine textarea,
+.theme-marine select,
+.theme-marine table,
+.theme-marine table td,
+.theme-marine table th,
+.theme-marine .channel-row,
+.theme-marine .conv-table td,
+.theme-marine .products,
+.theme-marine .posts-table td,
+.theme-marine .site-nav-item-dropdown,
+.theme-marine .rdv-cal-day-disabled {
+  border-color: rgba(255,255,255,0.12) !important;
+}
+.theme-marine input,
+.theme-marine textarea,
+.theme-marine select {
+  background: var(--birch-050);
+  color: var(--ink-900);
+}
+.theme-marine .conv-tool,
+.theme-marine .conv-result,
+.theme-marine .conv-tool-list,
+.theme-marine .theme-picker-panel,
+.theme-marine .autocomplete-list {
+  border-color: rgba(255,255,255,0.1);
+}
+.theme-marine .conv-grid > div,
+.theme-marine .autocomplete-item:hover,
+.theme-marine .theme-picker-swatch {
+  background: var(--birch-100);
+}
+
+/* Ces éléments affichent du texte clair sur une section déjà sombre (spruce-950/900),
+   peu importe le thème — ils utilisaient --birch-100 comme couleur de texte. Pour
+   Marine Profond, --birch-100 sert maintenant de fond sombre (voir plus haut), donc
+   on force ces textes vers --ink-900 (clair dans ce thème) pour rester lisibles. */
+.theme-marine .header-call,
+.theme-marine .nav-toggle[aria-expanded="true"],
+.theme-marine .hero,
+.theme-marine .hero h1,
+.theme-marine .btn-outline,
+.theme-marine .map-zoom-hint,
+.theme-marine .about,
+.theme-marine .about-quote,
+.theme-marine .conv-hero,
+.theme-marine .visitor-badge #visitor-city {
+  color: var(--ink-900);
+}
+.theme-marine .about-tagline p {
+  color: var(--ink-900) !important;
+}
+.theme-marine .btn-outline:hover { border-color: var(--ink-900); }
