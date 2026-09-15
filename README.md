@@ -578,22 +578,15 @@ Techniquement : la préférence est stockée sous la clé `bl_user_theme`
 (différente de `bl_cached_theme`, qui sert uniquement à éviter le flash au
 chargement — voir section 3g).
 
-## 3z. Raccourci Clair / Sombre (☀️ / 🌙) — indépendant du thème
+## 3z. Mode Clair/Sombre retiré
 
-Après un ajustement, le mode Sombre est maintenant **complètement indépendant du
-thème choisi** — il s'applique par-dessus n'importe lequel des 6 thèmes, pas
-seulement Marine Profond. Choisis n'importe quel thème (Érable Classique, Ardoise
-Épurée, etc.), puis 🌙 assombrit ses fonds de page/cartes en gardant sa couleur
-d'accent; ☀️ ramène en clair. Les deux préférences (thème et mode) sont mémorisées
-séparément (`bl_user_theme` et `bl_user_mode`) et se combinent librement.
+Le raccourci ☀️/🌙 causait trop de problèmes visuels à travers le site pour valoir
+la peine d'être conservé — retiré complètement (HTML, CSS, JS, sur les 6 pages).
 
-Techniquement : une classe `.mode-dark`, ajoutée sur `<html>` indépendamment des
-classes de thème (`.theme-neon`, `.theme-marine`), redéfinit les variables
-`--birch-100/050` (fonds) et `--ink-900/600` (texte) vers des valeurs sombres/claires.
-Comme la plupart du CSS du site utilise déjà ces variables plutôt que des couleurs
-fixes, la bascule se propage correctement à travers le site, thèmes spéciaux (néon,
-marine) inclus. Quelques bordures codées en dur ont aussi été éclaircies pour rester
-visibles sur fond sombre.
+**Ce qui reste** : le sélecteur de thème lui-même (l'onglet « Thèmes » sur le bord
+gauche, avec les 6 thèmes complets — dont Marine Profond, qui reste un vrai thème
+sombre à part entière) continue de fonctionner normalement, exactement comme avant
+d'avoir commencé à travailler sur le mode clair/sombre.
 
 ## 4. Formulaire de contact
 

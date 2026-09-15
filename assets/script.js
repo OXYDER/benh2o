@@ -942,57 +942,14 @@
     } catch (e) {}
   }
 
-  const USER_MODE_KEY = "bl_user_mode";
-
-  function applyMode(mode) {
-    document.documentElement.classList.toggle("mode-dark", mode === "dark");
-    try {
-      localStorage.setItem("bl_cached_mode", mode);
-    } catch (e) {}
-  }
-
   function setupThemePicker(themes, currentUserThemeId) {
     const picker = document.getElementById("theme-picker");
     const tab = document.getElementById("theme-picker-tab");
     const listEl = document.getElementById("theme-picker-list");
     const resetBtn = document.getElementById("theme-picker-reset");
-    const lightBtn = document.getElementById("theme-picker-light");
-    const darkBtn = document.getElementById("theme-picker-dark");
     if (!picker || !tab || !listEl) return;
     if (listEl.dataset.built) return; // évite de reconstruire si setupContent est rappelé
     listEl.dataset.built = "1";
-
-    function currentMode() {
-      try {
-        return localStorage.getItem(USER_MODE_KEY) || "light";
-      } catch (e) {
-        return "light";
-      }
-    }
-
-    function updateSwatchActive(themeId) {
-      listEl.querySelectorAll(".theme-picker-swatch").forEach((b) => b.classList.toggle("active", b.dataset.themeId === themeId));
-    }
-    function updateModeButtons(mode) {
-      if (lightBtn) lightBtn.classList.toggle("active", mode !== "dark");
-      if (darkBtn) darkBtn.classList.toggle("active", mode === "dark");
-    }
-
-    function selectTheme(themeId) {
-      try {
-        localStorage.setItem(USER_THEME_KEY, themeId);
-      } catch (e) {}
-      applyTheme(themeId, themes);
-      updateSwatchActive(themeId);
-    }
-
-    function selectMode(mode) {
-      try {
-        localStorage.setItem(USER_MODE_KEY, mode);
-      } catch (e) {}
-      applyMode(mode);
-      updateModeButtons(mode);
-    }
 
     listEl.innerHTML = themes
       .map((t) => {
@@ -1008,8 +965,6 @@
       })
       .join("");
 
-    updateModeButtons(currentMode());
-
     tab.addEventListener("click", () => {
       picker.classList.toggle("open");
     });
@@ -1020,11 +975,15 @@
     });
 
     listEl.querySelectorAll(".theme-picker-swatch").forEach((btn) => {
-      btn.addEventListener("click", () => selectTheme(btn.dataset.themeId));
+      btn.addEventListener("click", () => {
+        const themeId = btn.dataset.themeId;
+        try {
+          localStorage.setItem(USER_THEME_KEY, themeId);
+        } catch (e) {}
+        applyTheme(themeId, themes);
+        listEl.querySelectorAll(".theme-picker-swatch").forEach((b) => b.classList.toggle("active", b === btn));
+      });
     });
-
-    if (darkBtn) darkBtn.addEventListener("click", () => selectMode("dark"));
-    if (lightBtn) lightBtn.addEventListener("click", () => selectMode("light"));
 
     if (resetBtn) {
       resetBtn.addEventListener("click", () => {
@@ -1059,11 +1018,6 @@
             } catch (e) {}
             const themeIdToUse = userTheme || data.activeTheme;
             applyTheme(themeIdToUse, themeData.themes);
-            let userMode = "light";
-            try {
-              userMode = localStorage.getItem(USER_MODE_KEY) || "light";
-            } catch (e) {}
-            applyMode(userMode);
             setupThemePicker(themeData.themes, themeIdToUse);
           })
           .catch(() => {});
