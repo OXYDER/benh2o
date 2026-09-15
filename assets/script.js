@@ -1567,6 +1567,18 @@
   }
 
   /* ---------- Particules animées derrière la feuille d'érable (hero) ---------- */
+  /* ---------- Vidéo d'arrière-plan du hero ---------- */
+  function setupHeroVideo() {
+    const video = document.getElementById("hero-video");
+    if (!video) return;
+    const isMobile = window.innerWidth < 900;
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (isMobile || reducedMotion) return; // pas de vidéo sur mobile ni si mouvement réduit demandé
+    video.preload = "auto";
+    video.load();
+    video.play().catch(() => {}); // ignore silencieusement si le navigateur bloque la lecture auto
+  }
+
   function setupLeafParticles() {
     const container = document.getElementById("leaf-particles");
     if (!container) return;
@@ -1760,6 +1772,7 @@
     setupEntryGate();
     setupContent();
     setupLeafParticles();
+    setupHeroVideo();
     setupPosts();
     setupBackToTop();
 

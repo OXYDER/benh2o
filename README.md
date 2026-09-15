@@ -871,3 +871,23 @@ api/seed-distributeurs.sql       → injecte le réseau de distributeurs sur une
 api/scripts/create-admin.js     → crée/modifie le compte administrateur (mot de passe)
 api/Dockerfile                  → image de l'API
 ```
+
+## 4b. Vidéo d'arrière-plan dans le hero
+
+Après avoir vu la vraie vidéo (contenu de marque H2O Innovation — drone, tubulure,
+érablière — pas une vidéo générique), le jugement a changé : ça vaut la peine.
+Implémenté avec prudence :
+
+- **Opacité réduite (22%)** + dégradé sombre par-dessus, pour que le texte et la
+  feuille néon animée restent les éléments visuels principaux — la vidéo n'est
+  qu'une texture de fond
+- **Absente sur mobile** — pas de vidéo chargée du tout en bas de 900px de large,
+  pour ne pas peser sur les connexions plus limitées en région
+- **Respecte `prefers-reduced-motion`** — comme la feuille animée, désactivée si le
+  visiteur a demandé moins de mouvement dans son système
+- **Chargement différé** (`preload="none"`, déclenché par JS après le reste de la
+  page) — jamais bloquant pour le premier affichage
+- **Son retiré, poids réduit** — la vidéo originale (1,18 Mo, avec son) a été
+  ré-encodée sans audio à 667 Ko
+
+Fichier : `assets/hero-video.mp4`. Présente seulement sur la page d'accueil (`index.html`).
