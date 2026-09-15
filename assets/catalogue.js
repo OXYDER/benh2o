@@ -11,7 +11,7 @@
   let pdfUrl = null;
   let libLoadingPromise = null;
   let renderTaskId = 0; // pour ignorer les rendus obsolètes si on change vite de page
-  let viewMode = "page"; // "page" ou "scroll" — choix libre sur ordinateur, toujours "scroll" sur mobile
+  let viewMode = "scroll"; // "page" ou "scroll" — choix libre sur ordinateur (défilement par défaut), toujours "scroll" sur mobile
   let resizeTimer = null;
 
   function loadPdfLib() {
@@ -64,6 +64,7 @@
     const nextBtn = document.getElementById("catalogue-next");
     if (prevBtn) prevBtn.disabled = num <= 1;
     if (nextBtn) nextBtn.disabled = num >= totalPages;
+    highlightThumb(num);
   }
 
   function setupScrollMode(container) {
@@ -105,11 +106,71 @@
     wraps.forEach((w) => observer.observe(w));
   }
 
+  function setupThumbnails() {
+    const panel = document.getElementById("catalogue-thumbnails");
+    if (!panel || panel.dataset.built) return;
+    panel.dataset.built = "1";
+    panel.innerHTML = "";
+    const thumbs = [];
+    for (let i = 1; i <= totalPages; i++) {
+      const thumb = document.createElement("div");
+      thumb.className = "catalogue-thumb";
+      thumb.dataset.pageNum = String(i);
+      const canvas = document.createElement("canvas");
+      thumb.appendChild(canvas);
+      const label = document.createElement("span");
+      label.textContent = String(i);
+      thumb.appendChild(label);
+      thumb.addEventListener("click", () => goToPage(i));
+      panel.appendChild(thumb);
+      thumbs.push(thumb);
+    }
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          const thumb = entry.target;
+          if (thumb.dataset.rendered) return;
+          thumb.dataset.rendered = "1";
+          const num = parseInt(thumb.dataset.pageNum, 10);
+          pdfDoc.getPage(num).then((page) => {
+            const canvas = thumb.querySelector("canvas");
+            const baseViewport = page.getViewport({ scale: 1 });
+            const fitScale = 116 / baseViewport.width;
+            renderPageToCanvas(page, canvas, fitScale);
+          });
+        });
+      },
+      { root: panel, rootMargin: "600px 0px" }
+    );
+    thumbs.forEach((t) => observer.observe(t));
+  }
+
+  function highlightThumb(num) {
+    const panel = document.getElementById("catalogue-thumbnails");
+    if (!panel) return;
+    panel.querySelectorAll(".catalogue-thumb").forEach((t) => {
+      t.classList.toggle("active", parseInt(t.dataset.pageNum, 10) === num);
+    });
+  }
+
+  function goToPage(num) {
+    currentPage = num;
+    highlightThumb(num);
+    if (isMobile() || viewMode === "scroll") {
+      const wrap = document.querySelector('.catalogue-mobile-page[data-page-num="' + num + '"]');
+      if (wrap) wrap.scrollIntoView({ block: "start" });
+    } else {
+      renderPageMode(num);
+    }
+  }
+
   function renderCurrentMode() {
     const body = document.getElementById("catalogue-viewer-body");
     const controls = document.getElementById("catalogue-viewer-controls");
     const pageControls = ["catalogue-prev", "catalogue-next", "catalogue-page-info"];
     const modeToggle = document.getElementById("catalogue-mode-toggle");
+    const thumbsToggle = document.getElementById("catalogue-thumbnails-toggle");
     const mobile = isMobile();
     const useScroll = mobile || viewMode === "scroll";
 
@@ -122,6 +183,7 @@
       modeToggle.hidden = mobile; // le choix de mode n'a de sens que sur ordinateur
       modeToggle.textContent = viewMode === "page" ? "☰ Défilement" : "▤ Page";
     }
+    if (thumbsToggle) thumbsToggle.hidden = mobile;
 
     if (useScroll) {
       body.innerHTML = '<div class="catalogue-mobile-scroll" id="catalogue-mobile-scroll"></div>';
@@ -130,6 +192,7 @@
       body.innerHTML = '<canvas id="catalogue-canvas"></canvas>';
       renderPageMode(currentPage);
     }
+    if (!mobile) setupThumbnails();
   }
 
   async function openViewer() {
@@ -184,6 +247,7 @@
     const zoomOutBtn = document.getElementById("catalogue-zoom-out");
     const fullscreenBtn = document.getElementById("catalogue-fullscreen");
     const modeToggle = document.getElementById("catalogue-mode-toggle");
+    const thumbsToggle = document.getElementById("catalogue-thumbnails-toggle");
     const overlay = document.getElementById("catalogue-viewer");
     if (!tabWrap || !tab) return;
 
@@ -199,6 +263,14 @@
 
     tab.addEventListener("click", openViewer);
     if (closeBtn) closeBtn.addEventListener("click", closeViewer);
+    if (thumbsToggle) {
+      thumbsToggle.addEventListener("click", () => {
+        const panel = document.getElementById("catalogue-thumbnails");
+        if (!panel) return;
+        panel.hidden = !panel.hidden;
+        thumbsToggle.classList.toggle("active", !panel.hidden);
+      });
+    }
     if (overlay) {
       overlay.addEventListener("click", (e) => {
         if (e.target === overlay) closeViewer();

@@ -7,7 +7,7 @@
 <meta name="description" content="Nouvelles et Événements — Benoît Laprise, H2O Innovation">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,500&family=Playfair+Display:wght@600;700&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="icon" href="assets/favicon.ico">
+<link rel="icon" type="image/gif" href="assets/favicon-animated.gif?v=98">
 <link rel="stylesheet" href="assets/style.css?v=98">
 <script>
 (function() {
@@ -42,9 +42,10 @@
 <div class="catalogue-viewer" id="catalogue-viewer" hidden>
   <div class="catalogue-viewer-card">
     <div class="catalogue-viewer-header">
+      <button type="button" id="catalogue-thumbnails-toggle" class="catalogue-thumbnails-toggle" aria-label="Afficher/masquer les pages" hidden>🗂</button>
       <span class="catalogue-viewer-title">Catalogue H2O Innovation</span>
       <div class="catalogue-viewer-controls" id="catalogue-viewer-controls" hidden>
-        <button type="button" id="catalogue-mode-toggle" aria-label="Changer de mode d'affichage">☰ Défilement</button>
+        <button type="button" id="catalogue-mode-toggle" aria-label="Changer de mode d'affichage">▤ Page</button>
         <span class="catalogue-controls-sep"></span>
         <button type="button" id="catalogue-zoom-out" aria-label="Réduire">−</button>
         <button type="button" id="catalogue-zoom-in" aria-label="Agrandir">+</button>
@@ -56,7 +57,10 @@
       </div>
       <button type="button" class="catalogue-viewer-close" id="catalogue-viewer-close" aria-label="Fermer le catalogue">✕</button>
     </div>
-    <div class="catalogue-viewer-body" id="catalogue-viewer-body"></div>
+    <div class="catalogue-viewer-main">
+      <div class="catalogue-thumbnails" id="catalogue-thumbnails" hidden></div>
+      <div class="catalogue-viewer-body" id="catalogue-viewer-body"></div>
+    </div>
   </div>
 </div>
 <button class="urgence-fab" type="button" data-urgence-trigger aria-label="Urgence — Service à la clientèle H2O Innovation">🚨 Urgence</button>
