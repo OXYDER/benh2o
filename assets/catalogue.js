@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  const PDFJS_VERSION = "4.0.379";
+  const PDFJS_VERSION = "3.11.174";
   const PDFJS_BASE = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/" + PDFJS_VERSION + "/";
 
   let pdfDoc = null;
