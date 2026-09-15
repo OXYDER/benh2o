@@ -616,6 +616,24 @@ sur le site public qu'une fois un catalogue téléversé — invisible avant ça
 l'effet « coin de page qui se retourne » en 3D comme Issuu — un ajout possible plus
 tard si tu y tiens, mais nettement plus complexe à bien réussir.
 
+## 3zzz. Liseuse — mise à jour (mode par défaut, vignettes, plein écran, favicon)
+
+**Sur ordinateur :**
+- Mode par défaut maintenant **Défilement** (au lieu de Page) — bascule possible
+  vers « ▤ Page » avec le bouton dédié
+- **Plein écran** (icône ⛶) via la vraie fonction du navigateur
+- **Barre de vignettes** (icône 🗂, comme Adobe Reader) — miniatures de toutes les
+  pages sur le côté gauche, chargées au fur et à mesure qu'on défile dans la liste
+  (pas les 100 d'un coup), cliquables pour sauter directement à une page
+
+**Sur mobile :** bouton fermer corrigé (utilisait `100vh`, corrigé en `100dvh` pour
+tenir compte de la barre d'adresse du navigateur qui le poussait hors de l'écran
+visible) — voir aussi section 3zz.
+
+**Favicon** : remplacé par la feuille d'érable néon en rotation 3D fournie, fond
+rendu transparent (la version originale avait un fond noir opaque), redimensionnée
+à 64×64 pour rester légère.
+
 ## 4. Formulaire de contact
 
 Deux façons d'envoyer les demandes du formulaire, gérées par le serveur (`POST
