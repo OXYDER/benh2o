@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,500&family=Playfair+Display:wght@600;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="icon" type="image/gif" href="assets/favicon-animated.gif?v=98">
-<link rel="stylesheet" href="assets/style.css?v=99">
-<link rel="stylesheet" href="assets/admin.css?v=99">
+<link rel="stylesheet" href="assets/style.css?v=100">
+<link rel="stylesheet" href="assets/admin.css?v=100">
 </head>
 <body class="admin-body">
 
@@ -52,6 +52,7 @@
       <button class="admin-tab active" data-tab="contact" role="tab" aria-selected="true">Mes informations</button>
       <button class="admin-tab" data-tab="zones" role="tab" aria-selected="false">Zones de couverture</button>
       <button class="admin-tab" data-tab="content" role="tab" aria-selected="false">Contenu de la page</button>
+      <button class="admin-tab" data-tab="menu" role="tab" aria-selected="false">Menu</button>
       <button class="admin-tab" data-tab="distributeurs" role="tab" aria-selected="false">Distributeurs</button>
       <button class="admin-tab" data-tab="rendezvous" role="tab" aria-selected="false">Rendez-vous</button>
       <button class="admin-tab" data-tab="publications" role="tab" aria-selected="false">Publications</button>
@@ -277,88 +278,7 @@
       </div>
 
       <h3 class="admin-field-group-title">Menu principal (en haut)</h3>
-      <div class="admin-field-row">
-        <div class="admin-field">
-          <label for="cc-nav-home">Lien « Accueil »</label>
-          <input type="text" id="cc-nav-home" data-key="nav.home">
-        </div>
-        <div class="admin-field">
-          <label for="cc-nav-zone">Lien « Territoire »</label>
-          <input type="text" id="cc-nav-zone" data-key="nav.zone">
-        </div>
-      </div>
-      <div class="admin-field-row">
-        <div class="admin-field">
-          <label for="cc-nav-carte">Lien « Carte »</label>
-          <input type="text" id="cc-nav-carte" data-key="nav.carte">
-        </div>
-        <div class="admin-field">
-          <label for="cc-nav-produits">Lien « Produits H2O »</label>
-          <input type="text" id="cc-nav-produits" data-key="nav.produits">
-        </div>
-      </div>
-      <div class="admin-field-row">
-        <div class="admin-field">
-          <label for="cc-nav-channels">Lien « Nous joindre »</label>
-          <input type="text" id="cc-nav-channels" data-key="nav.channels">
-        </div>
-        <div class="admin-field">
-          <label for="cc-nav-about">Lien « À propos »</label>
-          <input type="text" id="cc-nav-about" data-key="nav.about">
-        </div>
-      </div>
-      <div class="admin-field-row">
-        <div class="admin-field">
-          <label for="cc-nav-contact">Lien « Formulaire de contact »</label>
-          <input type="text" id="cc-nav-contact" data-key="nav.contact">
-        </div>
-        <div class="admin-field">
-          <label for="cc-nav-urgence">Texte du bouton URGENCE (bulle flottante)</label>
-          <input type="text" id="cc-nav-urgence" data-key="nav.urgence">
-        </div>
-        <div class="admin-field">
-          <label for="cc-nav-outils">Menu « Outils » (calculateurs/convertisseurs)</label>
-          <input type="text" id="cc-nav-outils" data-key="nav.outils">
-        </div>
-      </div>
-      <div class="admin-field-row">
-        <div class="admin-field">
-          <label for="cc-nav-nouvelles">Lien « Nouvelles »</label>
-          <input type="text" id="cc-nav-nouvelles" data-key="nav.nouvelles">
-        </div>
-        <div class="admin-field">
-          <label for="cc-nav-tutoriels">Lien « Tutoriels »</label>
-          <input type="text" id="cc-nav-tutoriels" data-key="nav.tutoriels">
-        </div>
-      </div>
-      <div class="admin-field">
-        <label for="cc-nav-support">Menu déroulant « Support & Contact »</label>
-        <input type="text" id="cc-nav-support" data-key="nav.support">
-      </div>
-      <div class="admin-field-row">
-        <div class="admin-field">
-          <label for="cc-nav-manuels">Lien « Manuels de l'utilisateur »</label>
-          <input type="text" id="cc-nav-manuels" data-key="nav.manuels">
-        </div>
-        <div class="admin-field">
-          <label for="cc-nav-fiches">Lien « Fiches Techniques »</label>
-          <input type="text" id="cc-nav-fiches" data-key="nav.fiches">
-        </div>
-      </div>
-      <div class="admin-field" style="max-width:320px">
-        <label for="cc-nav-convertisseur">Lien « Convertisseur Acéricole »</label>
-        <input type="text" id="cc-nav-convertisseur" data-key="nav.convertisseur">
-      </div>
-      <div class="admin-field-row">
-        <div class="admin-field">
-          <label for="cc-nav-groupe-contact">Étiquette de section — Contact</label>
-          <input type="text" id="cc-nav-groupe-contact" data-key="nav.groupeContact">
-        </div>
-        <div class="admin-field">
-          <label for="cc-nav-groupe-infos">Étiquette de section — Informations</label>
-          <input type="text" id="cc-nav-groupe-infos" data-key="nav.groupeInfos">
-        </div>
-      </div>
+      <p class="admin-field-hint">Le menu principal (liens, menus déroulants, séparateurs) se gère maintenant dans son propre onglet — <strong>« Menu »</strong>, juste au-dessus.</p>
 
       <h3 class="admin-field-group-title">Section « En-tête » (Hero)</h3>
       <div class="admin-field">
@@ -895,6 +815,22 @@
       </div>
     </div>
 
+    <!-- ===== Onglet : Menu principal (éditeur complet) ===== -->
+    <div class="admin-panel" data-panel="menu" hidden>
+      <h3 class="admin-field-group-title">Menu principal (en haut du site)</h3>
+      <p class="admin-field-hint">
+        Ajoute, retire, réordonne ou modifie les liens, menus déroulants et séparateurs du menu.
+        « Produits H2O » est un menu déroulant spécial (recherche + liste d'équipements gérée dans
+        Contenu de la page → Équipements) — tu peux le déplacer mais pas changer son contenu ici.
+      </p>
+      <div id="nav-menu-editor"></div>
+      <button class="btn btn-outline admin-add-region" id="nav-menu-add-top" type="button">+ Ajouter un élément</button>
+      <div class="admin-save-row">
+        <span class="admin-save-status" id="menu-save-status"></span>
+        <button class="btn btn-primary" id="menu-save" type="button">Enregistrer le menu</button>
+      </div>
+    </div>
+
     <!-- ===== Onglet : Distributeurs (réseau H2O Innovation) ===== -->
     <div class="admin-panel" data-panel="distributeurs" hidden>
       <p class="admin-section-desc">Le réseau de distributeurs H2O Innovation utilisé pour rediriger automatiquement les visiteurs hors de ta zone vers le plus proche de chez eux. Modifie un nom, une adresse ou un numéro si un distributeur change — la redirection se recalcule toute seule.</p>
@@ -999,6 +935,6 @@
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/tinymce@6/tinymce.min.js" referrerpolicy="origin"></script>
-<script src="assets/admin.js?v=99"></script>
+<script src="assets/admin.js?v=100"></script>
 </body>
 </html>

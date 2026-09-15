@@ -134,6 +134,102 @@ INSERT INTO site_data (key, data) VALUES ('content', '{
     "brandName": "Benoît Laprise",
     "brandSubtitle": "Représentant des ventes"
   },
+  "navMenu": [
+    {
+      "type": "link",
+      "label": "Accueil",
+      "url": "#home"
+    },
+    {
+      "type": "link",
+      "label": "Territoire",
+      "url": "#zone"
+    },
+    {
+      "type": "link",
+      "label": "Carte",
+      "url": "#carte"
+    },
+    {
+      "type": "products",
+      "label": "Produits H2O"
+    },
+    {
+      "type": "link",
+      "label": "Nouvelles",
+      "url": "/nouvelles"
+    },
+    {
+      "type": "link",
+      "label": "À propos",
+      "url": "#about"
+    },
+    {
+      "type": "dropdown",
+      "label": "Support & Contact",
+      "children": [
+        {
+          "type": "separator",
+          "label": "Contact"
+        },
+        {
+          "type": "link",
+          "label": "Nous joindre",
+          "url": "#channels"
+        },
+        {
+          "type": "action",
+          "label": "Rendez-vous",
+          "action": "rdv"
+        },
+        {
+          "type": "link",
+          "label": "Formulaire de contact",
+          "url": "#contact"
+        },
+        {
+          "type": "separator",
+          "label": "Informations"
+        },
+        {
+          "type": "link",
+          "label": "Tutoriels",
+          "url": "/tutoriels"
+        },
+        {
+          "type": "link",
+          "label": "Manuels de l''utilisateur",
+          "url": "/manuels"
+        },
+        {
+          "type": "link",
+          "label": "Fiches Techniques",
+          "url": "/fiches-techniques"
+        },
+        {
+          "type": "link",
+          "label": "Convertisseur Acéricole",
+          "url": "/convertisseur"
+        }
+      ]
+    },
+    {
+      "type": "dropdown",
+      "label": "Outils",
+      "children": [
+        {
+          "type": "link",
+          "label": "Calculateurs",
+          "url": "/convertisseur#mode-calculateurs"
+        },
+        {
+          "type": "link",
+          "label": "Convertisseurs",
+          "url": "/convertisseur#mode-convertisseurs"
+        }
+      ]
+    }
+  ],
   "nav": {
     "home": "Accueil",
     "zone": "Territoire",

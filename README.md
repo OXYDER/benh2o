@@ -657,6 +657,42 @@ LinkedIn ou Messenger. Ajouté :
   automatiquement (titre et description reprennent ceux déjà utilisés pour Google;
   l'image vient du nouveau champ)
 
+## 4a. Éditeur complet du menu principal (refonte)
+
+Suite à un retour, le menu n'était éditable qu'au niveau du texte des liens — pas
+moyen d'ajouter, retirer ou réordonner des liens, menus déroulants ou séparateurs.
+C'est maintenant un vrai changement de fond : **le menu est piloté par une structure
+de données** (plutôt que codé en dur dans chaque page HTML), avec un éditeur complet
+dans `/admin` → nouvel onglet **« Menu »**.
+
+**Ce qu'on peut faire maintenant** :
+- Ajouter / retirer un lien, un menu déroulant, un séparateur ou une action
+  (Rendez-vous / Urgence) — à n'importe quel niveau (menu principal ou sous-menu)
+- Réordonner avec les flèches ↑ / ↓
+- Modifier le texte et l'URL de chaque lien
+- « Produits H2O » reste un menu déroulant spécial (recherche + liste d'équipements,
+  gérée dans Contenu de la page → Équipements) — déplaçable dans l'ordre, mais son
+  contenu propre se gère ailleurs, comme avant
+
+**Comment ça marche techniquement** : la structure du menu (`navMenu`, un tableau
+JSON imbriqué) est stockée dans `site_data` comme le reste du contenu, et
+`assets/script.js` construit le HTML du menu à partir de cette structure au
+chargement de chaque page (fonction `renderNavMenu`), avant de brancher les
+comportements existants (ouverture/fermeture des sous-menus, surlignage de la
+section active, etc.) — ces comportements n'ont pas changé, ils s'attachent
+maintenant à un menu généré plutôt qu'à un menu codé en dur.
+
+**Nettoyage** : les anciens champs de texte du menu (« Lien Accueil », « Lien
+Territoire », etc., dans Contenu de la page) étaient devenus inutiles — retirés,
+avec un renvoi vers le nouvel onglet Menu.
+
+**Migration pour ta base existante** — le script reconstitue exactement ton menu
+actuel comme point de départ, rien ne change visuellement tant que tu ne modifies
+pas toi-même dans le nouvel onglet :
+```bash
+docker compose exec -T benoitlaprise-db psql -U benoitlaprise -d benoitlaprise < api/add-nav-menu-editable.sql
+```
+
 ## 4. Formulaire de contact
 
 Deux façons d'envoyer les demandes du formulaire, gérées par le serveur (`POST

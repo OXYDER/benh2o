@@ -113,6 +113,38 @@
   function escapeAttr(str) {
     return (str || "").toString().replace(/&/g, "&amp;").replace(/"/g, "&quot;");
   }
+
+  const DEFAULT_NAV_MENU_ADMIN = [
+    { type: "link", label: "Accueil", url: "#home" },
+    { type: "link", label: "Territoire", url: "#zone" },
+    { type: "link", label: "Carte", url: "#carte" },
+    { type: "products", label: "Produits H2O" },
+    { type: "link", label: "Nouvelles", url: "/nouvelles" },
+    { type: "link", label: "À propos", url: "#about" },
+    {
+      type: "dropdown",
+      label: "Support & Contact",
+      children: [
+        { type: "separator", label: "Contact" },
+        { type: "link", label: "Nous joindre", url: "#channels" },
+        { type: "action", label: "Rendez-vous", action: "rdv" },
+        { type: "link", label: "Formulaire de contact", url: "#contact" },
+        { type: "separator", label: "Informations" },
+        { type: "link", label: "Tutoriels", url: "/tutoriels" },
+        { type: "link", label: "Manuels de l'utilisateur", url: "/manuels" },
+        { type: "link", label: "Fiches Techniques", url: "/fiches-techniques" },
+        { type: "link", label: "Convertisseur Acéricole", url: "/convertisseur" },
+      ],
+    },
+    {
+      type: "dropdown",
+      label: "Outils",
+      children: [
+        { type: "link", label: "Calculateurs", url: "/convertisseur#mode-calculateurs" },
+        { type: "link", label: "Convertisseurs", url: "/convertisseur#mode-convertisseurs" },
+      ],
+    },
+  ];
   function flashStatus(el, message, isError) {
     el.textContent = message;
     el.classList.toggle("error", !!isError);
@@ -620,6 +652,161 @@
       });
     }
 
+    /* ---------- Éditeur du menu principal (liens, sous-menus, séparateurs) ---------- */
+    const NAV_TOP_TYPES = [
+      ["link", "Lien"],
+      ["dropdown", "Menu déroulant"],
+      ["action", "Action (Rendez-vous / Urgence)"],
+      ["products", "Produits H2O (spécial)"],
+    ];
+    const NAV_CHILD_TYPES = [
+      ["link", "Lien"],
+      ["action", "Action (Rendez-vous / Urgence)"],
+      ["separator", "Séparateur (étiquette de groupe)"],
+    ];
+
+    function navMenuData() {
+      if (!Array.isArray(contentData.navMenu) || !contentData.navMenu.length) {
+        contentData.navMenu = JSON.parse(JSON.stringify(DEFAULT_NAV_MENU_ADMIN));
+      }
+      return contentData.navMenu;
+    }
+
+    function navTypeOptions(list, current) {
+      return list.map(([val, label]) => `<option value="${val}" ${val === current ? "selected" : ""}>${label}</option>`).join("");
+    }
+
+    function renderNavChildRow(child, i, ci, total) {
+      const isSep = child.type === "separator";
+      const isAction = child.type === "action";
+      return `
+        <div class="menu-child-row" data-idx="${i}" data-cidx="${ci}">
+          <select class="menu-field" data-field="type">${navTypeOptions(NAV_CHILD_TYPES, child.type)}</select>
+          <input class="menu-field" data-field="label" type="text" value="${escapeAttr(child.label || "")}" placeholder="Texte affiché">
+          <input class="menu-field" data-field="url" type="text" value="${escapeAttr(child.url || "")}" placeholder="Lien (ex. : /tutoriels ou #contact)" ${isSep || isAction ? "hidden" : ""}>
+          <select class="menu-field" data-field="action" ${isAction ? "" : "hidden"}>
+            <option value="rdv" ${child.action === "rdv" ? "selected" : ""}>Ouvrir Rendez-vous</option>
+            <option value="urgence" ${child.action === "urgence" ? "selected" : ""}>Ouvrir Urgence</option>
+          </select>
+          <div class="menu-item-actions">
+            <button type="button" data-action="child-up" ${ci === 0 ? "disabled" : ""} aria-label="Monter">↑</button>
+            <button type="button" data-action="child-down" ${ci === total - 1 ? "disabled" : ""} aria-label="Descendre">↓</button>
+            <button type="button" data-action="child-delete" aria-label="Supprimer">✕</button>
+          </div>
+        </div>`;
+    }
+
+    function renderNavTopRow(item, i, total) {
+      const isProducts = item.type === "products";
+      const isDropdown = item.type === "dropdown";
+      const isAction = item.type === "action";
+      const children = isDropdown ? (item.children || []) : [];
+      return `
+        <div class="menu-item" data-idx="${i}">
+          <div class="menu-item-row">
+            <select class="menu-field" data-field="type" ${isProducts ? "disabled" : ""}>${navTypeOptions(NAV_TOP_TYPES, item.type)}</select>
+            <input class="menu-field" data-field="label" type="text" value="${escapeAttr(item.label || "")}" placeholder="Texte affiché">
+            <input class="menu-field" data-field="url" type="text" value="${escapeAttr(item.url || "")}" placeholder="Lien (ex. : /nouvelles ou #zone)" ${isDropdown || isAction || isProducts ? "hidden" : ""}>
+            <select class="menu-field" data-field="action" ${isAction ? "" : "hidden"}>
+              <option value="rdv" ${item.action === "rdv" ? "selected" : ""}>Ouvrir Rendez-vous</option>
+              <option value="urgence" ${item.action === "urgence" ? "selected" : ""}>Ouvrir Urgence</option>
+            </select>
+            <div class="menu-item-actions">
+              <button type="button" data-action="up" ${i === 0 ? "disabled" : ""} aria-label="Monter">↑</button>
+              <button type="button" data-action="down" ${i === total - 1 ? "disabled" : ""} aria-label="Descendre">↓</button>
+              <button type="button" data-action="delete" aria-label="Supprimer">✕</button>
+            </div>
+          </div>
+          ${
+            isDropdown
+              ? `<div class="menu-children">
+                  ${children.map((c, ci) => renderNavChildRow(c, i, ci, children.length)).join("")}
+                  <button type="button" class="btn btn-outline menu-add-child" data-action="add-child" style="margin-top:6px">+ Ajouter un sous-élément</button>
+                </div>`
+              : ""
+          }
+        </div>`;
+    }
+
+    function renderNavMenuEditor() {
+      const container = document.getElementById("nav-menu-editor");
+      if (!container) return;
+      const items = navMenuData();
+      container.innerHTML = items.map((item, i) => renderNavTopRow(item, i, items.length)).join("");
+    }
+
+    function setupNavMenuEditor() {
+      const container = document.getElementById("nav-menu-editor");
+      const addTopBtn = document.getElementById("nav-menu-add-top");
+      const saveBtn = document.getElementById("menu-save");
+      const statusEl = document.getElementById("menu-save-status");
+      if (!container || container.dataset.wired) return;
+      container.dataset.wired = "1";
+
+      function swap(arr, i, j) {
+        const tmp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = tmp;
+      }
+
+      container.addEventListener("input", (e) => {
+        const field = e.target.dataset.field;
+        if (!field) return;
+        const row = e.target.closest("[data-idx]");
+        const idx = parseInt(row.dataset.idx, 10);
+        const items = navMenuData();
+        const isChildRow = row.classList.contains("menu-child-row");
+        const target = isChildRow ? items[idx].children[parseInt(row.dataset.cidx, 10)] : items[idx];
+        target[field] = e.target.value;
+        markDirty("content");
+        if (field === "type") renderNavMenuEditor();
+      });
+
+      container.addEventListener("click", (e) => {
+        const btn = e.target.closest("button[data-action]");
+        if (!btn) return;
+        const action = btn.dataset.action;
+        const topRow = btn.closest(".menu-item");
+        const idx = parseInt(topRow.dataset.idx, 10);
+        const items = navMenuData();
+
+        if (action === "up" && idx > 0) swap(items, idx, idx - 1);
+        else if (action === "down" && idx < items.length - 1) swap(items, idx, idx + 1);
+        else if (action === "delete") {
+          if (!confirm("Retirer cet élément du menu ?")) return;
+          items.splice(idx, 1);
+        } else if (action === "add-child") {
+          if (!items[idx].children) items[idx].children = [];
+          items[idx].children.push({ type: "link", label: "Nouveau lien", url: "" });
+        } else if (action === "child-up" || action === "child-down" || action === "child-delete") {
+          const childRow = btn.closest(".menu-child-row");
+          const cidx = parseInt(childRow.dataset.cidx, 10);
+          const children = items[idx].children;
+          if (action === "child-up" && cidx > 0) swap(children, cidx, cidx - 1);
+          else if (action === "child-down" && cidx < children.length - 1) swap(children, cidx, cidx + 1);
+          else if (action === "child-delete") {
+            if (!confirm("Retirer ce sous-élément ?")) return;
+            children.splice(cidx, 1);
+          }
+        } else {
+          return;
+        }
+        markDirty("content");
+        renderNavMenuEditor();
+      });
+
+      if (addTopBtn) {
+        addTopBtn.addEventListener("click", () => {
+          navMenuData().push({ type: "link", label: "Nouveau lien", url: "" });
+          markDirty("content");
+          renderNavMenuEditor();
+        });
+      }
+      if (saveBtn) {
+        saveBtn.addEventListener("click", () => save(statusEl, saveBtn));
+      }
+    }
+
     async function load() {
       try {
         const [contentRes, themesRes] = await Promise.all([
@@ -633,6 +820,8 @@
         renderThemePicker();
         renderOgImage();
         setupOgImageUpload();
+        renderNavMenuEditor();
+        setupNavMenuEditor();
         renderEquipmentItems();
         const addBtn = document.getElementById("equipment-item-add");
         if (addBtn && !addBtn.dataset.wired) {
@@ -648,9 +837,12 @@
       }
     }
 
-    async function save() {
-      saveBtn.disabled = true;
-      saveBtn.textContent = "Enregistrement…";
+    async function save(targetStatusEl, targetSaveBtn) {
+      const btn = targetSaveBtn || saveBtn;
+      const status = targetStatusEl || statusEl;
+      btn.disabled = true;
+      const originalText = btn.textContent;
+      btn.textContent = "Enregistrement…";
       try {
         const res = await fetch("/api/content", {
           method: "PUT",
@@ -658,22 +850,22 @@
           body: JSON.stringify(contentData),
         });
         if (res.ok) {
-          flashStatus(statusEl, "Enregistré ✓", false);
+          flashStatus(status, "Enregistré ✓", false);
           clearDirty("content");
         } else {
           const data = await res.json().catch(() => ({}));
-          flashStatus(statusEl, data.error || "Échec de l'enregistrement.", true);
+          flashStatus(status, data.error || "Échec de l'enregistrement.", true);
         }
       } catch (e) {
-        flashStatus(statusEl, "Impossible de contacter le serveur.", true);
+        flashStatus(status, "Impossible de contacter le serveur.", true);
       } finally {
-        saveBtn.disabled = false;
-        saveBtn.textContent = "Enregistrer";
+        btn.disabled = false;
+        btn.textContent = originalText;
       }
     }
 
     bindForm();
-    saveBtn.addEventListener("click", save);
+    saveBtn.addEventListener("click", () => save());
     registerDirtyIndicator("content", statusEl);
     load();
   }

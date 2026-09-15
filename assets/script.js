@@ -897,6 +897,110 @@
     return path.split(".").reduce((o, k) => (o ? o[k] : undefined), obj);
   }
 
+  function escapeHtml(str) {
+    return (str || "")
+      .toString()
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+  }
+  function escapeAttr(str) {
+    return (str || "").toString().replace(/&/g, "&amp;").replace(/"/g, "&quot;");
+  }
+
+  const DEFAULT_NAV_MENU = [
+    { type: "link", label: "Accueil", url: "#home" },
+    { type: "link", label: "Territoire", url: "#zone" },
+    { type: "link", label: "Carte", url: "#carte" },
+    { type: "products", label: "Produits H2O" },
+    { type: "link", label: "Nouvelles", url: "/nouvelles" },
+    { type: "link", label: "À propos", url: "#about" },
+    {
+      type: "dropdown",
+      label: "Support & Contact",
+      children: [
+        { type: "separator", label: "Contact" },
+        { type: "link", label: "Nous joindre", url: "#channels" },
+        { type: "action", label: "Rendez-vous", action: "rdv" },
+        { type: "link", label: "Formulaire de contact", url: "#contact" },
+        { type: "separator", label: "Informations" },
+        { type: "link", label: "Tutoriels", url: "/tutoriels" },
+        { type: "link", label: "Manuels de l'utilisateur", url: "/manuels" },
+        { type: "link", label: "Fiches Techniques", url: "/fiches-techniques" },
+        { type: "link", label: "Convertisseur Acéricole", url: "/convertisseur" },
+      ],
+    },
+    {
+      type: "dropdown",
+      label: "Outils",
+      children: [
+        { type: "link", label: "Calculateurs", url: "/convertisseur#mode-calculateurs" },
+        { type: "link", label: "Convertisseurs", url: "/convertisseur#mode-convertisseurs" },
+      ],
+    },
+  ];
+
+  function renderNavChild(item) {
+    if (item.type === "separator") {
+      return `<span class="site-nav-submenu-label">${escapeHtml(item.label)}</span>`;
+    }
+    if (item.type === "action") {
+      const attr = item.action === "urgence" ? "data-urgence-trigger" : "data-rdv-trigger";
+      return `<button type="button" class="site-nav-submenu-btn" ${attr}>${escapeHtml(item.label)}</button>`;
+    }
+    return `<a href="${escapeAttr(item.url || "#")}">${escapeHtml(item.label)}</a>`;
+  }
+
+  function renderProductsDropdown(item, uid) {
+    return `
+      <div class="site-nav-item-dropdown" id="nav-${uid}-dropdown">
+        <button type="button" class="site-nav-dropdown-toggle" id="nav-${uid}-toggle" aria-expanded="false" aria-controls="nav-${uid}-submenu">
+          <span>${escapeHtml(item.label)}</span> <span class="caret">▾</span>
+        </button>
+        <div class="site-nav-submenu" id="nav-${uid}-submenu">
+          <form class="site-nav-search" id="nav-product-search-form">
+            <input type="text" id="nav-product-search-input" placeholder="Rechercher un produit…" autocomplete="off">
+            <button type="submit" aria-label="Rechercher">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </button>
+          </form>
+          <div class="site-nav-submenu-links" data-c-links="about.equipmentItems"></div>
+        </div>
+      </div>`;
+  }
+
+  function renderDropdown(item, uid) {
+    const children = (item.children || []).map(renderNavChild).join("\n");
+    return `
+      <div class="site-nav-item-dropdown" id="nav-${uid}-dropdown">
+        <button type="button" class="site-nav-dropdown-toggle" id="nav-${uid}-toggle" aria-expanded="false" aria-controls="nav-${uid}-submenu">
+          <span>${escapeHtml(item.label)}</span> <span class="caret">▾</span>
+        </button>
+        <div class="site-nav-submenu" id="nav-${uid}-submenu">
+          <div class="site-nav-submenu-links site-nav-submenu-links-stack">
+            ${children}
+          </div>
+        </div>
+      </div>`;
+  }
+
+  function renderNavMenu(items) {
+    const nav = document.getElementById("site-nav");
+    if (!nav) return;
+    const list = Array.isArray(items) && items.length ? items : DEFAULT_NAV_MENU;
+    const html = list
+      .map((item, idx) => {
+        const uid = "m" + idx;
+        if (item.type === "products") return renderProductsDropdown(item, uid);
+        if (item.type === "dropdown") return renderDropdown(item, uid);
+        if (item.type === "action") return renderNavChild(item);
+        if (item.type === "separator") return ""; // n'a de sens qu'à l'intérieur d'un sous-menu
+        return renderNavChild(item);
+      })
+      .join("\n");
+    nav.innerHTML = html;
+  }
+
   function applyContent(data) {
     document.querySelectorAll("[data-c]").forEach((el) => {
       const val = getPath(data, el.dataset.c);
@@ -1022,6 +1126,7 @@
     fetch("/api/content")
       .then((res) => res.json())
       .then((data) => {
+        renderNavMenu(data.navMenu);
         applyContent(data);
         if (data.site && data.site.pageTitle) {
           document.title = data.site.pageTitle;
@@ -1031,6 +1136,9 @@
           if (metaEl) metaEl.setAttribute("content", data.site.metaDescription);
         }
         applyOgTags(data);
+        setupNav();
+        setupNavActiveState();
+        setupProductSearch();
         return fetch("assets/data/themes.json")
           .then((res) => res.json())
           .then((themeData) => {
@@ -1651,11 +1759,8 @@
     setupZoneChecker();
     setupEntryGate();
     setupContent();
-    setupNav();
-    setupNavActiveState();
     setupLeafParticles();
     setupPosts();
-    setupProductSearch();
     setupBackToTop();
 
     fetch("/api/contact")
