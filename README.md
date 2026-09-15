@@ -578,21 +578,22 @@ Techniquement : la préférence est stockée sous la clé `bl_user_theme`
 (différente de `bl_cached_theme`, qui sert uniquement à éviter le flash au
 chargement — voir section 3g).
 
-## 3z. Raccourci Clair / Sombre (☀️ / 🌙)
+## 3z. Raccourci Clair / Sombre (☀️ / 🌙) — indépendant du thème
 
-Deux boutons rapides en haut du panneau de thèmes, plutôt que de dédoubler les 6
-thèmes en versions claires et sombres (trop de recoins CSS à retester pour le
-bénéfice réel) :
+Après un ajustement, le mode Sombre est maintenant **complètement indépendant du
+thème choisi** — il s'applique par-dessus n'importe lequel des 6 thèmes, pas
+seulement Marine Profond. Choisis n'importe quel thème (Érable Classique, Ardoise
+Épurée, etc.), puis 🌙 assombrit ses fonds de page/cartes en gardant sa couleur
+d'accent; ☀️ ramène en clair. Les deux préférences (thème et mode) sont mémorisées
+séparément (`bl_user_theme` et `bl_user_mode`) et se combinent librement.
 
-- **🌙 Sombre** — bascule instantanément vers « Marine Profond » (déjà un vrai thème
-  sombre, fonds presque noirs — économe en batterie sur écrans OLED), en mémorisant
-  le thème clair qui était actif.
-- **☀️ Clair** — revient au dernier thème clair utilisé (par défaut : Navy Électrique
-  si aucun n'a encore été choisi).
-
-Les deux préférences sont mémorisées séparément (`bl_user_theme` pour le thème actif,
-`bl_last_light_theme` pour le dernier thème clair), donc basculer entre les deux
-boutons plusieurs fois ne fait jamais perdre le thème clair préféré du visiteur.
+Techniquement : une classe `.mode-dark`, ajoutée sur `<html>` indépendamment des
+classes de thème (`.theme-neon`, `.theme-marine`), redéfinit les variables
+`--birch-100/050` (fonds) et `--ink-900/600` (texte) vers des valeurs sombres/claires.
+Comme la plupart du CSS du site utilise déjà ces variables plutôt que des couleurs
+fixes, la bascule se propage correctement à travers le site, thèmes spéciaux (néon,
+marine) inclus. Quelques bordures codées en dur ont aussi été éclaircies pour rester
+visibles sur fond sombre.
 
 ## 4. Formulaire de contact
 

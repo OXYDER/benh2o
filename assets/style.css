@@ -2255,60 +2255,79 @@ body.gate-open { overflow: hidden; }
   .theme-picker-panel { width: 210px; margin-left: -210px; }
 }
 
-/* ---------- Marine Profond — retouches supplémentaires pour un vrai thème sombre de bout en bout ---------- */
+/* ---------- Mode Sombre (🌙) — s'applique par-dessus n'importe lequel des 6 thèmes ---------- */
+/* Assombrit les fonds de page/cartes et éclaircit le texte, peu importe le thème
+   actif (accent de couleur conservé). Indépendant du choix de thème : navigue avec
+   .theme-neon / .theme-marine s'ils sont actifs, mais fonctionne aussi seul avec les
+   4 autres thèmes. */
+.mode-dark {
+  --birch-100: #0D1117;
+  --birch-050: #171C24;
+  --ink-900: #EDF1F6;
+  --ink-600: #9FAAB8;
+}
+
 /* Beaucoup de bordures/tableaux du site utilisent une couleur foncée codée en dur
    (pensée pour un fond clair) qui deviendrait presque invisible sur les nouveaux
    fonds sombres. On les éclaircit pour les cas les plus visibles. */
-.theme-marine input,
-.theme-marine textarea,
-.theme-marine select,
-.theme-marine table,
-.theme-marine table td,
-.theme-marine table th,
-.theme-marine .channel-row,
-.theme-marine .conv-table td,
-.theme-marine .products,
-.theme-marine .posts-table td,
-.theme-marine .site-nav-item-dropdown,
-.theme-marine .rdv-cal-day-disabled {
+.mode-dark .site-header {
+  background: rgba(13,17,23,0.92);
+  border-bottom-color: rgba(255,255,255,0.08);
+}
+.mode-dark .nav-toggle {
+  border-color: rgba(255,255,255,0.15);
+}
+
+.mode-dark input,
+.mode-dark textarea,
+.mode-dark select,
+.mode-dark table,
+.mode-dark table td,
+.mode-dark table th,
+.mode-dark .channel-row,
+.mode-dark .conv-table td,
+.mode-dark .products,
+.mode-dark .posts-table td,
+.mode-dark .site-nav-item-dropdown,
+.mode-dark .rdv-cal-day-disabled {
   border-color: rgba(255,255,255,0.12) !important;
 }
-.theme-marine input,
-.theme-marine textarea,
-.theme-marine select {
+.mode-dark input,
+.mode-dark textarea,
+.mode-dark select {
   background: var(--birch-050);
   color: var(--ink-900);
 }
-.theme-marine .conv-tool,
-.theme-marine .conv-result,
-.theme-marine .conv-tool-list,
-.theme-marine .theme-picker-panel,
-.theme-marine .autocomplete-list {
+.mode-dark .conv-tool,
+.mode-dark .conv-result,
+.mode-dark .conv-tool-list,
+.mode-dark .theme-picker-panel,
+.mode-dark .autocomplete-list {
   border-color: rgba(255,255,255,0.1);
 }
-.theme-marine .conv-grid > div,
-.theme-marine .autocomplete-item:hover,
-.theme-marine .theme-picker-swatch {
+.mode-dark .conv-grid > div,
+.mode-dark .autocomplete-item:hover,
+.mode-dark .theme-picker-swatch {
   background: var(--birch-100);
 }
 
 /* Ces éléments affichent du texte clair sur une section déjà sombre (spruce-950/900),
-   peu importe le thème — ils utilisaient --birch-100 comme couleur de texte. Pour
-   Marine Profond, --birch-100 sert maintenant de fond sombre (voir plus haut), donc
-   on force ces textes vers --ink-900 (clair dans ce thème) pour rester lisibles. */
-.theme-marine .header-call,
-.theme-marine .nav-toggle[aria-expanded="true"],
-.theme-marine .hero,
-.theme-marine .hero h1,
-.theme-marine .btn-outline,
-.theme-marine .map-zoom-hint,
-.theme-marine .about,
-.theme-marine .about-quote,
-.theme-marine .conv-hero,
-.theme-marine .visitor-badge #visitor-city {
+   peu importe le thème — ils utilisent --birch-100 comme couleur de texte. En mode
+   sombre, --birch-100 sert de fond sombre (voir plus haut), donc on force ces
+   textes vers --ink-900 (clair en mode sombre) pour rester lisibles. */
+.mode-dark .header-call,
+.mode-dark .nav-toggle[aria-expanded="true"],
+.mode-dark .hero,
+.mode-dark .hero h1,
+.mode-dark .btn-outline,
+.mode-dark .map-zoom-hint,
+.mode-dark .about,
+.mode-dark .about-quote,
+.mode-dark .conv-hero,
+.mode-dark .visitor-badge #visitor-city {
   color: var(--ink-900);
 }
-.theme-marine .about-tagline p {
+.mode-dark .about-tagline p {
   color: var(--ink-900) !important;
 }
-.theme-marine .btn-outline:hover { border-color: var(--ink-900); }
+.mode-dark .btn-outline:hover { border-color: var(--ink-900); }
