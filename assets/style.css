@@ -750,6 +750,7 @@ section { padding: 76px 0; }
   width: 100%;
   max-height: 88vh;
   overflow-y: auto;
+  scrollbar-gutter: stable;
   box-shadow: 0 20px 60px rgba(0,0,0,0.4);
 }
 .post-modal-img { width: 100%; max-height: 320px; object-fit: cover; display: block; }
@@ -1482,6 +1483,7 @@ footer a:hover { text-decoration: underline; }
   width: 100%;
   max-height: 88vh;
   overflow-y: auto;
+  scrollbar-gutter: stable;
   box-shadow: 0 20px 60px rgba(0,0,0,0.4);
   border-top: 4px solid #C8352E;
 }
@@ -1559,6 +1561,7 @@ footer a:hover { text-decoration: underline; }
   width: 100%;
   max-height: 88vh;
   overflow-y: auto;
+  scrollbar-gutter: stable;
   box-shadow: 0 20px 60px rgba(0,0,0,0.4);
 }
 .rdv-panel-card h2 { margin: 4px 0 10px; font-size: 1.5rem; }
@@ -1752,6 +1755,7 @@ body.gate-open { overflow: hidden; }
   width: 100%;
   max-height: 88vh;
   overflow-y: auto;
+  scrollbar-gutter: stable;
   box-shadow: 0 20px 60px rgba(0,0,0,0.4);
 }
 
