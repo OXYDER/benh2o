@@ -544,6 +544,24 @@ caché derrière le mode Calculateurs) fait automatiquement basculer vers le bon
 avant de faire défiler la page — géré par `activateModeForHash()` dans
 `convertisseur.js`.
 
+## 3x. Vouvoiement partout sur le site (texte client)
+
+Sur demande, tout le texte destiné aux clients utilise maintenant le vouvoiement
+(« vous », « votre », « vos ») au lieu du tutoiement — hero, vérificateur de secteur,
+carte, fenêtre de rendez-vous, catalogue, publications, formulaire de contact, bouton
+urgence, et l'ensemble du Convertisseur Acéricole. Corrigé à trois endroits pour que
+ça tienne dans le temps :
+
+1. Le texte statique dans les 6 pages HTML
+2. Les valeurs par défaut dans `api/init.sql` (pour toute réinstallation future)
+3. Un script de migration (`api/fix-vouvoiement.sql`) pour corriger le contenu déjà
+   enregistré dans ta base actuelle
+
+**Reste volontairement en tutoiement** : l'interface d'administration (`/admin`),
+puisqu'elle s'adresse à toi et non à tes clients.
+
+Prochain texte que j'écrirai pour le site suivra aussi le vouvoiement par défaut.
+
 ## 4. Formulaire de contact
 
 Deux façons d'envoyer les demandes du formulaire, gérées par le serveur (`POST

@@ -415,7 +415,7 @@
      et la fenêtre d'accueil (première visite)
      ========================================================= */
   const Zone = {
-    flat: [], // { municipality, mrc, region } — ton secteur
+    flat: [], // { municipality, mrc, region } — le secteur du client
     distributeurs: [],
     centroids: {}, // toutes les municipalités/lieux du Québec (nom -> [lat, lon])
     ready: null,
@@ -509,8 +509,8 @@
       return {
         ok: true,
         html: simple
-          ? `Bonne nouvelle : <strong>${label}</strong> fait partie de mon secteur — tu es au bon endroit!`
-          : `Bonne nouvelle : <strong>${label}</strong> fait partie de mon secteur. <a href="#contact">Envoie-moi ta demande</a> ou <a href="tel:${CFG.telephoneMobileLien || ""}">appelle directement</a>.`,
+          ? `Bonne nouvelle : <strong>${label}</strong> fait partie de mon secteur — vous êtes au bon endroit!`
+          : `Bonne nouvelle : <strong>${label}</strong> fait partie de mon secteur. <a href="#contact">Envoyez-moi votre demande</a> ou <a href="tel:${CFG.telephoneMobileLien || ""}">appelle directement</a>.`,
       };
     }
 
@@ -626,7 +626,7 @@
     });
   }
 
-  /* ---------- Section « Est-ce que je couvre ta région? » ---------- */
+  /* ---------- Section « Est-ce que je couvre votre région? » ---------- */
   function setupZoneChecker() {
     const input = document.getElementById("zone-input");
     const button = document.getElementById("zone-submit");
@@ -815,7 +815,7 @@
 
       setTimeout(fallbackToSms, 4000);
     } else if (chat.lienDirect) {
-      if (chatStatus) chatStatus.textContent = "Pose ta question en direct via notre service de clavardage.";
+      if (chatStatus) chatStatus.textContent = "Posez votre question en direct via notre service de clavardage.";
       if (chatButton) {
         chatButton.addEventListener("click", () => {
           window.open(chat.lienDirect, "_blank", "noopener");

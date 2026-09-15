@@ -156,7 +156,7 @@ INSERT INTO site_data (key, data) VALUES ('content', '{
   },
   "hero": {
     "eyebrow": "Ton représentant régional",
-    "headlineHtml": "L''eau d''érable, <em>un seul contact</em> pour ta région.",
+    "headlineHtml": "L''eau d''érable, <em>un seul contact</em> pour votre région.",
     "lead": "J''accompagne les acériculteurs de mon secteur pour l''osmose inverse, la filtration et le service après-vente H2O Innovation — par téléphone, texto, courriel, Messenger ou clavardage, selon ce qui te convient.",
     "ctaCall": "Appeler maintenant",
     "ctaSms": "Texter",
@@ -165,27 +165,27 @@ INSERT INTO site_data (key, data) VALUES ('content', '{
   },
   "zone": {
     "tag": "Territoire",
-    "title": "Est-ce que je couvre ta région?",
-    "description": "Entre le nom de ta ville ou de ta MRC. Je ne dessers qu''un secteur précis — si tu es ailleurs, je te dirige directement vers le bon représentant."
+    "title": "Est-ce que je couvre votre région?",
+    "description": "Entrez le nom de votre ville ou de votre MRC. Je ne dessers qu''un secteur précis — si vous êtes ailleurs, je vous dirige directement vers le bon représentant."
   },
   "map": {
     "tag": "Vue d''ensemble",
     "title": "Mon secteur, en un coup d''œil",
-    "description": "Chaque zone rouge est une municipalité que je dessers — pas la MRC en entier, seulement les municipalités précises de mon secteur. Les points bleus sont les autres distributeurs H2O Innovation, et le gros point ambre marque le centre de mon secteur. Clique sur une zone ou un point pour en savoir plus — déplace-toi et zoome librement sur la carte.",
-    "note": "Frontières municipales officielles (Statistique Canada). Pour une confirmation précise de ton secteur, utilise le vérificateur ci-dessus ou contacte-moi directement."
+    "description": "Chaque zone rouge est une municipalité que je dessers — pas la MRC en entier, seulement les municipalités précises de mon secteur. Les points bleus sont les autres distributeurs H2O Innovation, et le gros point ambre marque le centre de mon secteur. Cliquez sur une zone ou un point pour en savoir plus — déplacez-vous et zoomez librement sur la carte.",
+    "note": "Frontières municipales officielles (Statistique Canada). Pour une confirmation précise de votre secteur, utilisez le vérificateur ci-dessus ou contactez-moi directement."
   },
   "products": {
   "tag": "Catalogue",
   "title": "Trouve le bon produit H2O Innovation",
   "description": "Cherche directement dans le catalogue officiel H2O Innovation — évaporateurs, tubulure, pompes, filtration et bien plus. Les résultats s'ouvrent dans un nouvel onglet, directement sur h2oinnovation.net.",
   "searchButton": "Rechercher",
-  "searchNote": "Besoin d'aide pour choisir? Écris-moi directement — je peux te conseiller sur le bon produit pour ton érablière.",
+  "searchNote": "Besoin d'aide pour choisir? Écrivez-moi directement — je peux vous conseiller sur le bon produit pour votre érablière.",
   "categoriesLabel": "Ou accède directement à une catégorie :"
 },
   "rdv": {
     "tag": "Rendez-vous",
     "title": "Prendre rendez-vous",
-    "description": "Choisis la date, l'heure et le lieu qui te conviennent. Je confirme ta demande rapidement — par courriel ou par téléphone.",
+    "description": "Choisissez la date, l'heure et le lieu qui vous conviennent. Je confirme votre demande rapidement — par courriel ou par téléphone.",
   "labelNom": "Nom",
     "labelErabliere": "Nom de l'érablière",
     "labelEntailles": "Nombre d'entailles",
@@ -193,11 +193,11 @@ INSERT INTO site_data (key, data) VALUES ('content', '{
     "labelVille": "Ville",
     "labelAdresse": "Adresse",
     "placeholderAdresse": "Numéro et rue",
-    "labelDejaClient": "Es-tu déjà client chez H2O Innovation?",
+    "labelDejaClient": "Êtes-vous déjà client chez H2O Innovation?",
     "dejaClientOui": "Oui",
     "dejaClientNon": "Non",
     "labelLieu": "Lieu du rendez-vous",
-    "lieuBureau": "À ton bureau (Ham-Nord)",
+    "lieuBureau": "À votre bureau (Ham-Nord)",
     "lieuClient": "Chez moi (à mon érablière)",
     "labelDateHeure": "Date et heure souhaitées",
     "labelCourriel": "Courriel",
@@ -215,14 +215,14 @@ INSERT INTO site_data (key, data) VALUES ('content', '{
   "tutoriels": {
     "tag": "Ressources",
     "title": "Tutoriels, informations et modes d'emploi",
-    "description": "Des guides et conseils pratiques pour bien utiliser et entretenir ton équipement.",
+    "description": "Des guides et conseils pratiques pour bien utiliser et entretenir votre équipement.",
     "voirTout": "Voir tous les tutoriels",
     "affichage": "grille"
   },
   "manuels": {
     "tag": "Documentation",
     "title": "Manuels de l'utilisateur",
-    "description": "Les guides complets pour installer, configurer et utiliser ton équipement H2O Innovation.",
+    "description": "Les guides complets pour installer, configurer et utiliser votre équipement H2O Innovation.",
     "affichage": "grille"
   },
   "fiches": {
@@ -234,8 +234,8 @@ INSERT INTO site_data (key, data) VALUES ('content', '{
   "convertisseur": {
     "tag": "Outil pratique",
     "title": "Convertisseur Acéricole",
-    "description": "Rendement sève-sirop, point d'ébullition selon l'altitude, et conversions entre litres, gallons, kilogrammes et livres pour tes produits d'érable.",
-    "avertissement": "Outil fourni à titre indicatif pour la planification. Toujours vérifier la densité finale de ton sirop avec un réfractomètre calibré avant la mise en contenant."
+    "description": "Rendement sève-sirop, point d'ébullition selon l'altitude, et conversions entre litres, gallons, kilogrammes et livres pour vos produits d'érable.",
+    "avertissement": "Outil fourni à titre indicatif pour la planification. Toujours vérifier la densité finale de votre sirop avec un réfractomètre calibré avant la mise en contenant."
   },
   "channels": {
     "tag": "Nous joindre",
@@ -260,11 +260,11 @@ INSERT INTO site_data (key, data) VALUES ('content', '{
     },
     "messenger": {
       "title": "Messenger",
-      "desc": "Pour rester dans une conversation que tu as déjà l''habitude d''utiliser."
+      "desc": "Pour rester dans une conversation que vous avez déjà l''habitude d''utiliser."
     },
     "chat": {
       "title": "Clavardage en direct",
-      "desc": "Pose ta question en direct sur cette page pendant mes heures de bureau."
+      "desc": "Posez votre question en direct sur cette page pendant mes heures de bureau."
     },
     "h2o": {
       "title": "Ligne générale H2O Innovation"
@@ -283,7 +283,7 @@ INSERT INTO site_data (key, data) VALUES ('content', '{
     "body3": "Je veux que vous puissiez compter sur moi avant, pendant et après votre achat : pour vos conseils, votre installation, votre mise en route, vos pièces, vos fournitures, votre dépannage et votre service après-vente. Mon objectif est simple : vous aider à produire mieux, à travailler plus efficacement et à investir dans des équipements qui ont réellement leur place dans votre érablière.",
     "taglineHtml": "Du bois à la cabane.<br>Je vous accompagne à chaque étape.<br><strong>Vous produisez le sirop. Je m'occupe de vous aider à bien vous équiper.</strong>",
     "stat1Value": "1",
-    "stat1Label": "représentant dédié à ton secteur",
+    "stat1Label": "représentant dédié à votre secteur",
     "stat2Value": "5",
     "stat2Label": "façons de me joindre, une seule réponse",
     "stat3Value": "H2O",
@@ -293,7 +293,7 @@ INSERT INTO site_data (key, data) VALUES ('content', '{
     "tag": "Formulaire",
     "title": "Envoyer une demande",
     "description": "Pour une demande d''information générale ou un premier pas vers un devis. Je te reviens directement par téléphone ou courriel.",
-    "note": "En envoyant ce formulaire, ta demande m''est acheminée directement par courriel."
+    "note": "En envoyant ce formulaire, votre demande m''est acheminée directement par courriel."
   },
   "footer": {
     "line1": "Représentant régional — Division Érablière",

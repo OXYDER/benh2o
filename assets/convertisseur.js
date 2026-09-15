@@ -562,7 +562,7 @@
       const v2 = (v1 * (b1 - target)) / denom;
       resultEl.innerHTML = `
         Mélange environ <strong>${fmt(v2, 2)} litres</strong> de sirop B (${fmt(b2, 1)}° Brix)
-        avec tes ${fmt(v1, 1)} L de sirop A (${fmt(b1, 1)}° Brix)
+        avec vos ${fmt(v1, 1)} L de sirop A (${fmt(b1, 1)}° Brix)
         pour obtenir ${fmt(v1 + v2, 2)} L à ${fmt(target, 1)}° Brix.
       `;
     }
@@ -660,7 +660,7 @@
       }
       const eau = vol * (active / target - 1);
       resultEl.innerHTML = `
-        Ajoute environ <strong>${fmt(eau, 2)} litres d'eau</strong> à tes ${fmt(vol, 1)} L de produit concentré
+        Ajoute environ <strong>${fmt(eau, 2)} litres d'eau</strong> à vos ${fmt(vol, 1)} L de produit concentré
         pour obtenir une solution à ${fmt(target, 1)} % (volume final ≈ ${fmt(vol + eau, 2)} L).
       `;
     }
@@ -774,7 +774,7 @@
       const qB = (qA * (targetLog - logA)) / denom;
       resultEl.innerHTML = `
         Ajoute environ <strong>${fmt(qB, 2)} litres</strong> de sirop B (${fmt(tB, 1)} %)
-        à tes ${fmt(qA, 1)} L de sirop A (${fmt(tA, 1)} %)
+        à vos ${fmt(qA, 1)} L de sirop A (${fmt(tA, 1)} %)
         pour obtenir ${fmt(qA + qB, 2)} L à ${fmt(target, 1)} % de transmittance.
       `;
     }
