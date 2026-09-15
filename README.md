@@ -562,6 +562,22 @@ puisqu'elle s'adresse à toi et non à tes clients.
 
 Prochain texte que j'écrirai pour le site suivra aussi le vouvoiement par défaut.
 
+## 3y. Sélecteur de thème pour les visiteurs
+
+Un petit onglet vertical « Thèmes », discret, collé au bord gauche de l'écran
+(centré verticalement, sur les 6 pages). Cliquer dessus fait glisser un panneau avec
+les 6 thèmes disponibles, chacun avec un aperçu de couleur.
+
+**Le choix du visiteur est mémorisé** dans son navigateur (localStorage,
+indépendamment de toi) et prime sur le thème par défaut que tu choisis dans
+`/admin` — donc chaque visiteur peut personnaliser son affichage sans jamais changer
+ce que les autres visiteurs voient. Un bouton « Thème par défaut du site » permet de
+revenir au choix administrateur en tout temps.
+
+Techniquement : la préférence est stockée sous la clé `bl_user_theme`
+(différente de `bl_cached_theme`, qui sert uniquement à éviter le flash au
+chargement — voir section 3g).
+
 ## 4. Formulaire de contact
 
 Deux façons d'envoyer les demandes du formulaire, gérées par le serveur (`POST

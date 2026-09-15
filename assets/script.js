@@ -942,6 +942,61 @@
     } catch (e) {}
   }
 
+  function setupThemePicker(themes, currentUserThemeId) {
+    const picker = document.getElementById("theme-picker");
+    const tab = document.getElementById("theme-picker-tab");
+    const listEl = document.getElementById("theme-picker-list");
+    const resetBtn = document.getElementById("theme-picker-reset");
+    if (!picker || !tab || !listEl) return;
+    if (listEl.dataset.built) return; // évite de reconstruire si setupContent est rappelé
+    listEl.dataset.built = "1";
+
+    listEl.innerHTML = themes
+      .map((t) => {
+        const swatch = t.vars["--spruce-950"] || t.vars["--birch-050"] || "#ccc";
+        const accent = t.vars["--amber-600"] || "#1E9BFF";
+        const active = t.id === currentUserThemeId;
+        return `
+          <button type="button" class="theme-picker-swatch${active ? " active" : ""}" data-theme-id="${t.id}">
+            <span class="theme-picker-dot" style="background:${swatch}; border-color:${accent};"></span>
+            <span>${t.name}</span>
+          </button>
+        `;
+      })
+      .join("");
+
+    tab.addEventListener("click", () => {
+      picker.classList.toggle("open");
+    });
+    document.addEventListener("click", (e) => {
+      if (picker.classList.contains("open") && !picker.contains(e.target)) {
+        picker.classList.remove("open");
+      }
+    });
+
+    listEl.querySelectorAll(".theme-picker-swatch").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const themeId = btn.dataset.themeId;
+        try {
+          localStorage.setItem(USER_THEME_KEY, themeId);
+        } catch (e) {}
+        applyTheme(themeId, themes);
+        listEl.querySelectorAll(".theme-picker-swatch").forEach((b) => b.classList.toggle("active", b === btn));
+      });
+    });
+
+    if (resetBtn) {
+      resetBtn.addEventListener("click", () => {
+        try {
+          localStorage.removeItem(USER_THEME_KEY);
+        } catch (e) {}
+        location.reload();
+      });
+    }
+  }
+
+  const USER_THEME_KEY = "bl_user_theme";
+
   function setupContent() {
     fetch("/api/content")
       .then((res) => res.json())
@@ -956,7 +1011,15 @@
         }
         return fetch("assets/data/themes.json")
           .then((res) => res.json())
-          .then((themeData) => applyTheme(data.activeTheme, themeData.themes))
+          .then((themeData) => {
+            let userTheme = null;
+            try {
+              userTheme = localStorage.getItem(USER_THEME_KEY);
+            } catch (e) {}
+            const themeIdToUse = userTheme || data.activeTheme;
+            applyTheme(themeIdToUse, themeData.themes);
+            setupThemePicker(themeData.themes, userTheme);
+          })
           .catch(() => {});
       })
       .catch(() => {
