@@ -310,6 +310,14 @@ INSERT INTO site_data (key, data) VALUES ('content', '{
     "voirTout": "Voir toutes les nouvelles",
     "affichage": "grille"
   },
+  "ressources": {
+    "tag": "Ressources",
+    "title": "Tutoriels, manuels et fiches techniques",
+    "description": "Des guides et conseils pratiques pour bien utiliser, installer et entretenir votre équipement.",
+    "voirTutoriels": "Voir plus de tutoriels",
+    "voirManuels": "Voir plus de manuels",
+    "voirFiches": "Voir plus de fiches techniques"
+  },
   "tutoriels": {
     "tag": "Ressources",
     "title": "Tutoriels, informations et modes d'emploi",

@@ -1534,7 +1534,7 @@
             toggleEl.querySelectorAll("button").forEach((b) => b.classList.toggle("active", b.dataset.mode === mode));
           }
           renderPostsList(gridEl, emptyEl, allPosts, mode, false);
-          renderPostsList(featuredEl, null, allPosts.slice(0, 3), mode, true);
+          renderPostsList(featuredEl, null, allPosts.slice(0, 4), mode, true);
           renderFilters(categories || []);
 
           const params = new URLSearchParams(location.search);
@@ -1551,6 +1551,21 @@
     loadType("tutoriel", "tutoriels-full-grid", "tutoriels-full-empty", "tutoriels-featured", "tutoriels-filter", "tutoriels", "tutoriels-view-toggle");
     loadType("manuel", "manuels-full-grid", "manuels-full-empty", "manuels-featured", "manuels-filter", "manuels", "manuels-view-toggle");
     loadType("fiche", "fiches-full-grid", "fiches-full-empty", "fiches-featured", "fiches-filter", "fiches", "fiches-view-toggle");
+
+    // Section « Ressources » de la page d'accueil : les 4 publications les plus
+    // récentes, tous types confondus parmi tutoriels/manuels/fiches techniques.
+    const resourcesFeaturedEl = document.getElementById("ressources-featured");
+    if (resourcesFeaturedEl) {
+      Promise.all(
+        ["tutoriel", "manuel", "fiche"].map((t) => fetch("/api/posts?type=" + t).then((r) => r.json()).catch(() => []))
+      )
+        .then((results) => {
+          const merged = [].concat(...results);
+          merged.sort((a, b) => new Date(b.date_publication) - new Date(a.date_publication));
+          renderPostsList(resourcesFeaturedEl, null, merged.slice(0, 4), "grille", true);
+        })
+        .catch(() => {});
+    }
   }
 
   function setupProductSearch() {

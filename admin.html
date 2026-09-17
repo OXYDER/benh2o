@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,500&family=Playfair+Display:wght@600;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="icon" type="image/gif" href="assets/favicon-animated.gif?v=98">
-<link rel="stylesheet" href="assets/style.css?v=106">
-<link rel="stylesheet" href="assets/admin.css?v=106">
+<link rel="stylesheet" href="assets/style.css?v=107">
+<link rel="stylesheet" href="assets/admin.css?v=107">
 </head>
 <body class="admin-body">
 
@@ -523,6 +523,36 @@
         </div>
       </div>
 
+      <h3 class="admin-field-group-title">Section « Ressources » (page d'accueil — tutoriels, manuels et fiches combinés)</h3>
+      <div class="admin-field-row">
+        <div class="admin-field">
+          <label for="cc-ressources-tag">Étiquette</label>
+          <input type="text" id="cc-ressources-tag" data-key="ressources.tag">
+        </div>
+        <div class="admin-field">
+          <label for="cc-ressources-title">Titre</label>
+          <input type="text" id="cc-ressources-title" data-key="ressources.title">
+        </div>
+      </div>
+      <div class="admin-field">
+        <label for="cc-ressources-desc">Description</label>
+        <textarea id="cc-ressources-desc" data-key="ressources.description" rows="2"></textarea>
+      </div>
+      <div class="admin-field-row">
+        <div class="admin-field">
+          <label for="cc-ressources-voirtutoriels">Texte du lien « Voir plus de tutoriels »</label>
+          <input type="text" id="cc-ressources-voirtutoriels" data-key="ressources.voirTutoriels">
+        </div>
+        <div class="admin-field">
+          <label for="cc-ressources-voirmanuels">Texte du lien « Voir plus de manuels »</label>
+          <input type="text" id="cc-ressources-voirmanuels" data-key="ressources.voirManuels">
+        </div>
+        <div class="admin-field">
+          <label for="cc-ressources-voirfiches">Texte du lien « Voir plus de fiches techniques »</label>
+          <input type="text" id="cc-ressources-voirfiches" data-key="ressources.voirFiches">
+        </div>
+      </div>
+
       <h3 class="admin-field-group-title">Section « Tutoriels »</h3>
       <div class="admin-field-row">
         <div class="admin-field">
@@ -947,6 +977,6 @@
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/tinymce@6/tinymce.min.js" referrerpolicy="origin"></script>
-<script src="assets/admin.js?v=106"></script>
+<script src="assets/admin.js?v=107"></script>
 </body>
 </html>

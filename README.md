@@ -917,3 +917,21 @@ Urgence, qui n'ont pas de destination) a maintenant une case « nouvel onglet »
 le lien s'ouvre dans un nouvel onglet (`target="_blank"`); décoché (par défaut),
 il s'ouvre dans la même fenêtre, comme avant. Rien à migrer : les liens existants
 gardent leur comportement actuel tant que la case n'est pas cochée.
+
+## 4e. Section « Ressources » combinée + Nouvelles à 4
+
+La section « Ressources » de la page d'accueil affiche maintenant les **4 publications
+les plus récentes, tous types confondus** (Tutoriels, Manuels, Fiches Techniques
+ensemble) — au lieu de montrer seulement les Tutoriels comme avant. Trois liens
+distincts en dessous : « Voir plus de tutoriels », « Voir plus de manuels », « Voir
+plus de fiches techniques », chacun vers sa page complète.
+
+La section Nouvelles passe aussi de 3 à 4 publications affichées, avec son bouton
+« Voir toutes les nouvelles » déjà existant conservé.
+
+Textes éditables dans `/admin` → Contenu de la page → nouvelle section « Ressources ».
+
+Migration pour ta base existante :
+```bash
+docker compose exec -T benoitlaprise-db psql -U benoitlaprise -d benoitlaprise < api/add-ressources-section.sql
+```
