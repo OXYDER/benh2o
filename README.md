@@ -935,3 +935,17 @@ Migration pour ta base existante :
 ```bash
 docker compose exec -T benoitlaprise-db psql -U benoitlaprise -d benoitlaprise < api/add-ressources-section.sql
 ```
+
+## 4f. Carte en plein écran + page séparée pour impression
+
+Deux nouveaux boutons au-dessus de la carte interactive sur la page d'accueil :
+
+- **⛶ Plein écran** — agrandit la carte dans tout l'écran (fonction plein écran native
+  du navigateur), sans quitter la page
+- **🖨 Ouvrir en page séparée (impression)** — ouvre `/carte-imprimable` dans un nouvel
+  onglet : une page minimale avec juste la carte en grand format et un bouton
+  Imprimer. En impression, l'en-tête et le bouton disparaissent automatiquement pour
+  que la carte remplisse toute la feuille.
+
+Fichier : `carte.html` (nouvelle page autonome, hors structure des 6 pages
+principales — pas de menu ni de pied de page, volontairement minimaliste).

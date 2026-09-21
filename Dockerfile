@@ -8,6 +8,7 @@ COPY tutoriels.html /usr/share/nginx/html/tutoriels.html
 COPY manuels.html /usr/share/nginx/html/manuels.html
 COPY fiches-techniques.html /usr/share/nginx/html/fiches-techniques.html
 COPY convertisseur.html /usr/share/nginx/html/convertisseur.html
+COPY carte.html /usr/share/nginx/html/carte.html
 COPY assets/ /usr/share/nginx/html/assets/
 RUN chmod -R a+rX /usr/share/nginx/html
 

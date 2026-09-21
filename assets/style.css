@@ -1035,6 +1035,23 @@ section { padding: 76px 0; }
   isolation: isolate;
   z-index: 0;
 }
+#coverage-map:fullscreen {
+  height: 100vh;
+  border-radius: 0;
+  border: none;
+}
+#coverage-map:-webkit-full-screen {
+  height: 100vh;
+  border-radius: 0;
+  border: none;
+}
+
+.map-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 16px;
+}
 
 .map-note {
   margin-top: 14px;

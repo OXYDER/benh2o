@@ -146,6 +146,22 @@
         mapEl.classList.remove("map-active");
       }
     });
+
+    const fullscreenBtn = document.getElementById("map-fullscreen-btn");
+    if (fullscreenBtn) {
+      fullscreenBtn.addEventListener("click", () => {
+        if (!document.fullscreenElement) {
+          const req = mapEl.requestFullscreen || mapEl.webkitRequestFullscreen;
+          if (req) req.call(mapEl);
+        } else {
+          document.exitFullscreen();
+        }
+      });
+      document.addEventListener("fullscreenchange", () => {
+        fullscreenBtn.textContent = document.fullscreenElement ? "✕ Quitter le plein écran" : "⛶ Plein écran";
+        setTimeout(() => map.invalidateSize(), 150);
+      });
+    }
   }
 
   document.addEventListener("DOMContentLoaded", init);
