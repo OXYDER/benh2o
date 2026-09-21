@@ -162,6 +162,15 @@
         setTimeout(() => map.invalidateSize(), 150);
       });
     }
+
+    // L'impression change la taille du conteneur de la carte (voir le CSS
+    // @media print) — Leaflet ne s'en aperçoit pas tout seul et ses tuiles
+    // restent positionnées pour la taille écran, ce qui donne une page blanche
+    // à l'impression. On force un recalcul juste avant que l'impression démarre.
+    window.addEventListener("beforeprint", () => {
+      map.invalidateSize();
+      if (bounds.length) map.fitBounds(bounds, { padding: [20, 20] });
+    });
   }
 
   document.addEventListener("DOMContentLoaded", init);
