@@ -8,10 +8,10 @@
 <meta name="robots" content="noindex">
 <link rel="icon" type="image/gif" href="assets/favicon-animated.gif?v=109">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
-<link rel="stylesheet" href="assets/style.css?v=112">
+<link rel="stylesheet" href="assets/style.css?v=113">
 <style>
-  html, body { height: 100%; margin: 0; }
-  body { display: flex; flex-direction: column; background: var(--birch-100); }
+  html, body { margin: 0; }
+  body { background: var(--birch-100); }
   .carte-page-header {
     display: flex;
     align-items: center;
@@ -20,7 +20,6 @@
     padding: 14px 20px;
     background: var(--birch-050);
     border-bottom: 1px solid rgba(32,27,20,0.12);
-    flex-shrink: 0;
   }
   .carte-page-header h1 {
     font-family: var(--serif);
@@ -30,17 +29,16 @@
   }
   .carte-page-header .btn { white-space: nowrap; }
   #coverage-map {
-    flex: 1;
-    height: auto !important;
+    width: 100%;
+    height: 900px;
     border-radius: 0 !important;
     border: none !important;
     margin: 0;
   }
   @media print {
+    @page { size: landscape; margin: 10mm; }
     .carte-page-header .btn { display: none; }
     .map-zoom-hint { display: none !important; }
-    body { height: auto; }
-    #coverage-map { height: 100vh !important; }
   }
 </style>
 </head>
@@ -54,7 +52,7 @@
 <div id="coverage-map" aria-label="Carte des municipalités et MRC desservies par Benoît Laprise"></div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-<script src="assets/coverage-map.js?v=112"></script>
+<script src="assets/coverage-map.js?v=113"></script>
 <script>
   document.getElementById("print-map-btn").addEventListener("click", () => window.print());
 </script>
