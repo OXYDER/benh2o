@@ -1052,6 +1052,12 @@ section { padding: 76px 0; }
   gap: 10px;
   margin-bottom: 16px;
 }
+.map-toolbar .btn-outline {
+  background: var(--birch-100);
+  border-color: rgba(32,27,20,0.25);
+  color: var(--ink-900);
+}
+.map-toolbar .btn-outline:hover { border-color: var(--amber-600); color: var(--amber-700); }
 
 .map-note {
   margin-top: 14px;
