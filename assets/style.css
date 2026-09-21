@@ -1525,7 +1525,6 @@ footer a:hover { text-decoration: underline; }
   padding: 40px 36px;
   max-height: 88vh;
   overflow-y: auto;
-  scrollbar-gutter: stable;
 }
 .urgence-panel-card h3 { margin: 4px 0 10px; font-size: 1.3rem; }
 .urgence-panel-card p { color: var(--ink-600); margin-bottom: 22px; }
@@ -1606,7 +1605,6 @@ footer a:hover { text-decoration: underline; }
   padding: 40px 36px;
   max-height: 88vh;
   overflow-y: auto;
-  scrollbar-gutter: stable;
 }
 .rdv-panel-card h2 { margin: 4px 0 10px; font-size: 1.5rem; }
 .rdv-panel-card p { color: var(--ink-600); margin-bottom: 20px; }
@@ -1804,7 +1802,6 @@ body.gate-open { overflow: hidden; }
   padding: 40px 36px;
   max-height: 88vh;
   overflow-y: auto;
-  scrollbar-gutter: stable;
 }
 
 .entry-gate-card h2 {
