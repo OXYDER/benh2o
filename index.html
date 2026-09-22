@@ -19,7 +19,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,500&family=Playfair+Display:wght@600;700&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="icon" type="image/gif" href="assets/favicon-animated.gif?v=98">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
-<link rel="stylesheet" href="assets/style.css?v=113">
+<link rel="stylesheet" href="assets/style.css?v=114">
 <script>
 (function() {
   try {
@@ -340,6 +340,18 @@
   </div>
 </section>
 
+<section class="posts-teaser" id="equipements-teaser">
+  <div class="container">
+    <div class="section-head">
+      <span class="section-tag" data-c="equipements.tag"></span>
+      <h2 data-c="equipements.title"></h2>
+      <p data-c="equipements.description"></p>
+    </div>
+    <div class="posts-teaser-featured" id="equipements-teaser-featured"></div>
+    <a href="/equipements-usages" class="btn btn-outline" data-c="equipements.voirTout">Voir tous les équipements usagés</a>
+  </div>
+</section>
+
 <div class="post-modal" id="post-modal" hidden>
   <div class="post-modal-card">
     <button class="post-modal-close" id="post-modal-close" type="button" aria-label="Fermer">✕</button>
@@ -347,6 +359,7 @@
     <span class="post-modal-date" id="post-modal-date"></span>
     <span id="post-modal-category"></span>
     <h2 id="post-modal-title"></h2>
+    <p id="post-modal-equipment-info" class="post-modal-equipment-info" hidden></p>
     <div class="post-modal-body" id="post-modal-body"></div>
     <div class="post-modal-gallery" id="post-modal-gallery"></div>
     <a class="post-modal-file" id="post-modal-file" href="#" target="_blank" rel="noopener" hidden>Télécharger</a>
@@ -558,8 +571,8 @@
 <button class="chat-fallback" id="chat-fallback" type="button">Clavarder avec Benoît</button>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-<script src="assets/script.js?v=113"></script>
-<script src="assets/catalogue.js?v=113"></script>
-<script src="assets/coverage-map.js?v=113"></script>
+<script src="assets/script.js?v=114"></script>
+<script src="assets/catalogue.js?v=114"></script>
+<script src="assets/coverage-map.js?v=114"></script>
 </body>
 </html>

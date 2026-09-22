@@ -120,6 +120,7 @@
     { type: "link", label: "Carte", url: "#carte" },
     { type: "products", label: "Produits H2O" },
     { type: "link", label: "Nouvelles", url: "/nouvelles" },
+    { type: "link", label: "Équipements usagés", url: "/equipements-usages" },
     { type: "link", label: "À propos", url: "#about" },
     {
       type: "dropdown",
@@ -1438,6 +1439,7 @@
 
     let posts = [];
     let categoriesByType = {};
+    const expandedIds = new Set();
 
     function todayIso() {
       return new Date().toISOString().slice(0, 10);
@@ -1489,7 +1491,23 @@
       posts.forEach((p) => {
         const card = document.createElement("div");
         card.className = "post-admin-card";
+        const isExpanded = expandedIds.has(p.id);
+        const typeLabels = {
+          nouvelle: "Nouvelle / Événement",
+          tutoriel: "Tutoriel",
+          manuel: "Manuel de l'utilisateur",
+          fiche: "Fiche technique",
+          equipement: "Équipement usagé",
+        };
         card.innerHTML = `
+          <button type="button" class="post-admin-card-header">
+            <span class="post-admin-card-chevron">${isExpanded ? "▾" : "▸"}</span>
+            <span class="post-admin-card-type-tag">${typeLabels[p.type] || p.type}</span>
+            <span class="post-admin-card-titre">${escapeAttr(p.titre || "(sans titre)")}</span>
+            <span class="post-admin-card-date">${(p.date_publication || "").toString().slice(0, 10)}</span>
+            ${p.publie ? "" : '<span class="post-admin-card-draft">Brouillon</span>'}
+          </button>
+          <div class="post-admin-card-body" ${isExpanded ? "" : "hidden"}>
           <div class="admin-field-row">
             <div class="admin-field">
               <label>Type</label>
@@ -1498,6 +1516,7 @@
                 <option value="tutoriel" ${p.type === "tutoriel" ? "selected" : ""}>Tutoriel</option>
                 <option value="manuel" ${p.type === "manuel" ? "selected" : ""}>Manuel de l'utilisateur</option>
                 <option value="fiche" ${p.type === "fiche" ? "selected" : ""}>Fiche technique</option>
+                <option value="equipement" ${p.type === "equipement" ? "selected" : ""}>Équipement usagé</option>
               </select>
             </div>
             <div class="admin-field">
@@ -1512,6 +1531,20 @@
           <div class="admin-field">
             <label>Titre</label>
             <input type="text" class="p-titre" value="${escapeAttr(p.titre || "")}">
+          </div>
+          <div class="admin-field-row p-equipement-fields" ${p.type === "equipement" ? "" : "hidden"}>
+            <div class="admin-field">
+              <label>Prix ($)</label>
+              <input type="number" class="p-prix" step="0.01" min="0" value="${p.prix != null ? p.prix : ""}" placeholder="Ex. : 2500">
+            </div>
+            <div class="admin-field">
+              <label>Année</label>
+              <input type="number" class="p-annee" step="1" value="${p.annee != null ? p.annee : ""}" placeholder="Ex. : 2019">
+            </div>
+            <div class="admin-field">
+              <label>Numéro de série</label>
+              <input type="text" class="p-numero-serie" value="${escapeAttr(p.numero_serie || "")}">
+            </div>
           </div>
           <div class="admin-field">
             <label>Résumé (affiché sur la carte)</label>
@@ -1555,14 +1588,27 @@
             <button class="btn btn-outline post-delete" type="button">Supprimer</button>
             <button class="btn btn-primary post-save" type="button">Enregistrer</button>
           </div>
+          </div>
         `;
+
+        const headerBtn = card.querySelector(".post-admin-card-header");
+        const bodyEl = card.querySelector(".post-admin-card-body");
+        headerBtn.addEventListener("click", () => {
+          const nowHidden = !bodyEl.hidden;
+          bodyEl.hidden = nowHidden;
+          headerBtn.querySelector(".post-admin-card-chevron").textContent = nowHidden ? "▸" : "▾";
+          if (nowHidden) expandedIds.delete(p.id);
+          else expandedIds.add(p.id);
+        });
 
         const statusEl = card.querySelector(".post-status");
         const typeSelect = card.querySelector(".p-type");
         const catSelect = card.querySelector(".p-categorie");
+        const equipementFields = card.querySelector(".p-equipement-fields");
 
         typeSelect.addEventListener("change", () => {
           catSelect.innerHTML = categoryOptions(typeSelect.value, "");
+          equipementFields.hidden = typeSelect.value !== "equipement";
         });
 
         const imageInput = card.querySelector(".p-image");
@@ -1671,6 +1717,9 @@
             images: galleryImages,
             fichierUrl: fichierUrlInput.value.trim(),
             fichierNom: fichierNomInput.value.trim(),
+            prix: card.querySelector(".p-prix").value ? parseFloat(card.querySelector(".p-prix").value) : null,
+            annee: card.querySelector(".p-annee").value ? parseInt(card.querySelector(".p-annee").value, 10) : null,
+            numeroSerie: card.querySelector(".p-numero-serie").value.trim(),
             datePublication: card.querySelector(".p-date").value,
             publie: card.querySelector(".p-publie").checked,
           };
@@ -1705,7 +1754,8 @@
 
         listEl.appendChild(card);
 
-        if (window.tinymce) {
+        function initTinyMceForThis() {
+          if (!window.tinymce || tinymce.get("p-contenu-" + p.id)) return;
           tinymce.init({
             selector: "#p-contenu-" + p.id,
             height: 320,
@@ -1731,6 +1781,13 @@
               }),
           });
         }
+        // TinyMCE ne s'initialise pas correctement sur un champ caché (hauteur à
+        // zéro) — on l'initialise seulement quand la fiche est dépliée, immédiatement
+        // si elle l'est déjà, sinon au premier dépliage.
+        if (isExpanded) initTinyMceForThis();
+        headerBtn.addEventListener("click", () => {
+          if (!bodyEl.hidden) initTinyMceForThis();
+        });
       });
     }
 
@@ -1749,7 +1806,11 @@
             publie: false,
           }),
         });
-        if (res.ok) await load();
+        if (res.ok) {
+          const created = await res.json().catch(() => null);
+          if (created && created.id != null) expandedIds.add(created.id);
+          await load();
+        }
       } catch (e) {
         listEl.innerHTML = '<p style="color:#B3403A">Impossible de créer la publication.</p>';
       }

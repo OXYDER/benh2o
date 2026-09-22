@@ -949,3 +949,45 @@ Deux nouveaux boutons au-dessus de la carte interactive sur la page d'accueil :
 
 Fichier : `carte.html` (nouvelle page autonome, hors structure des 6 pages
 principales — pas de menu ni de pied de page, volontairement minimaliste).
+
+## 5. Équipements usagés (nouvelle section complète)
+
+Réutilise l'infrastructure existante des Publications (catégories, images, éditeur
+admin) plutôt que de tout reconstruire — 5ᵉ type de publication, au même titre que
+Nouvelles/Tutoriels/Manuels/Fiches Techniques.
+
+**Ce qui est nouveau :**
+- 3 champs propres à ce type : **prix**, **année**, **numéro de série** — visibles
+  dans l'éditeur admin seulement quand le type « Équipement usagé » est sélectionné
+- Nouvelle page publique `/equipements-usages` (même structure que les 4 autres
+  pages de publications : grille/tableau/affiche, filtre par catégorie)
+- Nouvelle section sur la page d'accueil, juste après « Ressources » — les 4
+  équipements les plus récents, avec bouton « Voir tous les équipements usagés »
+- Lien ajouté au menu principal, juste après « Nouvelles » (déplaçable ensuite dans
+  l'onglet Menu de l'admin)
+- Prix et année affichés sur chaque carte et dans la fiche détaillée (« Lire plus »)
+
+**Bulle de type sur les cartes** : chaque publication affiche maintenant une petite
+bulle de couleur dans son coin (Tutoriel / Manuel / Fiche technique / Équipement /
+Nouvelle) — surtout utile dans la section Ressources et sur l'accueil, où plusieurs
+types se mélangent, pour voir en un coup d'œil de quoi il s'agit.
+
+**Éditeur admin — publications repliées par défaut** : avec le nombre grandissant
+de publications (Nouvelles, Tutoriels, Manuels, Fiches Techniques, Équipements
+usagés), afficher le formulaire complet de chacune en même temps rendait la page
+difficile à naviguer. Chaque publication a maintenant un en-tête compact cliquable
+(type, titre, date, badge « Brouillon » si non publiée) qui déplie le formulaire
+complet au clic. Une nouvelle publication s'ouvre automatiquement dépliée.
+*Correctif technique au passage* : l'éditeur de texte enrichi (TinyMCE) s'initialise
+maintenant seulement à l'ouverture d'une fiche plutôt que sur toutes en même temps
+au chargement — en plus d'être plus rapide, ça évite un bogue d'affichage connu de
+TinyMCE sur un champ cascade masqué.
+
+**Déploiement** — reconstruction complète nécessaire (nouvelle page) :
+```bash
+cd ~/benh2o
+git pull
+docker compose build
+docker compose up -d
+docker compose exec -T benoitlaprise-db psql -U benoitlaprise -d benoitlaprise < api/add-equipements-usages.sql
+```

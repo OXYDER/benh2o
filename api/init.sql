@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS post_categories (
 
 CREATE TABLE IF NOT EXISTS posts (
   id SERIAL PRIMARY KEY,
-  type TEXT NOT NULL DEFAULT 'nouvelle',   -- 'nouvelle' (Nouvelles et Événements) ou 'tutoriel'
+  type TEXT NOT NULL DEFAULT 'nouvelle',   -- 'nouvelle', 'tutoriel', 'manuel', 'fiche' ou 'equipement'
   categorie TEXT,
   titre TEXT NOT NULL,
   resume TEXT,
@@ -28,6 +28,9 @@ CREATE TABLE IF NOT EXISTS posts (
   images JSONB NOT NULL DEFAULT '[]'::jsonb,
   fichier_url TEXT,
   fichier_nom TEXT,
+  prix NUMERIC,                            -- équipements usagés seulement
+  annee INTEGER,                           -- équipements usagés seulement
+  numero_serie TEXT,                       -- équipements usagés seulement
   date_publication DATE NOT NULL DEFAULT CURRENT_DATE,
   publie BOOLEAN NOT NULL DEFAULT true,
   created_at TIMESTAMPTZ DEFAULT now(),
@@ -158,6 +161,11 @@ INSERT INTO site_data (key, data) VALUES ('content', '{
       "type": "link",
       "label": "Nouvelles",
       "url": "/nouvelles"
+    },
+    {
+      "type": "link",
+      "label": "Équipements usagés",
+      "url": "/equipements-usages"
     },
     {
       "type": "link",
@@ -335,6 +343,13 @@ INSERT INTO site_data (key, data) VALUES ('content', '{
     "tag": "Documentation",
     "title": "Fiches Techniques",
     "description": "Spécifications, caractéristiques et données techniques de l'équipement H2O Innovation.",
+    "affichage": "grille"
+  },
+  "equipements": {
+    "tag": "Occasion",
+    "title": "Équipements usagés",
+    "description": "Équipements acéricoles usagés à vendre — osmoseurs, évaporateurs, pompes et autres. Prix, année et numéro de série indiqués pour chaque annonce.",
+    "voirTout": "Voir tous les équipements usagés",
     "affichage": "grille"
   },
   "convertisseur": {

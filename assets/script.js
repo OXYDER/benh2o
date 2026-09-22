@@ -914,6 +914,7 @@
     { type: "link", label: "Carte", url: "#carte" },
     { type: "products", label: "Produits H2O" },
     { type: "link", label: "Nouvelles", url: "/nouvelles" },
+    { type: "link", label: "Équipements usagés", url: "/equipements-usages" },
     { type: "link", label: "À propos", url: "#about" },
     {
       type: "dropdown",
@@ -1190,6 +1191,21 @@
       const modalCategory = document.getElementById("post-modal-category");
       if (modalCategory) modalCategory.innerHTML = categoryBadgeHtml(post);
       modalTitle.textContent = post.titre;
+      const modalEquipInfo = document.getElementById("post-modal-equipment-info");
+      if (modalEquipInfo) {
+        if (post.type === "equipement") {
+          const bits = [];
+          if (post.prix != null && post.prix !== "") {
+            bits.push(Number(post.prix).toLocaleString("fr-CA", { style: "currency", currency: "CAD", maximumFractionDigits: 0 }));
+          }
+          if (post.annee) bits.push("Année " + post.annee);
+          if (post.numero_serie) bits.push("N/S " + post.numero_serie);
+          modalEquipInfo.textContent = bits.join("  •  ");
+          modalEquipInfo.hidden = !bits.length;
+        } else {
+          modalEquipInfo.hidden = true;
+        }
+      }
       if (post.contenu) {
         modalBody.innerHTML = post.contenu;
         // Le contenu collé depuis Facebook (et d'autres sites) traîne avec lui des
@@ -1365,14 +1381,39 @@
       return `<span class="post-category-badge" style="background:${categoryColor(p.categorie)}">${p.categorie}</span>`;
     }
 
+    const POST_TYPE_LABELS = {
+      nouvelle: "Nouvelle",
+      tutoriel: "Tutoriel",
+      manuel: "Manuel",
+      fiche: "Fiche technique",
+      equipement: "Équipement",
+    };
+    function typeCornerBadgeHtml(p) {
+      const label = POST_TYPE_LABELS[p.type];
+      if (!label) return "";
+      return `<span class="post-card-type-badge post-card-type-${p.type}">${label}</span>`;
+    }
+
     function fileButtonHtml(p) {
       if (!p.fichier_url) return "";
       return `<a class="post-card-file" href="${p.fichier_url}" target="_blank" rel="noopener" onclick="event.stopPropagation()">⬇ Télécharger${p.fichier_nom ? " — " + p.fichier_nom : ""}</a>`;
     }
 
+    function equipmentInfoHtml(p) {
+      if (p.type !== "equipement") return "";
+      const bits = [];
+      if (p.prix != null && p.prix !== "") {
+        bits.push(Number(p.prix).toLocaleString("fr-CA", { style: "currency", currency: "CAD", maximumFractionDigits: 0 }));
+      }
+      if (p.annee) bits.push(p.annee);
+      if (!bits.length) return "";
+      return `<p class="post-card-price">${bits.join(" — ")}</p>`;
+    }
+
     function cardHtml(p, i) {
       return `
         <article class="post-card">
+          ${typeCornerBadgeHtml(p)}
           ${p.image_url ? `<img class="post-card-img post-card-img-clickable" src="${p.image_url}" alt="" loading="lazy" data-idx="${i}">` : ""}
           <div class="post-card-body">
             <div class="post-card-meta">
@@ -1380,6 +1421,7 @@
               ${categoryBadgeHtml(p)}
             </div>
             <h3 class="post-card-title">${p.titre}</h3>
+            ${equipmentInfoHtml(p)}
             ${p.resume ? `<p class="post-card-resume">${p.resume}</p>` : ""}
             ${fileButtonHtml(p)}
             <button class="post-card-more" type="button" data-idx="${i}">Lire plus</button>
@@ -1551,6 +1593,7 @@
     loadType("tutoriel", "tutoriels-full-grid", "tutoriels-full-empty", "tutoriels-featured", "tutoriels-filter", "tutoriels", "tutoriels-view-toggle");
     loadType("manuel", "manuels-full-grid", "manuels-full-empty", "manuels-featured", "manuels-filter", "manuels", "manuels-view-toggle");
     loadType("fiche", "fiches-full-grid", "fiches-full-empty", "fiches-featured", "fiches-filter", "fiches", "fiches-view-toggle");
+    loadType("equipement", "equipements-full-grid", "equipements-full-empty", "equipements-featured", "equipements-filter", "equipements", "equipements-view-toggle");
 
     // Section « Ressources » de la page d'accueil : les 4 publications les plus
     // récentes, tous types confondus parmi tutoriels/manuels/fiches techniques.
@@ -1563,6 +1606,17 @@
           const merged = [].concat(...results);
           merged.sort((a, b) => new Date(b.date_publication) - new Date(a.date_publication));
           renderPostsList(resourcesFeaturedEl, null, merged.slice(0, 4), "grille", true);
+        })
+        .catch(() => {});
+    }
+
+    // Section « Équipements usagés » de la page d'accueil : les 4 plus récents.
+    const equipTeaserEl = document.getElementById("equipements-teaser-featured");
+    if (equipTeaserEl) {
+      fetch("/api/posts?type=equipement")
+        .then((r) => r.json())
+        .then((list) => {
+          renderPostsList(equipTeaserEl, null, list.slice(0, 4), "grille", true);
         })
         .catch(() => {});
     }

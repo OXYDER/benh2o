@@ -537,15 +537,15 @@ app.get("/api/posts/all", requireAuth, async (req, res) => {
 });
 
 app.post("/api/posts", requireAuth, async (req, res) => {
-  const { type, categorie, titre, resume, contenu, imageUrl, images, fichierUrl, fichierNom, datePublication, publie } = req.body || {};
-  if (!titre || !["nouvelle", "tutoriel", "manuel", "fiche"].includes(type)) {
+  const { type, categorie, titre, resume, contenu, imageUrl, images, fichierUrl, fichierNom, prix, annee, numeroSerie, datePublication, publie } = req.body || {};
+  if (!titre || !["nouvelle", "tutoriel", "manuel", "fiche", "equipement"].includes(type)) {
     return res.status(400).json({ error: "Titre et type requis." });
   }
   try {
     const r = await pool.query(
-      `INSERT INTO posts (type, categorie, titre, resume, contenu, image_url, images, fichier_url, fichier_nom, date_publication, publie)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,COALESCE($10, CURRENT_DATE),$11) RETURNING *`,
-      [type, categorie || null, titre, resume || null, contenu || null, imageUrl || null, JSON.stringify(Array.isArray(images) ? images : []), fichierUrl || null, fichierNom || null, datePublication || null, publie !== false]
+      `INSERT INTO posts (type, categorie, titre, resume, contenu, image_url, images, fichier_url, fichier_nom, prix, annee, numero_serie, date_publication, publie)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,COALESCE($13, CURRENT_DATE),$14) RETURNING *`,
+      [type, categorie || null, titre, resume || null, contenu || null, imageUrl || null, JSON.stringify(Array.isArray(images) ? images : []), fichierUrl || null, fichierNom || null, prix || null, annee || null, numeroSerie || null, datePublication || null, publie !== false]
     );
     res.json(r.rows[0]);
   } catch (e) {
@@ -556,16 +556,17 @@ app.post("/api/posts", requireAuth, async (req, res) => {
 
 app.put("/api/posts/:id", requireAuth, async (req, res) => {
   const { id } = req.params;
-  const { type, categorie, titre, resume, contenu, imageUrl, images, fichierUrl, fichierNom, datePublication, publie } = req.body || {};
-  if (!titre || !["nouvelle", "tutoriel", "manuel", "fiche"].includes(type)) {
+  const { type, categorie, titre, resume, contenu, imageUrl, images, fichierUrl, fichierNom, prix, annee, numeroSerie, datePublication, publie } = req.body || {};
+  if (!titre || !["nouvelle", "tutoriel", "manuel", "fiche", "equipement"].includes(type)) {
     return res.status(400).json({ error: "Titre et type requis." });
   }
   try {
     const r = await pool.query(
       `UPDATE posts SET type=$1, categorie=$2, titre=$3, resume=$4, contenu=$5, image_url=$6, images=$7,
-        fichier_url=$8, fichier_nom=$9, date_publication=COALESCE($10, date_publication), publie=$11, updated_at=now()
-       WHERE id=$12 RETURNING *`,
-      [type, categorie || null, titre, resume || null, contenu || null, imageUrl || null, JSON.stringify(Array.isArray(images) ? images : []), fichierUrl || null, fichierNom || null, datePublication || null, publie !== false, id]
+        fichier_url=$8, fichier_nom=$9, prix=$10, annee=$11, numero_serie=$12,
+        date_publication=COALESCE($13, date_publication), publie=$14, updated_at=now()
+       WHERE id=$15 RETURNING *`,
+      [type, categorie || null, titre, resume || null, contenu || null, imageUrl || null, JSON.stringify(Array.isArray(images) ? images : []), fichierUrl || null, fichierNom || null, prix || null, annee || null, numeroSerie || null, datePublication || null, publie !== false, id]
     );
     if (!r.rows.length) return res.status(404).json({ error: "Publication introuvable." });
     res.json(r.rows[0]);
