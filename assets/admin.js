@@ -1441,6 +1441,22 @@
     let categoriesByType = {};
     const expandedIds = new Set();
 
+    const POST_TYPES = [
+      ["nouvelle", "Nouvelles"],
+      ["tutoriel", "Tutoriels"],
+      ["manuel", "Manuels"],
+      ["fiche", "Fiches techniques"],
+      ["equipement", "Équipements usagés"],
+    ];
+    const PAGE_SIZE = 10;
+    let currentType = "nouvelle";
+    let currentPage = 1;
+    let searchQuery = "";
+    let pendingFocusId = null;
+    const tabsEl = document.getElementById("posts-type-tabs");
+    const searchEl = document.getElementById("posts-search");
+    const paginationEl = document.getElementById("posts-pagination");
+
     function todayIso() {
       return new Date().toISOString().slice(0, 10);
     }
@@ -1481,14 +1497,85 @@
       }
     }
 
-    function render() {
-      if (window.tinymce) tinymce.remove(".p-contenu");
-      if (!posts.length) {
-        listEl.innerHTML = "<p>Aucune publication pour l'instant.</p>";
+    function renderTabs() {
+      if (!tabsEl) return;
+      tabsEl.innerHTML = POST_TYPES.map(([type, label]) => {
+        const count = posts.filter((p) => p.type === type).length;
+        return `<button type="button" role="tab" class="posts-type-tab${type === currentType ? " active" : ""}" data-type="${type}" aria-selected="${type === currentType}">${label} <span class="posts-type-count">${count}</span></button>`;
+      }).join("");
+    }
+
+    function renderPagination(totalPages) {
+      if (!paginationEl) return;
+      if (totalPages <= 1) {
+        paginationEl.innerHTML = "";
         return;
       }
+      let html = `<button type="button" class="posts-page-btn" data-page="${currentPage - 1}" ${currentPage <= 1 ? "disabled" : ""}>‹ Précédent</button>`;
+      for (let i = 1; i <= totalPages; i++) {
+        html += `<button type="button" class="posts-page-btn${i === currentPage ? " active" : ""}" data-page="${i}">${i}</button>`;
+      }
+      html += `<button type="button" class="posts-page-btn" data-page="${currentPage + 1}" ${currentPage >= totalPages ? "disabled" : ""}>Suivant ›</button>`;
+      paginationEl.innerHTML = html;
+    }
+
+    function filteredPosts() {
+      const q = searchQuery.trim().toLowerCase();
+      return posts.filter((p) => {
+        if (p.type !== currentType) return false;
+        if (!q) return true;
+        return (p.titre || "").toLowerCase().includes(q) || (p.categorie || "").toLowerCase().includes(q);
+      });
+    }
+
+    if (tabsEl) {
+      tabsEl.addEventListener("click", (e) => {
+        const btn = e.target.closest(".posts-type-tab");
+        if (!btn) return;
+        currentType = btn.dataset.type;
+        currentPage = 1;
+        render();
+      });
+    }
+    if (paginationEl) {
+      paginationEl.addEventListener("click", (e) => {
+        const btn = e.target.closest(".posts-page-btn");
+        if (!btn || btn.disabled) return;
+        currentPage = parseInt(btn.dataset.page, 10);
+        render();
+        listEl.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    }
+    if (searchEl) {
+      searchEl.addEventListener("input", () => {
+        searchQuery = searchEl.value;
+        currentPage = 1;
+        render();
+      });
+    }
+
+    function render() {
+      if (window.tinymce) tinymce.remove(".p-contenu");
+      renderTabs();
+      const filtered = filteredPosts();
+      const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+      if (pendingFocusId != null) {
+        const idx = filtered.findIndex((p) => p.id === pendingFocusId);
+        if (idx >= 0) currentPage = Math.floor(idx / PAGE_SIZE) + 1;
+        pendingFocusId = null;
+      }
+      if (currentPage > totalPages) currentPage = totalPages;
+      renderPagination(totalPages);
+      if (!filtered.length) {
+        const typeLabel = (POST_TYPES.find(([t]) => t === currentType) || [, ""])[1].toLowerCase();
+        listEl.innerHTML = searchQuery.trim()
+          ? "<p>Aucune publication ne correspond à cette recherche.</p>"
+          : `<p>Aucune publication dans « ${typeLabel} » pour l'instant.</p>`;
+        return;
+      }
+      const pageItems = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
       listEl.innerHTML = "";
-      posts.forEach((p) => {
+      pageItems.forEach((p) => {
         const card = document.createElement("div");
         card.className = "post-admin-card";
         const isExpanded = expandedIds.has(p.id);
@@ -1732,6 +1819,10 @@
             });
             if (res.ok) {
               statusEl.textContent = "Enregistré ✓";
+              if (payload.type !== currentType) {
+                currentType = payload.type;
+                currentPage = 1;
+              }
               await load();
             } else {
               const data = await res.json().catch(() => ({}));
@@ -1797,7 +1888,7 @@
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            type: "nouvelle",
+            type: currentType,
             titre: "Nouvelle publication",
             resume: "",
             contenu: "",
@@ -1808,7 +1899,13 @@
         });
         if (res.ok) {
           const created = await res.json().catch(() => null);
-          if (created && created.id != null) expandedIds.add(created.id);
+          if (created && created.id != null) {
+            expandedIds.add(created.id);
+            pendingFocusId = created.id;
+          }
+          searchQuery = "";
+          if (searchEl) searchEl.value = "";
+          currentPage = 1;
           await load();
         }
       } catch (e) {

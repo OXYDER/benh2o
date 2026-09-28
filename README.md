@@ -991,3 +991,21 @@ docker compose build
 docker compose up -d
 docker compose exec -T benoitlaprise-db psql -U benoitlaprise -d benoitlaprise < api/add-equipements-usages.sql
 ```
+
+## 5b. Admin des publications : onglets par type, recherche et pagination
+
+L'onglet Publications de `/admin` sépare maintenant les publications **par type** :
+une rangée d'onglets (Nouvelles, Tutoriels, Manuels, Fiches techniques, Équipements
+usagés), chacun avec son **compteur**. Seules les publications du type choisi sont
+affichées.
+
+- **Pagination** : 10 publications par page, avec boutons Précédent / numéros / Suivant
+  (n'apparaît que s'il y a plus d'une page)
+- **Recherche** : champ au-dessus de la liste, filtre par titre ou catégorie dans le
+  type affiché
+- **+ Nouvelle publication** crée la fiche dans le type actuellement affiché, va
+  directement à la page où elle se trouve et l'ouvre
+- Si tu changes le type d'une publication et enregistres, l'onglet suit la
+  publication vers son nouveau type
+
+Aucune migration nécessaire — changement d'interface seulement (`./deploy.sh`).

@@ -727,3 +727,79 @@ input.menu-field[data-field="url"] { flex: 2 1 220px; min-width: 160px; }
   cursor: pointer;
 }
 .menu-newtab-label input { margin: 0; }
+
+/* ---------- Publications : onglets par type, recherche, pagination ---------- */
+
+.posts-admin-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 8px 0 16px;
+}
+.posts-type-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.posts-type-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1.5px solid rgba(32,27,20,0.18);
+  background: var(--birch-050);
+  font-family: var(--sans);
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--ink-600);
+  cursor: pointer;
+}
+.posts-type-tab:hover { border-color: var(--amber-600); color: var(--amber-700); }
+.posts-type-tab.active {
+  background: var(--amber-600);
+  border-color: var(--amber-600);
+  color: #fff;
+}
+.posts-type-count {
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: rgba(32,27,20,0.08);
+}
+.posts-type-tab.active .posts-type-count { background: rgba(255,255,255,0.25); }
+.posts-search {
+  flex: 0 1 280px;
+  min-width: 180px;
+  padding: 9px 12px;
+  border-radius: 8px;
+  border: 1.5px solid rgba(32,27,20,0.18);
+  background: var(--birch-050);
+  font-family: var(--sans);
+  font-size: 0.88rem;
+}
+.posts-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 20px;
+}
+.posts-page-btn {
+  min-width: 36px;
+  padding: 7px 12px;
+  border-radius: 8px;
+  border: 1.5px solid rgba(32,27,20,0.18);
+  background: var(--birch-050);
+  font-family: var(--sans);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ink-900);
+  cursor: pointer;
+}
+.posts-page-btn:hover:not(:disabled) { border-color: var(--amber-600); color: var(--amber-700); }
+.posts-page-btn.active { background: var(--amber-600); border-color: var(--amber-600); color: #fff; }
+.posts-page-btn:disabled { opacity: 0.4; cursor: default; }

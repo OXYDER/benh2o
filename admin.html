@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,500&family=Playfair+Display:wght@600;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="icon" type="image/gif" href="assets/favicon-animated.gif?v=98">
-<link rel="stylesheet" href="assets/style.css?v=114">
-<link rel="stylesheet" href="assets/admin.css?v=114">
+<link rel="stylesheet" href="assets/style.css?v=115">
+<link rel="stylesheet" href="assets/admin.css?v=115">
 </head>
 <body class="admin-body">
 
@@ -976,9 +976,14 @@
       <div id="categories-list" class="horaire-chip-list"></div>
 
       <h3 class="admin-field-group-title" style="margin-top:36px">Publications</h3>
+      <div class="posts-admin-toolbar">
+        <div class="posts-type-tabs" id="posts-type-tabs" role="tablist" aria-label="Type de publication"></div>
+        <input type="search" id="posts-search" class="posts-search" placeholder="Rechercher par titre ou catégorie…" aria-label="Rechercher une publication">
+      </div>
       <button class="btn btn-primary admin-add-region" id="post-add" type="button">+ Nouvelle publication</button>
 
       <div id="posts-admin-list" class="posts-admin-list"></div>
+      <div class="posts-pagination" id="posts-pagination"></div>
     </div>
 
     <div class="admin-panel" data-panel="catalogue" hidden>
@@ -1002,6 +1007,6 @@
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/tinymce@6/tinymce.min.js" referrerpolicy="origin"></script>
-<script src="assets/admin.js?v=114"></script>
+<script src="assets/admin.js?v=115"></script>
 </body>
 </html>
