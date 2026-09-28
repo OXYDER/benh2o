@@ -803,3 +803,18 @@ input.menu-field[data-field="url"] { flex: 2 1 220px; min-width: 160px; }
 .posts-page-btn:hover:not(:disabled) { border-color: var(--amber-600); color: var(--amber-700); }
 .posts-page-btn.active { background: var(--amber-600); border-color: var(--amber-600); color: #fff; }
 .posts-page-btn:disabled { opacity: 0.4; cursor: default; }
+
+/* Type d'une publication : fixé par l'onglet, modifiable via un lien discret */
+.p-type-static { display: flex; align-items: center; gap: 12px; min-height: 40px; flex-wrap: wrap; }
+.p-type-static[hidden] { display: none; }
+.p-type-change {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: var(--sans);
+  font-size: 0.8rem;
+  color: var(--amber-700);
+  text-decoration: underline;
+  cursor: pointer;
+}
+.p-type-change:hover { color: var(--amber-600); }

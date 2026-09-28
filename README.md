@@ -1016,3 +1016,10 @@ Le serveur refusait (erreur 400) d'ajouter une catégorie dans « Équipements u
 la liste des types acceptés par `POST /api/categories` n'avait pas été mise à jour lors
 de l'ajout de ce type (seules les routes des publications l'avaient été). Corrigé.
 **Le backend change : il faut reconstruire le conteneur de l'API** (voir ci-dessous).
+
+## 5d. Type d'une publication fixé par l'onglet
+
+Dans l'admin, le menu « Type » n'est plus affiché sur chaque fiche : le type est celui de
+l'onglet actif (une nouvelle publication est déjà créée dans ce type). Le type s'affiche en
+texte, avec un petit lien « Déplacer vers un autre type… » qui fait apparaître le menu si tu
+veux reclasser une publication. Interface seulement (`./deploy.sh`).

@@ -1598,7 +1598,11 @@
           <div class="admin-field-row">
             <div class="admin-field">
               <label>Type</label>
-              <select class="p-type">
+              <div class="p-type-static">
+                <strong>${typeLabels[p.type] || p.type}</strong>
+                <button type="button" class="p-type-change">Déplacer vers un autre type…</button>
+              </div>
+              <select class="p-type" hidden>
                 <option value="nouvelle" ${p.type === "nouvelle" ? "selected" : ""}>Nouvelle / Événement</option>
                 <option value="tutoriel" ${p.type === "tutoriel" ? "selected" : ""}>Tutoriel</option>
                 <option value="manuel" ${p.type === "manuel" ? "selected" : ""}>Manuel de l'utilisateur</option>
@@ -1690,6 +1694,11 @@
 
         const statusEl = card.querySelector(".post-status");
         const typeSelect = card.querySelector(".p-type");
+        card.querySelector(".p-type-change").addEventListener("click", () => {
+          card.querySelector(".p-type-static").hidden = true;
+          typeSelect.hidden = false;
+          typeSelect.focus();
+        });
         const catSelect = card.querySelector(".p-categorie");
         const equipementFields = card.querySelector(".p-equipement-fields");
 
