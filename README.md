@@ -1009,3 +1009,10 @@ affichées.
   publication vers son nouveau type
 
 Aucune migration nécessaire — changement d'interface seulement (`./deploy.sh`).
+
+## 5c. Correctif : catégories des équipements usagés
+
+Le serveur refusait (erreur 400) d'ajouter une catégorie dans « Équipements usagés » :
+la liste des types acceptés par `POST /api/categories` n'avait pas été mise à jour lors
+de l'ajout de ce type (seules les routes des publications l'avaient été). Corrigé.
+**Le backend change : il faut reconstruire le conteneur de l'API** (voir ci-dessous).

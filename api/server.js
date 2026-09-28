@@ -602,7 +602,7 @@ app.get("/api/categories", async (req, res) => {
 
 app.post("/api/categories", requireAuth, async (req, res) => {
   const { type, nom } = req.body || {};
-  if (!nom || !["nouvelle", "tutoriel", "manuel", "fiche"].includes(type)) {
+  if (!nom || !["nouvelle", "tutoriel", "manuel", "fiche", "equipement"].includes(type)) {
     return res.status(400).json({ error: "Nom et type requis." });
   }
   try {
