@@ -8,6 +8,7 @@ services:
     depends_on:
       - benoitlaprise-api
     volumes:
+      - benoitlaprise-pages:/usr/share/nginx/html
       - benoitlaprise-uploads:/usr/share/nginx/html/uploads
 
   benoitlaprise-api:
@@ -25,6 +26,7 @@ services:
       - benoitlaprise-db
     volumes:
       - benoitlaprise-uploads:/app/uploads
+      - benoitlaprise-pages:/app/pages
 
   benoitlaprise-db:
     image: postgres:16-alpine
@@ -115,6 +117,7 @@ services:
 volumes:
   benoitlaprise-db-data:
   benoitlaprise-uploads:
+  benoitlaprise-pages:
   chatwoot-storage:
   chatwoot-db-data:
   chatwoot-redis-data:

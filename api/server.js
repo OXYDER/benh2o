@@ -308,6 +308,7 @@ app.put("/api/content", requireAuth, async (req, res) => {
        ON CONFLICT (key) DO UPDATE SET data = $1, updated_at = now()`,
       [JSON.stringify(data)]
     );
+    syncOgTags();
     res.json({ ok: true });
   } catch (e) {
     console.error(e);
@@ -817,4 +818,79 @@ app.put("/api/appointments/:id", requireAuth, async (req, res) => {
   }
 });
 
-app.listen(PORT, () => console.log(`benoitlaprise-api en écoute sur le port ${PORT}`));
+/* ---------- Balises Open Graph / Twitter Card écrites dans les pages statiques ----------
+   Les robots qui génèrent les aperçus de lien (Facebook, Teams, LinkedIn...) ne
+   chargent jamais le JavaScript d'une page — ils lisent seulement le HTML tel
+   qu'il est servi. Les balises meta id="og-*" étaient donc remplies uniquement
+   côté navigateur et restaient vides pour ces robots. Cette fonction réécrit les
+   vraies valeurs directement dans les fichiers HTML sur le volume partagé avec
+   nginx, à chaque démarrage de l'API et à chaque enregistrement du contenu. */
+const PAGES_DIR = "/app/pages";
+const SITE_URL = "https://benoitlaprise.com";
+const OG_PAGES = {
+  "index.html": "/",
+  "nouvelles.html": "/nouvelles",
+  "tutoriels.html": "/tutoriels",
+  "manuels.html": "/manuels",
+  "fiches-techniques.html": "/fiches-techniques",
+  "equipements-usages.html": "/equipements-usages",
+  "convertisseur.html": "/convertisseur",
+};
+
+function escapeHtmlAttr(str) {
+  return (str || "")
+    .toString()
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+function replaceMetaContent(html, id, value) {
+  const re = new RegExp(`(<meta id="${id}"[^>]*content=")[^"]*(")`);
+  return re.test(html) ? html.replace(re, `$1${escapeHtmlAttr(value)}$2`) : html;
+}
+
+async function syncOgTags() {
+  try {
+    const r = await pool.query("SELECT data FROM site_data WHERE key = 'content'");
+    const content = (r.rows[0] && r.rows[0].data) || {};
+    const site = content.site || {};
+    let ogImageAbs = "";
+    if (site.ogImage) {
+      ogImageAbs = site.ogImage.startsWith("http") ? site.ogImage : SITE_URL + site.ogImage;
+    }
+
+    for (const [page, urlPath] of Object.entries(OG_PAGES)) {
+      const filePath = path.join(PAGES_DIR, page);
+      if (!fs.existsSync(filePath)) continue;
+      let html = fs.readFileSync(filePath, "utf-8");
+
+      html = replaceMetaContent(html, "og-image", ogImageAbs);
+      html = replaceMetaContent(html, "twitter-image", ogImageAbs);
+      html = replaceMetaContent(html, "og-url", SITE_URL + urlPath);
+
+      if (page === "index.html") {
+        if (site.pageTitle) {
+          html = html.replace(/(<title>)[^<]*(<\/title>)/, `$1${escapeHtmlAttr(site.pageTitle)}$2`);
+          html = replaceMetaContent(html, "og-title", site.pageTitle);
+          html = replaceMetaContent(html, "twitter-title", site.pageTitle);
+        }
+        if (site.metaDescription) {
+          html = replaceMetaContent(html, "meta-description", site.metaDescription);
+          html = replaceMetaContent(html, "og-description", site.metaDescription);
+          html = replaceMetaContent(html, "twitter-description", site.metaDescription);
+        }
+      }
+
+      fs.writeFileSync(filePath, html, "utf-8");
+    }
+  } catch (e) {
+    console.error("Erreur syncOgTags:", e);
+  }
+}
+
+app.listen(PORT, () => {
+  console.log(`benoitlaprise-api en écoute sur le port ${PORT}`);
+  syncOgTags();
+});

@@ -1023,3 +1023,41 @@ Dans l'admin, le menu « Type » n'est plus affiché sur chaque fiche : le type 
 l'onglet actif (une nouvelle publication est déjà créée dans ce type). Le type s'affiche en
 texte, avec un petit lien « Déplacer vers un autre type… » qui fait apparaître le menu si tu
 veux reclasser une publication. Interface seulement (`./deploy.sh`).
+
+## 6. Correctif majeur : aperçus de lien vides (Facebook, Teams, LinkedIn, Messenger)
+
+**La vraie cause**, trouvée après plusieurs essais infructueux de contournement par le
+cache : les robots qui génèrent les aperçus de lien (Facebook, Microsoft Teams,
+LinkedIn, Messenger...) **n'exécutent jamais le JavaScript** d'une page — ils lisent
+seulement le HTML brut envoyé par le serveur. Les balises `og:image`, `og:title`,
+`og:description` étaient remplies uniquement côté navigateur, après coup, par
+`script.js`. Ces robots ne voyaient donc jamais l'image de partage ni les textes à
+jour (même vouvoyés depuis longtemps) — seulement les valeurs par défaut figées dans
+le HTML au moment de la construction du site. Ce n'était pas un problème de cache.
+
+**La correction, faite correctement cette fois** : l'API réécrit maintenant les
+vraies valeurs directement dans les fichiers HTML servis par nginx, à chaque
+enregistrement dans `/admin` et à chaque démarrage.
+
+**Changement d'architecture nécessaire** : les pages du site vivent maintenant sur un
+volume Docker partagé (`benoitlaprise-pages`) entre nginx (qui les sert) et l'API
+(qui peut maintenant les modifier) — plutôt que d'être figées à l'intérieur de
+l'image nginx comme avant. À chaque démarrage du conteneur nginx, un script
+(`docker-entrypoint-pages.sh`) copie les pages fraîchement construites dans ce
+volume, pour que le contenu déployé reste toujours à jour.
+
+**Déploiement — reconstruction complète des deux conteneurs nécessaire :**
+```bash
+cd ~/benh2o
+git pull
+docker compose down
+docker compose build
+docker compose up -d
+```
+
+**Après ce déploiement, une seule action manuelle est nécessaire** : va dans
+`/admin` → Contenu de la page, et clique une fois sur **Enregistrer** (même sans rien
+changer). À cause de l'ordre de démarrage des conteneurs (nginx démarre après
+l'API), la toute première synchronisation automatique n'a rien à écrire — un premier
+enregistrement déclenche la synchronisation immédiatement. Les enregistrements
+suivants se synchronisent automatiquement, sans action de ta part.
