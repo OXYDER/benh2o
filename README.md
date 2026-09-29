@@ -785,14 +785,14 @@ Canada) — de vrais polygones administratifs, pas des points approximatifs. Ell
 
 **Limite à connaître :** le fichier `assets/data/municipality-boundaries.geojson`
 contient les frontières de **toutes les municipalités de tes MRC actuelles**
-(159 municipalités, 11 MRC dont Acton depuis le 29 septembre 2026), pas seulement
-celles que tu dessers aujourd'hui — donc si tu ajoutes ou retires une municipalité
-**à l'intérieur de ces mêmes MRC** via `/admin`, sa forme rouge apparaît ou disparaît
-automatiquement sur la carte, sans rien me demander. Seul un ajout dans une
-**toute nouvelle MRC** nécessiterait que je génère sa frontière et l'ajoute au
-fichier — dis-le-moi si ça arrive. Les frontières viennent du service REST officiel
-du gouvernement du Québec (MRNF, Découpages administratifs 1/20 000), même source
-que le reste du fichier.
+(165 municipalités, 11 MRC — la MRC Acton est maintenant complète au complet, ses
+8 municipalités, depuis le 29 septembre 2026), pas seulement celles que tu dessers
+aujourd'hui — donc si tu ajoutes ou retires une municipalité **à l'intérieur de ces
+mêmes MRC** via `/admin`, sa forme rouge apparaît ou disparaît automatiquement sur la
+carte, sans rien me demander. Seul un ajout dans une **toute nouvelle MRC**
+nécessiterait que je génère sa frontière et l'ajoute au fichier — dis-le-moi si ça
+arrive. Les frontières viennent du service REST officiel du gouvernement du Québec
+(MRNF, Découpages administratifs 1/20 000), même source que le reste du fichier.
 
 ## 2d. Fenêtre d'accueil et carte enrichie
 
