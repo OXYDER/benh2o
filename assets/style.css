@@ -100,6 +100,12 @@ p { margin: 0 0 1em; max-width: 62ch; }
   transition: opacity 0.15s ease;
 }
 .header-logo:hover img { opacity: 1; }
+/* Deux versions du logo : gris sur en-tête clair (thèmes 1 à 4), blanc sur en-tête sombre (Néon, Marine Profond) */
+.header-logo .logo-fond-sombre { display: none; }
+.theme-neon .header-logo .logo-fond-clair,
+.theme-marine .header-logo .logo-fond-clair { display: none; }
+.theme-neon .header-logo .logo-fond-sombre,
+.theme-marine .header-logo .logo-fond-sombre { display: block; }
 
 .brand {
   font-family: "Playfair Display", var(--serif), Georgia, serif;

@@ -1086,3 +1086,13 @@ cd ~/benh2o && git pull && docker compose build && docker compose up -d
 `assets/images/h2o-innovation-logo.png` est maintenant le logo officiel fourni (300 × 132 px,
 fond transparent, texte blanc). Les 7 pages publiques pointent vers lui avec `?v=118` pour forcer
 le rafraîchissement du cache. Interface seulement (`./deploy.sh`).
+
+## 8b. Deux versions du logo H2O selon l'en-tête
+
+- `assets/images/h2o-logo-sur-fond-clair.png` — texte gris : thèmes 1 à 4 (en-tête clair)
+- `assets/images/h2o-logo-sur-fond-sombre.png` — texte blanc : Néon Cyberacéricole et Marine
+  Profond (en-tête sombre)
+
+Les deux `<img>` sont dans l'en-tête des 7 pages ; le CSS (`.theme-neon` / `.theme-marine` sur
+`<html>`) affiche la bonne. Comme cette classe est posée dès le chargement (script dans le
+`<head>`), il n'y a pas de clignotement du mauvais logo. Interface seulement (`./deploy.sh`).
