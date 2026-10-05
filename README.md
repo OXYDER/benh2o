@@ -1080,3 +1080,9 @@ Pour le rendre visible publiquement plus tard : onglet Menu de l'admin → ajout
 ```bash
 cd ~/benh2o && git pull && docker compose build && docker compose up -d
 ```
+
+## 8. Logo H2O Innovation remplacé
+
+`assets/images/h2o-innovation-logo.png` est maintenant le logo officiel fourni (300 × 132 px,
+fond transparent, texte blanc). Les 7 pages publiques pointent vers lui avec `?v=118` pour forcer
+le rafraîchissement du cache. Interface seulement (`./deploy.sh`).
