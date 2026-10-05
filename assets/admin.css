@@ -818,3 +818,15 @@ input.menu-field[data-field="url"] { flex: 2 1 220px; min-width: 160px; }
   cursor: pointer;
 }
 .p-type-change:hover { color: var(--amber-600); }
+
+/* Lien d'accès rapide vers un outil non listé publiquement */
+.admin-private-link {
+  margin-left: auto;
+  margin-right: 12px;
+  font-family: var(--sans);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--amber-700);
+  text-decoration: underline;
+}
+.admin-private-link:hover { color: var(--amber-600); }

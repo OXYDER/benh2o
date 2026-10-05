@@ -1063,3 +1063,20 @@ changer). À cause de l'ordre de démarrage des conteneurs (nginx démarre aprè
 l'API), la toute première synchronisation automatique n'a rien à écrire — un premier
 enregistrement déclenche la synchronisation immédiatement. Les enregistrements
 suivants se synchronisent automatiquement, sans action de ta part.
+
+## 7. Configurateur de bassin (outil non listé)
+
+Page autonome `trop-plein-bassin.html`, servie à **`/trop-plein-bassin`**. Elle n'apparaît dans
+aucun menu public, porte `noindex, nofollow` (balise meta + en-tête `X-Robots-Tag`) et n'est donc
+pas référencée par les moteurs de recherche. Accès rapide : lien « 🧰 Configurateur de bassin » en
+haut de `/admin` (une fois connecté), ou l'adresse directe en favori.
+
+Le fichier est celui fourni, tel quel (seuls `noindex` et le favicon ont été ajoutés). Il charge
+jsPDF depuis cdn.jsdelivr.net pour générer son PDF : il faut donc une connexion Internet.
+Pour le rendre visible publiquement plus tard : onglet Menu de l'admin → ajouter un lien vers
+`/trop-plein-bassin` (et retirer le `noindex` du fichier si on veut qu'il soit référencé).
+
+**Déploiement** (nouvelle page → reconstruction complète) :
+```bash
+cd ~/benh2o && git pull && docker compose build && docker compose up -d
+```
